@@ -1,27 +1,28 @@
 name: build-psycopg3-layer
+
 on:
- workflow_dispatch:
+  workflow_dispatch:
+
 jobs:
- build:
-  runs-on: ubuntu-latest
- 
-  steps:
-   - uses: actions/checkout@v3
-   - name: Create layer directory
-     run: |
-      mkdir python
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
-   - name: Install psycopg3
-     run: |
-      pip install "psycopg[binary]" -t python/
-      
-   - name: Zip layer
-     run: |
-      zip -r psycopg3-layer.zip python
+      - name: Create layer directory
+        run: |
+          mkdir -p python
 
-   - name: Upload artifact
-     uses: actions/checkout@v3
-     with:
-       name: psycopg3-layer
-       path: psycopg3-layer.zip
-    
+      - name: Install psycopg3
+        run: |
+          pip install "psycopg[binary]" -t python/
+
+      - name: Zip layer
+        run: |
+          zip -r psycopg3-layer.zip python
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: psycopg3-layer
+          path: psycopg3-layer.zip
