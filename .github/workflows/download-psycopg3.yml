@@ -1,0 +1,34 @@
+name: download-psycopg3
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Create layer directory
+        run: |
+          rm -rf python psycopg3-layer.zip
+          mkdir python
+
+      - name: Install psycopg3 (binary)
+        run: |
+          pip install "psycopg[binary]" -t python/
+          echo "Installed packages:"
+          ls python
+
+      - name: Zip psycopg3 layer
+        run: |
+          zip -r psycopg3-layer.zip python
+          ls -lh psycopg3-layer.zip
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: psycopg3-layer
+          path: psycopg3-layer.zip
