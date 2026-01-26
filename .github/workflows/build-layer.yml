@@ -1,24 +1,27 @@
-name: build-lambda-layer
+name: build-psycopg3-layer
 on:
-workflow_dispatch:
+ workflow_dispatch:
 jobs:
-build:
+ build:
   runs-on: ubuntu-latest
  
-steps:
-   - name: Checkout
-     uses: actions/checkout@v3
- 
-   - name: Set up Python 3.10
-     uses: actions/setup-python@v4
-     with:
-     python-version: "3.10"
- 
-   - name: Build psycopg3 Lambda layer
+  steps:
+   - uses: actions/checkout@v3
+   - name: Create layer directory
      run: |
       mkdir python
+
+   - name: Install psycopg3
+     run: |
       pip install "psycopg[binary]" -t python/
-      zip -r psycopg310-layer.zip python
- 
-   - name: Upload layer artifact
-     uses: actions/upload-artifact@v3
+      
+   - name: Zip layer
+     run: |
+      zip -r psycopg3-layer.zip python
+
+   - name: Upload artifact
+     uses: actions/checkout@v3
+     with:
+       name: psycopg3-layer
+       path: psycopg3-layer.zip
+    
