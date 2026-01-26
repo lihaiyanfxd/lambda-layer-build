@@ -9,7 +9,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Create layer directory
         run: |
@@ -19,8 +19,7 @@ jobs:
       - name: Install psycopg3 (binary)
         run: |
           pip install "psycopg[binary]" -t python/
-          echo "Installed packages:"
-          ls python
+          ls -la python
 
       - name: Zip psycopg3 layer
         run: |
@@ -28,7 +27,7 @@ jobs:
           ls -lh psycopg3-layer.zip
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: psycopg3-layer
           path: psycopg3-layer.zip
