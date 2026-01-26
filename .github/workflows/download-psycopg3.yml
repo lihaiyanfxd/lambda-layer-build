@@ -1,4 +1,4 @@
-name: download-psycopg3
+name: download-psycopg3-layer-py310
 
 on:
   workflow_dispatch:
@@ -8,26 +8,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Create layer directory
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Create layer directory structure
         run: |
           rm -rf python psycopg3-layer.zip
-          mkdir python
+          mkdir -p python/lib/python3.10/site-packages
 
-      - name: Install psycopg3 (binary)
+      - name: Install psycopg3 (binary) into site-packages
         run: |
-          pip install "psycopg[binary]" -t python/
-          ls -la python
+          pip install "psycopg[binary]" \
+            -t python/lib/python3.10/site-packages
+          find python -name "*.so" || true
 
-      - name: Zip psycopg3 layer
+      - name: Zip layer
         run: |
           zip -r psycopg3-layer.zip python
-          ls -lh psycopg3-layer.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: psycopg3-layer
+          name: psycopg3-layer-py310
           path: psycopg3-layer.zip
