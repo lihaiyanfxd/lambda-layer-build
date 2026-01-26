@@ -1,0 +1,24 @@
+name: build-lambda-layer
+on:
+workflow_dispatch:
+jobs:
+build:
+  runs-on: ubuntu-latest
+ 
+steps:
+   - name: Checkout
+     uses: actions/checkout@v3
+ 
+   - name: Set up Python 3.10
+     uses: actions/setup-python@v4
+     with:
+     python-version: "3.10"
+ 
+   - name: Build psycopg3 Lambda layer
+     run: |
+      mkdir python
+      pip install "psycopg[binary]" -t python/
+      zip -r psycopg310-layer.zip python
+ 
+   - name: Upload layer artifact
+     uses: actions/upload-artifact@v3
