@@ -1,18 +1,37 @@
+Status: Failed
+Test Event Name: test1
+
+Response:
+{
+  "errorMessage": "An error occurred (AccessDeniedException) when calling the GetSecretValue operation: User: arn:aws:sts::724677424020:assumed-role/test_db3-role-85ww41jq/test_db3 is not authorized to perform: secretsmanager:GetSecretValue on resource: rds-db-credentials/cluster-CQBEQJKMNYOYMAAXGGU5S6OHQY/postgres/1769389045327 because no identity-based policy allows the secretsmanager:GetSecretValue action",
+  "errorType": "ClientError",
+  "requestId": "bda53327-fb38-4b5e-9186-dd1309a4f490",
+  "stackTrace": [
+    "  File \"/var/task/lambda_function.py\", line 16, in lambda_handler\n    secret = get_secret()\n",
+    "  File \"/var/task/lambda_function.py\", line 11, in get_secret\n    response = client.get_secret_value(SecretId=SECRET_NAME)\n",
+    "  File \"/var/runtime/botocore/client.py\", line 602, in _api_call\n    return self._make_api_call(operation_name, kwargs)\n",
+    "  File \"/var/runtime/botocore/context.py\", line 123, in wrapper\n    return func(*args, **kwargs)\n",
+    "  File \"/var/runtime/botocore/client.py\", line 1078, in _make_api_call\n    raise error_class(parsed_response, operation_name)\n"
+  ]
+}
+
 The area below shows the last 4 KB of the execution log.
 
 Function Logs:
-[WARNING]	2026-01-26T08:04:14.919Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
-[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': expected an indented block after 'with' statement on line 14 (lambda_function.py, line 15)
+START RequestId: bda53327-fb38-4b5e-9186-dd1309a4f490 Version: $LATEST
+[ERROR] ClientError: An error occurred (AccessDeniedException) when calling the GetSecretValue operation: User: arn:aws:sts::724677424020:assumed-role/test_db3-role-85ww41jq/test_db3 is not authorized to perform: secretsmanager:GetSecretValue on resource: rds-db-credentials/cluster-CQBEQJKMNYOYMAAXGGU5S6OHQY/postgres/1769389045327 because no identity-based policy allows the secretsmanager:GetSecretValue action
 Traceback (most recent call last):
-  File "/var/task/lambda_function.py" Line 15
-              cur.execute("select * from poc.my_table;")
-INIT_REPORT Init Duration: 114.33 ms	Phase: init	Status: error	Error Type: Runtime.UserCodeSyntaxError
-[WARNING]	2026-01-26T08:04:15.018Z		LAMBDA_WARNING: Unhandled exception. The most likely cause is an issue in the function code. However, in rare cases, a Lambda runtime update can cause unexpected function behavior. For functions using managed runtimes, runtime updates can be triggered by a function change, or can be applied automatically. To determine if the runtime has been updated, check the runtime version in the INIT_START log entry. If this error correlates with a change in the runtime version, you may be able to mitigate this error by temporarily rolling back to the previous runtime version. For more information, see https://docs.aws.amazon.com/lambda/latest/dg/runtimes-update.html
-[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': expected an indented block after 'with' statement on line 14 (lambda_function.py, line 15)
-Traceback (most recent call last):
-  File "/var/task/lambda_function.py" Line 15
-              cur.execute("select * from poc.my_table;")
-INIT_REPORT Init Duration: 74.99 ms	Phase: invoke	Status: error	Error Type: Runtime.UserCodeSyntaxError
-START RequestId: b8532db6-9ae6-48ce-9564-8ac823ee2515 Version: $LATEST
-END RequestId: b8532db6-9ae6-48ce-9564-8ac823ee2515
-REPORT RequestId: b8532db6-9ae6-48ce-9564-8ac823ee2515	Duration: 84.32 ms	Billed Duration: 85 ms	Memory Size: 128 MB	Max Memory Used: 39 MB	Status: error	Error Type: Runtime.UserCodeSyntaxError
+  File "/var/task/lambda_function.py", line 16, in lambda_handler
+    secret = get_secret()
+  File "/var/task/lambda_function.py", line 11, in get_secret
+    response = client.get_secret_value(SecretId=SECRET_NAME)
+  File "/var/runtime/botocore/client.py", line 602, in _api_call
+    return self._make_api_call(operation_name, kwargs)
+  File "/var/runtime/botocore/context.py", line 123, in wrapper
+    return func(*args, **kwargs)
+  File "/var/runtime/botocore/client.py", line 1078, in _make_api_call
+    raise error_class(parsed_response, operation_name)
+END RequestId: bda53327-fb38-4b5e-9186-dd1309a4f490
+REPORT RequestId: bda53327-fb38-4b5e-9186-dd1309a4f490	Duration: 2363.10 ms	Billed Duration: 2863 ms	Memory Size: 128 MB	Max Memory Used: 93 MB	Init Duration: 499.20 ms
+
+Request ID: bda53327-fb38-4b5e-9186-dd1309a4f490
