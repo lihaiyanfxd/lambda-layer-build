@@ -1,30 +1,30 @@
 レスポンス本文
-{"errorMessage": "'body'", "errorType": "KeyError", "requestId": "bb6b55b0-e3bd-4ccc-bd55-15a88fac3557", "stackTrace": ["  File \"/var/task/lambda_function.py\", line 17, in lambda_handler\n    body = json.loads(event[\"body\"])\n"]}
+{"errorType":"Sandbox.Timedout","errorMessage":"RequestId: de1b1369-4431-4473-a4a4-27b1d069c6ff Error: Task timed out after 3.00 seconds"}
 レスポンスヘッダー
 {
   "Content-Type": "application/json",
-  "X-Amzn-Trace-Id": "Root=1-697b2436-4978f39dade62b418212c4a7;Parent=09db62f75f2777ea;Sampled=0;Lineage=1:5d6e4dc1:0"
+  "X-Amzn-Trace-Id": "Root=1-697c3968-719cb084aa2e3e1e291cf900;Parent=03184ecc733ac213;Sampled=0;Lineage=1:5d6e4dc1:0"
 }
 ログ
-Execution log for request 26f9c1da-2b52-4e98-b83b-043f74a22d31
-Thu Jan 29 09:11:18 UTC 2026 : Starting execution for request: 26f9c1da-2b52-4e98-b83b-043f74a22d31
-Thu Jan 29 09:11:18 UTC 2026 : HTTP Method: POST, Resource Path: /item
-Thu Jan 29 09:11:18 UTC 2026 : Method request path: {}
-Thu Jan 29 09:11:18 UTC 2026 : Method request query string: {}
-Thu Jan 29 09:11:18 UTC 2026 : Method request headers: {Content-Type= application/json}
-Thu Jan 29 09:11:18 UTC 2026 : Method request body before transformations: {
+Execution log for request dafdd1de-408c-4990-bd8e-a34e59374e3c
+Fri Jan 30 04:54:00 UTC 2026 : Starting execution for request: dafdd1de-408c-4990-bd8e-a34e59374e3c
+Fri Jan 30 04:54:00 UTC 2026 : HTTP Method: POST, Resource Path: /item
+Fri Jan 30 04:54:00 UTC 2026 : Method request path: {}
+Fri Jan 30 04:54:00 UTC 2026 : Method request query string: {}
+Fri Jan 30 04:54:00 UTC 2026 : Method request headers: {Content-Type= application/json}
+Fri Jan 30 04:54:00 UTC 2026 : Method request body before transformations: {
     "id": 111
 }
-Thu Jan 29 09:11:18 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_restapi/invocations
-Thu Jan 29 09:11:18 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260129T091118Z, x-amzn-apigateway-api-id=nzyr0v2n0b, Accept=application/json, User-Agent=AmazonAPIGateway_nzyr0v2n0b, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=0f58988917e6196fb11616df55ee1a0ff7a011d23afa8891d0cff693bd24f0b9, X-Amzn-Trace-Id=Root=1-697b2436-4978f39dade62b418212c4a7, x-amzn-lambda-integration-tag=26f9c1da-2b52-4e98-b83b-043f74a22d31, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************137a27, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:nzyr0v2n0b/test-invoke-stage/POST/item, X-Amz-Security-Token=IQoJb3JpZ2luX2VjELn//////////wEaDmFwLW5vcnRoZWFzdC0zIkYwRAIgCjjvPgugxQ94yo+GXoY4ZT44SiYyV3XVyMZPMUmH/lcCIFZUtKc69G/PpS/wxnBSQ [TRUNCATED]
-Thu Jan 29 09:11:18 UTC 2026 : Endpoint request body after transformations: {
+Fri Jan 30 04:54:00 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_restapi/invocations
+Fri Jan 30 04:54:00 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260130T045400Z, x-amzn-apigateway-api-id=nzyr0v2n0b, Accept=application/json, User-Agent=AmazonAPIGateway_nzyr0v2n0b, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=0f58988917e6196fb11616df55ee1a0ff7a011d23afa8891d0cff693bd24f0b9, X-Amzn-Trace-Id=Root=1-697c3968-719cb084aa2e3e1e291cf900, x-amzn-lambda-integration-tag=dafdd1de-408c-4990-bd8e-a34e59374e3c, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************b990b2, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:nzyr0v2n0b/test-invoke-stage/POST/item, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMz//////////wEaDmFwLW5vcnRoZWFzdC0zIkgwRgIhANf2zsLcilOdbrWKO7QlPI6NR1BOmXIcVVlD63So4qrAAiEAvvpz67dEd/gyTyT77 [TRUNCATED]
+Fri Jan 30 04:54:00 UTC 2026 : Endpoint request body after transformations: {
     "id": 111
 }
-Thu Jan 29 09:11:18 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_restapi/invocations
-Thu Jan 29 09:11:21 UTC 2026 : Received response. Status: 200, Integration latency: 3110 ms
-Thu Jan 29 09:11:21 UTC 2026 : Endpoint response headers: {Date=Thu, 29 Jan 2026 09:11:21 GMT, Content-Type=application/json, Content-Length=233, Connection=keep-alive, x-amzn-RequestId=bb6b55b0-e3bd-4ccc-bd55-15a88fac3557, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-697b2436-4978f39dade62b418212c4a7;Parent=09db62f75f2777ea;Sampled=0;Lineage=1:5d6e4dc1:0}
-Thu Jan 29 09:11:21 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "'body'", "errorType": "KeyError", "requestId": "bb6b55b0-e3bd-4ccc-bd55-15a88fac3557", "stackTrace": ["  File \"/var/task/lambda_function.py\", line 17, in lambda_handler\n    body = json.loads(event[\"body\"])\n"]}
-Thu Jan 29 09:11:21 UTC 2026 : Method response body after transformations: {"errorMessage": "'body'", "errorType": "KeyError", "requestId": "bb6b55b0-e3bd-4ccc-bd55-15a88fac3557", "stackTrace": ["  File \"/var/task/lambda_function.py\", line 17, in lambda_handler\n    body = json.loads(event[\"body\"])\n"]}
-Thu Jan 29 09:11:21 UTC 2026 : Method response headers: {X-Amzn-Trace-Id=Root=1-697b2436-4978f39dade62b418212c4a7;Parent=09db62f75f2777ea;Sampled=0;Lineage=1:5d6e4dc1:0, Content-Type=application/json}
-Thu Jan 29 09:11:21 UTC 2026 : Successfully completed execution
-Thu Jan 29 09:11:21 UTC 2026 : Method completed with status: 200
+Fri Jan 30 04:54:00 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_restapi/invocations
+Fri Jan 30 04:54:04 UTC 2026 : Received response. Status: 200, Integration latency: 4222 ms
+Fri Jan 30 04:54:04 UTC 2026 : Endpoint response headers: {Date=Fri, 30 Jan 2026 04:54:04 GMT, Content-Type=application/json, Content-Length=138, Connection=keep-alive, x-amzn-RequestId=de1b1369-4431-4473-a4a4-27b1d069c6ff, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-697c3968-719cb084aa2e3e1e291cf900;Parent=03184ecc733ac213;Sampled=0;Lineage=1:5d6e4dc1:0}
+Fri Jan 30 04:54:04 UTC 2026 : Endpoint response body before transformations: {"errorType":"Sandbox.Timedout","errorMessage":"RequestId: de1b1369-4431-4473-a4a4-27b1d069c6ff Error: Task timed out after 3.00 seconds"}
+Fri Jan 30 04:54:04 UTC 2026 : Method response body after transformations: {"errorType":"Sandbox.Timedout","errorMessage":"RequestId: de1b1369-4431-4473-a4a4-27b1d069c6ff Error: Task timed out after 3.00 seconds"}
+Fri Jan 30 04:54:04 UTC 2026 : Method response headers: {X-Amzn-Trace-Id=Root=1-697c3968-719cb084aa2e3e1e291cf900;Parent=03184ecc733ac213;Sampled=0;Lineage=1:5d6e4dc1:0, Content-Type=application/json}
+Fri Jan 30 04:54:04 UTC 2026 : Successfully completed execution
+Fri Jan 30 04:54:04 UTC 2026 : Method completed with status: 200
