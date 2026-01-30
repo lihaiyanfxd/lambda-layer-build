@@ -3,11 +3,11 @@ Test Event Name: test1
 
 Response:
 {
-  "errorMessage": "'ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com'",
+  "errorMessage": "'host'",
   "errorType": "KeyError",
-  "requestId": "55599985-7a1b-49e9-b855-f99fff55282c",
+  "requestId": "3b9abd85-a252-4d10-85dc-f0d4681d4e82",
   "stackTrace": [
-    "  File \"/var/task/lambda_function.py\", line 14, in lambda_handler\n    host = os.environ[\"ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com\"],\n",
+    "  File \"/var/task/lambda_function.py\", line 14, in lambda_handler\n    host = os.environ[\"host\"],\n",
     "  File \"<frozen os>\", line 709, in __getitem__\n"
   ]
 }
@@ -15,14 +15,14 @@ Response:
 The area below shows the last 4 KB of the execution log.
 
 Function Logs:
-START RequestId: 55599985-7a1b-49e9-b855-f99fff55282c Version: $LATEST
+START RequestId: 3b9abd85-a252-4d10-85dc-f0d4681d4e82 Version: $LATEST
 connecting...
-[ERROR] KeyError: 'ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com'
+[ERROR] KeyError: 'host'
 Traceback (most recent call last):
   File "/var/task/lambda_function.py", line 14, in lambda_handler
-    host = os.environ["ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com"],
+    host = os.environ["host"],
   File "<frozen os>", line 709, in __getitem__
-END RequestId: 55599985-7a1b-49e9-b855-f99fff55282c
-REPORT RequestId: 55599985-7a1b-49e9-b855-f99fff55282c	Duration: 13.96 ms	Billed Duration: 1167 ms	Memory Size: 128 MB	Max Memory Used: 90 MB	Init Duration: 1152.74 ms
+END RequestId: 3b9abd85-a252-4d10-85dc-f0d4681d4e82
+REPORT RequestId: 3b9abd85-a252-4d10-85dc-f0d4681d4e82	Duration: 15.65 ms	Billed Duration: 16 ms	Memory Size: 128 MB	Max Memory Used: 90 MB
 
-Request ID: 55599985-7a1b-49e9-b855-f99fff55282c
+Request ID: 3b9abd85-a252-4d10-85dc-f0d4681d4e82
