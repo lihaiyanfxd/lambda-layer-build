@@ -1,30 +1,28 @@
-レスポンス本文
-{"errorType":"Sandbox.Timedout","errorMessage":"RequestId: de1b1369-4431-4473-a4a4-27b1d069c6ff Error: Task timed out after 3.00 seconds"}
-レスポンスヘッダー
+Status: Failed
+Test Event Name: test1
+
+Response:
 {
-  "Content-Type": "application/json",
-  "X-Amzn-Trace-Id": "Root=1-697c3968-719cb084aa2e3e1e291cf900;Parent=03184ecc733ac213;Sampled=0;Lineage=1:5d6e4dc1:0"
+  "errorMessage": "'ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com'",
+  "errorType": "KeyError",
+  "requestId": "55599985-7a1b-49e9-b855-f99fff55282c",
+  "stackTrace": [
+    "  File \"/var/task/lambda_function.py\", line 14, in lambda_handler\n    host = os.environ[\"ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com\"],\n",
+    "  File \"<frozen os>\", line 709, in __getitem__\n"
+  ]
 }
-ログ
-Execution log for request dafdd1de-408c-4990-bd8e-a34e59374e3c
-Fri Jan 30 04:54:00 UTC 2026 : Starting execution for request: dafdd1de-408c-4990-bd8e-a34e59374e3c
-Fri Jan 30 04:54:00 UTC 2026 : HTTP Method: POST, Resource Path: /item
-Fri Jan 30 04:54:00 UTC 2026 : Method request path: {}
-Fri Jan 30 04:54:00 UTC 2026 : Method request query string: {}
-Fri Jan 30 04:54:00 UTC 2026 : Method request headers: {Content-Type= application/json}
-Fri Jan 30 04:54:00 UTC 2026 : Method request body before transformations: {
-    "id": 111
-}
-Fri Jan 30 04:54:00 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_restapi/invocations
-Fri Jan 30 04:54:00 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260130T045400Z, x-amzn-apigateway-api-id=nzyr0v2n0b, Accept=application/json, User-Agent=AmazonAPIGateway_nzyr0v2n0b, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=0f58988917e6196fb11616df55ee1a0ff7a011d23afa8891d0cff693bd24f0b9, X-Amzn-Trace-Id=Root=1-697c3968-719cb084aa2e3e1e291cf900, x-amzn-lambda-integration-tag=dafdd1de-408c-4990-bd8e-a34e59374e3c, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************b990b2, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:nzyr0v2n0b/test-invoke-stage/POST/item, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMz//////////wEaDmFwLW5vcnRoZWFzdC0zIkgwRgIhANf2zsLcilOdbrWKO7QlPI6NR1BOmXIcVVlD63So4qrAAiEAvvpz67dEd/gyTyT77 [TRUNCATED]
-Fri Jan 30 04:54:00 UTC 2026 : Endpoint request body after transformations: {
-    "id": 111
-}
-Fri Jan 30 04:54:00 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_restapi/invocations
-Fri Jan 30 04:54:04 UTC 2026 : Received response. Status: 200, Integration latency: 4222 ms
-Fri Jan 30 04:54:04 UTC 2026 : Endpoint response headers: {Date=Fri, 30 Jan 2026 04:54:04 GMT, Content-Type=application/json, Content-Length=138, Connection=keep-alive, x-amzn-RequestId=de1b1369-4431-4473-a4a4-27b1d069c6ff, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-697c3968-719cb084aa2e3e1e291cf900;Parent=03184ecc733ac213;Sampled=0;Lineage=1:5d6e4dc1:0}
-Fri Jan 30 04:54:04 UTC 2026 : Endpoint response body before transformations: {"errorType":"Sandbox.Timedout","errorMessage":"RequestId: de1b1369-4431-4473-a4a4-27b1d069c6ff Error: Task timed out after 3.00 seconds"}
-Fri Jan 30 04:54:04 UTC 2026 : Method response body after transformations: {"errorType":"Sandbox.Timedout","errorMessage":"RequestId: de1b1369-4431-4473-a4a4-27b1d069c6ff Error: Task timed out after 3.00 seconds"}
-Fri Jan 30 04:54:04 UTC 2026 : Method response headers: {X-Amzn-Trace-Id=Root=1-697c3968-719cb084aa2e3e1e291cf900;Parent=03184ecc733ac213;Sampled=0;Lineage=1:5d6e4dc1:0, Content-Type=application/json}
-Fri Jan 30 04:54:04 UTC 2026 : Successfully completed execution
-Fri Jan 30 04:54:04 UTC 2026 : Method completed with status: 200
+
+The area below shows the last 4 KB of the execution log.
+
+Function Logs:
+START RequestId: 55599985-7a1b-49e9-b855-f99fff55282c Version: $LATEST
+connecting...
+[ERROR] KeyError: 'ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com'
+Traceback (most recent call last):
+  File "/var/task/lambda_function.py", line 14, in lambda_handler
+    host = os.environ["ndit-rds-cluster-o-dev-postgresql.cluster-c540kkomifrf.ap-northeast-3.rds.amazonaws.com"],
+  File "<frozen os>", line 709, in __getitem__
+END RequestId: 55599985-7a1b-49e9-b855-f99fff55282c
+REPORT RequestId: 55599985-7a1b-49e9-b855-f99fff55282c	Duration: 13.96 ms	Billed Duration: 1167 ms	Memory Size: 128 MB	Max Memory Used: 90 MB	Init Duration: 1152.74 ms
+
+Request ID: 55599985-7a1b-49e9-b855-f99fff55282c
