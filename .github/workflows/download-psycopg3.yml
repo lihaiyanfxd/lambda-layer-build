@@ -1,9 +1,9 @@
 name: Build FastAPI Lambda Layer (Python 3.10)
 
 on:
-  workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build-layer:
@@ -13,7 +13,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build FastAPI Lambda Layer (Python 3.10)
+      - name: Build FastAPI Lambda Layer
         run: |
           docker run --rm \
             --entrypoint /bin/bash \
@@ -22,18 +22,18 @@ jobs:
             -c "
               set -e
 
-              echo '== create layer dir =='
+              echo '== install zip =='
+              yum install -y zip
+
+              echo '== prepare layer dir =='
               rm -rf python fastapi_layer.zip
               mkdir -p python
 
-              echo '== install deps =='
-              pip install \
-                fastapi \
-                mangum \
-                -t python
+              echo '== install dependencies =='
+              pip install fastapi mangum -t python
 
-              echo '== list installed files =='
-              ls -lah python
+              echo '== verify native module =='
+              ls -lah python/pydantic_core
 
               echo '== zip layer =='
               zip -r fastapi_layer.zip python
