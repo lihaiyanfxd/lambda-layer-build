@@ -1,7 +1,8 @@
-name: download-psycopg3-layer-py310
+name: Build FastAPI for Lambda
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [ main ]
 
 jobs:
   build:
@@ -11,28 +12,21 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-
-      - name: Create layer directory structure
+      - name: Build Lambda package
         run: |
-          rm -rf python psycopg3-layer.zip
-          mkdir -p python/lib/python3.10/site-packages
+          docker run --rm \
+            -v "$PWD":/var/task \
+            public.ecr.aws/lambda/python:3.10 \
+            pip install -r requirements.txt -t .
 
-      - name: Install psycopg3 (binary) into site-packages
+      - name: Zip artifact
         run: |
-          pip install "psycopg[binary]" \
-            -t python/lib/python3.10/site-packages
-          find python -name "*.so" || true
-
-      - name: Zip layer
-        run: |
-          zip -r psycopg3-layer.zip python
+          zip -r fastapi_lambda.zip . \
+            -x "*.git*" \
+            -x ".github/*"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: psycopg3-layer-py310
-          path: psycopg3-layer.zip
+          name: fastapi-lambda
+          path: fastapi_lambda.zip
