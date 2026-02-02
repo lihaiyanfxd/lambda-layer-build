@@ -1,46 +1,36 @@
-name: Build FastAPI Lambda Layer (Python 3.10)
+name: fastapi-python-314
 
 on:
-  push:
-    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
-  build-layer:
+  build:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build FastAPI Lambda Layer
-        run: |
-          docker run --rm \
-            --entrypoint /bin/bash \
-            -v "$PWD":/var/task \
-            public.ecr.aws/lambda/python:3.10 \
-            -c "
-              set -e
-
-              echo '== install zip =='
-              yum install -y zip
-
-              echo '== prepare layer dir =='
-              rm -rf python fastapi_layer.zip
-              mkdir -p python
-
-              echo '== install dependencies =='
-              pip install fastapi mangum -t python
-
-              echo '== verify native module =='
-              ls -lah python/pydantic_core
-
-              echo '== zip layer =='
-              zip -r fastapi_layer.zip python
-            "
-
-      - name: Upload layer artifact
-        uses: actions/upload-artifact@v4
+      - name: Set up Python 3.14
+        uses: actions/setup-python@v5
         with:
-          name: fastapi-layer-python310
-          path: fastapi_layer.zip
+          python-version: '3.14'
+
+      - name: Upgrade pip
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Install FastAPI (latest)
+        run: |
+          pip install fastapi
+
+      - name: Verify versions
+        run: |
+          python - << 'EOF'
+          import sys
+          import fastapi
+          import pydantic
+          print("Python:", sys.version)
+          print("FastAPI:", fastapi.__version__)
+          print("Pydantic:", pydantic.__version__)
+          EOF
