@@ -1,26 +1,26 @@
 レスポンス本文
-{"errorMessage": "The adapter was unable to infer a handler to use for the event. This is likely related to how the Lambda function was invoked. (Are you testing locally? Make sure the request payload is valid for a supported handler.)", "errorType": "RuntimeError", "requestId": "a189df65-6f2f-4426-8906-64ea59a88eba", "stackTrace": ["  File \"/opt/python/mangum/adapter.py\", line 71, in __call__\n    handler = self.infer(event, context)\n", "  File \"/opt/python/mangum/adapter.py\", line 56, in infer\n    raise RuntimeError(  # pragma: no cover\n"]}
+{"errorMessage": "Unable to import module 'lambda_function': No module named 'pydantic_core._pydantic_core'", "errorType": "Runtime.ImportModuleError", "requestId": "", "stackTrace": []}
 レスポンスヘッダー
 {
   "Content-Type": "application/json",
-  "X-Amzn-Trace-Id": "Root=1-6980233d-86427c0279a55418f5de6d1d;Parent=462e0684edf8f818;Sampled=0;Lineage=1:73426d09:0"
+  "X-Amzn-Trace-Id": "Root=1-6980551a-b436611c942729b81ea3d1bc;Parent=251694b0fd5d8c75;Sampled=0;Lineage=1:482bb86b:0"
 }
 ログ
-Execution log for request c031eb49-4a43-40a3-8d8c-49871ccb2506
-Mon Feb 02 04:08:29 UTC 2026 : Starting execution for request: c031eb49-4a43-40a3-8d8c-49871ccb2506
-Mon Feb 02 04:08:29 UTC 2026 : HTTP Method: GET, Resource Path: /test
-Mon Feb 02 04:08:29 UTC 2026 : Method request path: {}
-Mon Feb 02 04:08:29 UTC 2026 : Method request query string: {}
-Mon Feb 02 04:08:29 UTC 2026 : Method request headers: {}
-Mon Feb 02 04:08:29 UTC 2026 : Method request body before transformations: 
-Mon Feb 02 04:08:29 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_fastapi/invocations
-Mon Feb 02 04:08:29 UTC 2026 : Endpoint request headers: {x-amzn-lambda-integration-tag=c031eb49-4a43-40a3-8d8c-49871ccb2506, Authorization=****************************************************************************************************************************************************************************************************************************************************************************************************************2d06a9, X-Amz-Date=20260202T040829Z, x-amzn-apigateway-api-id=qvsjnhcli1, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:qvsjnhcli1/test-invoke-stage/GET/test, Accept=application/json, User-Agent=AmazonAPIGateway_qvsjnhcli1, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEBMaDmFwLW5vcnRoZWFzdC0zIkcwRQIhAK9q//rSN0fxNhWiiMvyxAEuwGjL/8Kzf3MTyji9X5pHAiA0F4yuLaiYjmw6slmkN8PIuVj+IEpFLCZ9G+ThZY7vNSrKBQjc//////////8BEAMaDDM2MDY3MTY0NTg4OCIMGq6dah3f5Qvlu6VcKp4FudZS5oKq2o5UA3c5dFYoA0pImptA08w8dWYRtmGbeQEODRDY543JF0O8qe1WHzEytXX9YxZ6luBR2AYiqx8uH5u/PTdVDyJS8AnIUFApex/OFvcZq+UDQBSAFxVyjp4SJcjIGZOVXImI7w6kfVY [TRUNCATED]
-Mon Feb 02 04:08:29 UTC 2026 : Endpoint request body after transformations: 
-Mon Feb 02 04:08:29 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_fastapi/invocations
-Mon Feb 02 04:08:29 UTC 2026 : Received response. Status: 200, Integration latency: 39 ms
-Mon Feb 02 04:08:29 UTC 2026 : Endpoint response headers: {Date=Mon, 02 Feb 2026 04:08:29 GMT, Content-Type=application/json, Content-Length=555, Connection=keep-alive, x-amzn-RequestId=a189df65-6f2f-4426-8906-64ea59a88eba, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-6980233d-86427c0279a55418f5de6d1d;Parent=462e0684edf8f818;Sampled=0;Lineage=1:73426d09:0}
-Mon Feb 02 04:08:29 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "The adapter was unable to infer a handler to use for the event. This is likely related to how the Lambda function was invoked. (Are you testing locally? Make sure the request payload is valid for a supported handler.)", "errorType": "RuntimeError", "requestId": "a189df65-6f2f-4426-8906-64ea59a88eba", "stackTrace": ["  File \"/opt/python/mangum/adapter.py\", line 71, in __call__\n    handler = self.infer(event, context)\n", "  File \"/opt/python/mangum/adapter.py\", line 56, in infer\n    raise RuntimeError(  # pragma: no cover\n"]}
-Mon Feb 02 04:08:29 UTC 2026 : Method response body after transformations: {"errorMessage": "The adapter was unable to infer a handler to use for the event. This is likely related to how the Lambda function was invoked. (Are you testing locally? Make sure the request payload is valid for a supported handler.)", "errorType": "RuntimeError", "requestId": "a189df65-6f2f-4426-8906-64ea59a88eba", "stackTrace": ["  File \"/opt/python/mangum/adapter.py\", line 71, in __call__\n    handler = self.infer(event, context)\n", "  File \"/opt/python/mangum/adapter.py\", line 56, in infer\n    raise RuntimeError(  # pragma: no cover\n"]}
-Mon Feb 02 04:08:29 UTC 2026 : Method response headers: {X-Amzn-Trace-Id=Root=1-6980233d-86427c0279a55418f5de6d1d;Parent=462e0684edf8f818;Sampled=0;Lineage=1:73426d09:0, Content-Type=application/json}
-Mon Feb 02 04:08:29 UTC 2026 : Successfully completed execution
-Mon Feb 02 04:08:29 UTC 2026 : Method completed with status: 200
+Execution log for request 49a58bad-c345-448f-8333-dc52bafab3f4
+Mon Feb 02 07:41:14 UTC 2026 : Starting execution for request: 49a58bad-c345-448f-8333-dc52bafab3f4
+Mon Feb 02 07:41:14 UTC 2026 : HTTP Method: GET, Resource Path: /
+Mon Feb 02 07:41:14 UTC 2026 : Method request path: {}
+Mon Feb 02 07:41:14 UTC 2026 : Method request query string: {}
+Mon Feb 02 07:41:14 UTC 2026 : Method request headers: {}
+Mon Feb 02 07:41:14 UTC 2026 : Method request body before transformations: 
+Mon Feb 02 07:41:14 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_fastapi1/invocations
+Mon Feb 02 07:41:14 UTC 2026 : Endpoint request headers: {x-amzn-lambda-integration-tag=49a58bad-c345-448f-8333-dc52bafab3f4, Authorization=****************************************************************************************************************************************************************************************************************************************************************************************************************f443fa, X-Amz-Date=20260202T074114Z, x-amzn-apigateway-api-id=zukeskzob3, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:zukeskzob3/test-invoke-stage/GET/, Accept=application/json, User-Agent=AmazonAPIGateway_zukeskzob3, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEBcaDmFwLW5vcnRoZWFzdC0zIkgwRgIhAJzsOTg9b6S8ei6cW/AvN59Jgl11qTTK4xviqjRAYQFrAiEAw2Esfacva57cCT74546OyQjz1prDhUdI9S37nTCS9v4qywUI4P//////////ARADGgwzNjA2NzE2NDU4ODgiDLew+Dd01qTzAgxrvSqfBTgE9bXc8WL9KuMoMRUqNksy2Y40Ly7JBIeZ+d/Jt+2A5SIhDjKgdDnbvYzfXYMhJZxn/uTgKjQfYlW4Fii6LnWe7c0oRHE3SBYBA3luTUfL1nRb+OU9deiYjKqQJsAQFlRNnaFafBPAVjtM+fJ74EF [TRUNCATED]
+Mon Feb 02 07:41:14 UTC 2026 : Endpoint request body after transformations: 
+Mon Feb 02 07:41:14 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_fastapi1/invocations
+Mon Feb 02 07:41:14 UTC 2026 : Received response. Status: 200, Integration latency: 252 ms
+Mon Feb 02 07:41:14 UTC 2026 : Endpoint response headers: {Date=Mon, 02 Feb 2026 07:41:14 GMT, Content-Type=application/json, Content-Length=186, Connection=keep-alive, x-amzn-RequestId=5cf0b746-ab8f-43bb-9fc5-feca5600a99a, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-6980551a-b436611c942729b81ea3d1bc;Parent=251694b0fd5d8c75;Sampled=0;Lineage=1:482bb86b:0}
+Mon Feb 02 07:41:14 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "Unable to import module 'lambda_function': No module named 'pydantic_core._pydantic_core'", "errorType": "Runtime.ImportModuleError", "requestId": "", "stackTrace": []}
+Mon Feb 02 07:41:14 UTC 2026 : Method response body after transformations: {"errorMessage": "Unable to import module 'lambda_function': No module named 'pydantic_core._pydantic_core'", "errorType": "Runtime.ImportModuleError", "requestId": "", "stackTrace": []}
+Mon Feb 02 07:41:14 UTC 2026 : Method response headers: {X-Amzn-Trace-Id=Root=1-6980551a-b436611c942729b81ea3d1bc;Parent=251694b0fd5d8c75;Sampled=0;Lineage=1:482bb86b:0, Content-Type=application/json}
+Mon Feb 02 07:41:14 UTC 2026 : Successfully completed execution
+Mon Feb 02 07:41:14 UTC 2026 : Method completed with status: 200
