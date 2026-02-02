@@ -1,31 +1,11 @@
-name: Build FastAPI Lambda Layer (Python 3.10)
-
-on:
-  workflow_dispatch:
-  push:
-    branches: [ "main" ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Build layer inside AWS Lambda Python 3.10 image
-        run: |
-          docker run --rm \
-            -v "$PWD":/var/task \
-            public.ecr.aws/lambda/python:3.10 \
-            /bin/bash -c "
-              mkdir -p python &&
-              pip install fastapi mangum -t python &&
-              zip -r fastapi_layer.zip python
-            "
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: fastapi-layer
-          path: fastapi_layer.zip
+- name: Build layer inside AWS Lambda Python 3.10 image
+  run: |
+    docker run --rm \
+      --entrypoint /bin/bash \
+      -v "$PWD":/var/task \
+      public.ecr.aws/lambda/python:3.10 \
+      -c "
+        mkdir -p python &&
+        pip install fastapi mangum -t python &&
+        zip -r fastapi_layer.zip python
+      "
