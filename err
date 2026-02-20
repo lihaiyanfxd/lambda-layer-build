@@ -1,27 +1,21 @@
 ```mermaid
-flowchart LR
+flowchart TB
 
     client[💻 Client]
 
-    %% Lambda 横向排列
     subgraph Lambda
-        direction LR
+        direction TB
+
+        handler --> controller
+        controller --> service
+        handler --> common
 
         handler[handler]
         controller[Controller]
         service[Service]
-
-        handler --> controller
-        controller --> service
+        common[共通例外ハンドリング処理]
     end
 
-    %% 垂直排列（单独控制）
-    common[共通例外ハンドリング処理]
-
-    %% 水平
     client --> handler
     handler --> client
-
-    %% 垂直
-    handler --> common
 ```
