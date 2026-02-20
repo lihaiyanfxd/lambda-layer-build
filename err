@@ -14,14 +14,12 @@ flowchart LR
         controller --> service
 
         common[共通例外ハンドリング処理]
-
-        %% 竖直箭头
         handler --> common
     end
 
     client -- Request --> handler
     handler -- Response --> client
 
-    %% 把第4条线加粗（handler --> common）
-    linkStyle 2 stroke-width:6px;
+    %% 把 Client -> handler 加粗（水平）
+    linkStyle 3 stroke-width:6px;
 ```
