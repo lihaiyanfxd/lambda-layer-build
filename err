@@ -17,9 +17,10 @@ flowchart LR
         handler --> common
     end
 
+    exception[[System Exception]]
+
     client -- Request --> handler
     handler -- Response --> client
 
-    exception[[System Exception]]
-    exception --> service
+    service --> exception
 ```
