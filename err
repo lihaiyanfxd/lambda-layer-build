@@ -3,6 +3,7 @@ flowchart LR
 
     client[💻 Client]
 
+    %% Lambda 横向排列
     subgraph Lambda
         direction LR
 
@@ -12,14 +13,15 @@ flowchart LR
 
         handler --> controller
         controller --> service
-
-        common[共通例外ハンドリング処理]
-        handler --> common
     end
 
-    client -- Request --> handler
-    handler -- Response --> client
+    %% 垂直排列（单独控制）
+    common[共通例外ハンドリング処理]
 
-    %% 把 Client -> handler 加粗（水平）
-    linkStyle 3 stroke-width:6px;
+    %% 水平
+    client --> handler
+    handler --> client
+
+    %% 垂直
+    handler --> common
 ```
