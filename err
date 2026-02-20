@@ -1,6 +1,7 @@
 ```mermaid
 flowchart LR
 
+    %% ===== Client =====
     client[💻 Client]
 
     %% ===== Lambda 主流程 =====
@@ -18,16 +19,16 @@ flowchart LR
         handler --> common
     end
 
-    %% ===== 右侧锚点（不可见）=====
-    anchor(( ))
-    style anchor fill:transparent,stroke:transparent
-
-    %% 强制水平占位
-    service --- anchor
-
-    %% ===== Exception =====
+    %% ===== 先声明 exception（关键）=====
     exception[[System Exception]]
-    exception --> service
 
-    %% ===== Client =====
-    client --
+    %% ===== 主流程 =====
+    client --> handler
+    handler --> client
+
+    %% ===== 关键：使用 --- 先固定水平层级 =====
+    service --- exception
+
+    %% ===== 再定义真正方向 =====
+    exception --> service
+```
