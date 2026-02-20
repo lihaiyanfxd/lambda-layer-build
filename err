@@ -1,21 +1,31 @@
 ```mermaid
-flowchart TB
+flowchart LR
 
+    %% ===== Client 层 =====
     client[💻 Client]
 
+    %% ===== Lambda 主流程（横向锁定）=====
     subgraph Lambda
-        direction TB
-
-        handler --> controller
-        controller --> service
-        handler --> common
+        direction LR
 
         handler[handler]
         controller[Controller]
         service[Service]
+
+        handler --> controller
+        controller --> service
+    end
+
+    %% ===== 例外处理（垂直锁定）=====
+    subgraph Exception
+        direction TB
         common[共通例外ハンドリング処理]
     end
 
+    %% ===== 主流程直线 =====
     client --> handler
     handler --> client
+
+    %% ===== 例外直线 =====
+    handler --> common
 ```
