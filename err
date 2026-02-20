@@ -3,6 +3,7 @@ flowchart LR
 
     client[💻 Client]
 
+    %% ===== Lambda 主流程 =====
     subgraph Lambda
         direction LR
 
@@ -17,13 +18,16 @@ flowchart LR
         handler --> common
     end
 
-    subgraph Right
-        direction LR
-        exception[[System Exception]]
-    end
+    %% ===== 右侧锚点（不可见）=====
+    anchor(( ))
+    style anchor fill:transparent,stroke:transparent
 
-    client -- Request --> handler
-    handler -- Response --> client
+    %% 强制水平占位
+    service --- anchor
 
+    %% ===== Exception =====
+    exception[[System Exception]]
     exception --> service
-```
+
+    %% ===== Client =====
+    client --
