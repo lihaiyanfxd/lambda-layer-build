@@ -1,0 +1,8 @@
+fastapi
+sqlmodel
+sqlalchemy
+psycopg[binary]
+pydantic-settings
+python-multipart
+passlib[bcrypt]
+mangum
