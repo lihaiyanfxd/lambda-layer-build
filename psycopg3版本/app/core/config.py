@@ -1,15 +1,15 @@
-from pydantic_settings import BaseSettings
+import os
 
 
-class Settings(BaseSettings):
-    POSTGRES_SERVER: str
-    POSTGRES_PORT: int = 5432
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
+class Settings:
+    POSTGRES_SERVER = os.environ["POSTGRES_SERVER"]
+    POSTGRES_PORT = int(os.environ.get("POSTGRES_PORT", 5432))
+    POSTGRES_USER = os.environ["POSTGRES_USER"]
+    POSTGRES_PASSWORD = os.environ["POSTGRES_PASSWORD"]
+    POSTGRES_DB = os.environ["POSTGRES_DB"]
 
     @property
-    def DATABASE_URL(self) -> str:
+    def DATABASE_URL(self):
         return (
             f"postgresql://"
             f"{self.POSTGRES_USER}:"
