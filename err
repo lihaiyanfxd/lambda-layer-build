@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from starlette.middleware.cors import CORSMiddleware
+from mangum import Mangum
 
 from app.api.main import api_router
 from app.core.config import settings
@@ -28,5 +29,9 @@ if settings.all_cors_origins:
     )
 
 
-# 注册所有 API 路由
+# 注册所有路由
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+
+# ⭐ Lambda 入口
+handler = Mangum(app)
