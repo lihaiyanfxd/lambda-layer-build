@@ -1,4 +1,10 @@
-[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': expected an indented block after 'except' statement on line 26 (lambda_function.py, line 27)
-Traceback (most recent call last):
-  File "/var/task/lambda_function.py" Line 27
-        print("EXCEPTION TYPE:", type(e))
+from app.exceptions import BusinessException
+
+def get_user(user_id: int):
+        if item_id ==  0:
+            raise BusinessException(
+                code="USER_NOT_FOUND",
+                message = "User does not exist",
+                status_code = 404
+        )
+        return {"user_id": user_id}
