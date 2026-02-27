@@ -1,13 +1,2 @@
-{
-  "detail": [
-    {
-      "type": "int_parsing",
-      "loc": [
-        "path",
-        "user_id"
-      ],
-      "msg": "Input should be a valid integer, unable to parse string as an integer",
-      "input": "aaa"
-    }
-  ]
-}
+~ $ curl -X POST https://nzyr0v2n0b.execute-api.ap-northeast-3.amazonaws.com/dev/item -H "Content-Type:application/json" -d '{"id":"aaa"}'
+{"errorMessage": "name 'response' is not defined", "errorType": "NameError", "requestId": "e1186f47-8fd1-4784-92a2-78d51ace6231", "stackTrace": ["  File \"/var/task/lambda_function.py\", line 19, in lambda_handler\n    return response(400,{\"error\":\"id must be integer\"})\n"]}~ $ 
