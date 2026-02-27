@@ -1,29 +1,24 @@
-from app.responses import success_response, error_response
-from app.users import get_user
+from app.router import route
+from app.responses import error_response
+from app.exceptions import BusinessException
 
-def route(event):
+def lambda_handler(event, context):
 
-    method = event["requestContext"]["http"]["method"]
-    path = event["rawPath"]
+    try:
+        return route(event)
 
-    # GET /users/{id}
-    if method == "GET" and path.startswith("/users/"):
+    # 业务异常
+    except BusinessException as e:
+        return error_response(
+            code=e.code,
+            message=e.message,
+            status_code=e.status_code
+        )
 
-        try:
-            user_id = int(path.split("/")[-1])
-        except ValueError:
-            return error_response(
-                code="INVALID_USER_ID",
-                message="user_id must be integer",
-                status_code=400
-            )
-
-        data = get_user(user_id)
-
-        return success_response(data)
-
-    return error_response(
-        code="NOT_FOUND",
-        message="Route not found",
-        status_code=404
-    )
+    # 未知异常
+    except Exception:
+        return error_response(
+            code="INTERNAL_SERVER_ERROR",
+            message="Internal server error",
+            status_code=500
+        )
