@@ -1,4 +1,3 @@
-[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': unindent does not match any outer indentation level (users.py, line 10)
-Traceback (most recent call last):
-  File "/var/task/users.py" Line 10
-        return {"user_id": user_id}
+~ $ curl -X GET https://nzyr0v2n0b.execute-api.ap-northeast-3.amazonaws.com/dev/item -H "Content-Type:application/json" -d '{"id":111}'
+{"message":"Missing Authentication Token"}~ $ 
+~ $ 
