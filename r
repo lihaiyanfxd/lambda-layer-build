@@ -1,22 +1,30 @@
-from fastapi import FastAPI
-from mangum import Mangum
-
-from app.api.users import router as users_router
-from app.core.exceptions import register_exception_handlers
+from fastapi import APIRouter, HTTPException
+from app.crud import get_user_by_id
+from app.models import User
+from app.core.exceptions import BusinessException
 import logging
 
-#logging.getLogger().setLevel(logging.INFO)
-#logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(levelname)s [%(name)s] %(message)s"
-)
+router = APIRouter()
 
-app = FastAPI()
 
-app.include_router(users_router)
+@router.get("/users/{user_id}", response_model=User)
+def read_user(user_id: int):
+    logger.info("read_user() start")
+    if user_id == 0:
+        logger.error(f"user_idは{user_id}が入力しました")
+        raise BusinessException(
+            code="USER_NOT_FOUND",
+            message = "User does not exist",
+            status_code = 404
+        )
+    
+    row = get_user_by_id(user_id)
 
-register_exception_handlers(app)
+    if row is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    logger.info("read_user() end")
+    #return User(id=row[0], name=row[1])
+    return User(id=row["id"],name=row["name"])
 
-lambda_handler = Mangum(app, api_gateway_base_path="/prod")
