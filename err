@@ -1,65 +1,50 @@
-[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': invalid syntax (responses.py, line 14)
-Traceback (most recent call last):
-  File "/var/task/app/responses.py" Line 14
-                "message": message
-responses.py
-import json
-
-def success_response(data):
-    return{
-        "statusCode": 200,
-        "body": json.dumps(data)
-    }
-
-
-def error_response(message,status):
-    return{
-        "statusCode": status,
-        "body": json.dumps(
-            "message": message
-        )
-    }
-lambda_function.py
-import json
-from app.router import route
-from app.responses import error_response
+route() end没有出力
+router.py
+from app.responses import success_response, error_response
+from app.users import get_user
 from app.exceptions import BusinessException
-from app.logger import setup_logging
+import logging
 
-def lambda_handler(event, context):
+logger = logging.getLogger(__name__)
 
-    try:
-        # ログ初期化
-        setup_logging()
-        return route(event)
+def route(event):
+    logger.info("route() start")
 
-    # 業務エラー
-    except BusinessException as e:
-        return error_response(e.message,e.status_code)
+    method = event["httpMethod"]
+    path = event["path"]
 
-    # その他
-    except Exception:
-        return error_response("internal server error",500)
-exceptions.py
-# 業務エラー
-class BusinessException(Exception):
-    def __init__(self,message,status_code=400):
-        self.message = message
-        self.status_code = status_code
-# データが存在しない
-class NotFoundException(Exception):
-    def __init__(self,"resource not found"):
-        self.message = message
-        self.status_code = 404
-# システムエラー
-class SystemException(Exception):
-    def __init__(self,"internal server error"):
-        self.message = message
-        self.status_code = 500
+    logger.info(f"method={method}")
+    logger.info(f"method={path}")
+
+    if method == "GET" and path == "/kk":
+
+        query = event.get("queryStringParameters") or {}
+
+        data = get_user(user_id)
+        logger.info("route() end")
+        return data
+
+    return {
+        "statusCode": 404,
+        "body": "not found"
+    }
+
+user.py
+from app.user_service import get_user_service
+
+def get_user(user_id: int):
+        user = get_uer_service(user_id)
+        return {
+                "statusCode":200,
+                "body":user
+        }
 user_service.py
 from app.exceptions import BusinessException
 
-def get_uer_service(user_id: int):
+def get_user_service(user_id: int):
     if user_id == 0:
         raise BusinessException("no 0")
-    return {"user_id": user_id,"name","test1"}
+    return {
+        "user_id": user_id,
+        "name":"test1"
+    }
