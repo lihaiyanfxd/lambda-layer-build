@@ -1,63 +1,65 @@
-[ERROR]	2026-02-27T07:31:29.198Z	ff930cde-d50c-418b-87a0-2f77014fcde8	An error occurred running the application.
+[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': invalid syntax (responses.py, line 14)
 Traceback (most recent call last):
-  File "/opt/python/mangum/protocols/http.py", line 58, in run
-    await app(self.scope, self.receive, self.send)
-  File "/opt/python/fastapi/applications.py", line 1138, in __call__
-    await super().__call__(scope, receive, send)
-  File "/opt/python/starlette/applications.py", line 113, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/opt/python/starlette/middleware/errors.py", line 186, in __call__
-    raise exc
-  File "/opt/python/starlette/middleware/errors.py", line 164, in __call__
-    await self.app(scope, receive, _send)
-  File "/opt/python/starlette/middleware/exceptions.py", line 63, in __call__
-    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
-  File "/opt/python/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/opt/python/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/opt/python/fastapi/middleware/asyncexitstack.py", line 18, in __call__
-    await self.app(scope, receive, send)
-  File "/opt/python/starlette/routing.py", line 716, in __call__
-    await self.middleware_stack(scope, receive, send)
-  File "/opt/python/starlette/routing.py", line 736, in app
-    await route.handle(scope, receive, send)
-  File "/opt/python/starlette/routing.py", line 290, in handle
-    await self.app(scope, receive, send)
-  File "/opt/python/fastapi/routing.py", line 121, in app
-    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
-  File "/opt/python/starlette/_exception_handler.py", line 53, in wrapped_app
-    raise exc
-  File "/opt/python/starlette/_exception_handler.py", line 42, in wrapped_app
-    await app(scope, receive, sender)
-  File "/opt/python/fastapi/routing.py", line 107, in app
-    response = await f(request)
-               ^^^^^^^^^^^^^^^^
-  File "/opt/python/fastapi/routing.py", line 426, in app
-    raw_response = await run_endpoint_function(
-                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    ...<3 lines>...
-    )
-    ^
-  File "/opt/python/fastapi/routing.py", line 316, in run_endpoint_function
-    return await run_in_threadpool(dependant.call, **values)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/python/starlette/concurrency.py", line 38, in run_in_threadpool
-    return await anyio.to_thread.run_sync(func)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/opt/python/anyio/to_thread.py", line 63, in run_sync
-    return await get_async_backend().run_sync_in_worker_thread(
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-    )
-    ^
-  File "/opt/python/anyio/_backends/_asyncio.py", line 2502, in run_sync_in_worker_thread
-    return await future
-           ^^^^^^^^^^^^
-  File "/opt/python/anyio/_backends/_asyncio.py", line 986, in run
-    result = context.run(func, *args)
-  File "/var/task/app/api/users.py", line 11, in read_user
-    raise BusinessException(
-          ^^^^^^^^^^^^^^^^^
-NameError: name 'BusinessException' is not defined. Did you mean: 'BaseException'?
+  File "/var/task/app/responses.py" Line 14
+                "message": message
+responses.py
+import json
+
+def success_response(data):
+    return{
+        "statusCode": 200,
+        "body": json.dumps(data)
+    }
+
+
+def error_response(message,status):
+    return{
+        "statusCode": status,
+        "body": json.dumps(
+            "message": message
+        )
+    }
+lambda_function.py
+import json
+from app.router import route
+from app.responses import error_response
+from app.exceptions import BusinessException
+from app.logger import setup_logging
+
+def lambda_handler(event, context):
+
+    try:
+        # ログ初期化
+        setup_logging()
+        return route(event)
+
+    # 業務エラー
+    except BusinessException as e:
+        return error_response(e.message,e.status_code)
+
+    # その他
+    except Exception:
+        return error_response("internal server error",500)
+exceptions.py
+# 業務エラー
+class BusinessException(Exception):
+    def __init__(self,message,status_code=400):
+        self.message = message
+        self.status_code = status_code
+# データが存在しない
+class NotFoundException(Exception):
+    def __init__(self,"resource not found"):
+        self.message = message
+        self.status_code = 404
+# システムエラー
+class SystemException(Exception):
+    def __init__(self,"internal server error"):
+        self.message = message
+        self.status_code = 500
+user_service.py
+from app.exceptions import BusinessException
+
+def get_uer_service(user_id: int):
+    if user_id == 0:
+        raise BusinessException("no 0")
+    return {"user_id": user_id,"name","test1"}
