@@ -1,45 +1,5 @@
-import logging
-from datetime import datetime
-
-class CustomFormatter(logging.Formatter):
-
-    def format(self, record):
-
-        now = datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")[:-3]
-
-        if record.levelno == logging.DEBUG:
-            level = "<DEBUG>"
-        elif record.levelno == logging.INFO:
-            level = "<INFO>"
-        elif record.levelno == logging.WARNING:
-            level = "<WARN>"
-        elif record.levelno == logging.ERROR:
-            level = "<ERROR>"
-        else:
-            level = "<INFO>"
-
-        func = record.funcName
-        message = record.getMessage()
-
-        return (
-            f"日時：{now}\n"
-            f"エラ区分：{level}\n"
-            f"処理名：{func}\n"
-            f"出力内容：ER005\n"
-            f"メッセージ：{message}"
-        )
-
-import logging
-from app.core.log_config import CustomFormatter
-
-def setup_logger():
-
-    handler = logging.StreamHandler()
-    handler.setFormatter(CustomFormatter())
-
-    root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
-    root_logger.handlers = [handler]
-
-    # 关闭 Mangum 日志
-    logging.getLogger("mangum").setLevel(logging.CRITICAL)
+日時：2026/03/06 02:49:50.811
+エラ区分：<DEBUG>
+処理名：__init__
+出力内容：
+メッセージ：Using selector: EpollSelector
