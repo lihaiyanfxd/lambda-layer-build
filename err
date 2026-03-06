@@ -1,5 +1,23 @@
-[ERROR] Runtime.ImportModuleError: Unable to import module 'lambda_function': cannot import name 'logger' from 'app.core.logger' (/var/task/app/core/logger.py)
-Traceback (most recent call last):
+
+
+import psycopg
+from app.core.config import settings
+
+
+def get_user_by_id(user_id: int):
+    #return {
+    #    "id": user_id,
+    #    "name": "test"
+    #}
+    with psycopg.connect(settings.DATABASE_URL) as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                "SELECT id, name FROM my_table WHERE id = %s",
+                (user_id,),
+            )
+            return cur.fetchone()
+
+
 from app.core.exceptions import BusinessException
 from app.core.log_formatter import CustomFormatter
 from app.core.logger import logger
@@ -9,7 +27,7 @@ import json
 def get_user_service(user_id: int):
     if user_id == 0:
         output = f"エラーコード:ERRORID001,USER_ID:{user_id}"
-        logger.error(
+        logger.trace(
             "ご注意してください。",
             extra={"outputk":output}
         )
@@ -18,51 +36,8 @@ def get_user_service(user_id: int):
             message="ユーザー0はerrorです",
             status_code=400
         )
+        return get_user_by_id(user_id)
     return {
         "user_id": user_id,
         "name":"test1"
     }
-
-import logging
-from app.core.config import settings
-from app.core.log_formatter import CustomFormatter
-def setup_logging():
-
-    log_level = getattr(logging,settings.LOG_LEVEL)
-    root_logger = logging.getLogger()
-    root_logger.setLevel(log_level)
-
-    #formatter = logging.Formatter(
-    #    "%(levelname)s [%(name)s] %(message)s"
-    #
-    
-
-    for handler in root_logger.handlers:
-        handler.setFormatter(CustomFormatter())
-
-    if not root_logger.handlers:
-        handler = logging.StreamHandler()
-        handler.setFormatter(CustomFormatter())
-        root_logger.addHandler(handler)
-    # 关闭 Mangum 日志
-    logging.getLogger("mangum").setLevel(logging.CRITICAL)
-
-import logging
-from datetime import datetime
-
-class CustomFormatter(logging.Formatter):
-
-    def format(self, record):
-        now = datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")[:-3]
-
-        log = (
-            f"日時：{now}\n"
-            f"エラ区分：<{record.levelname}>\n"
-            f"処理名：{record.funcName}\n"
-            f"出力内容：{getattr(record, 'outputk', '')}\n"
-            f"メッセージ：{record.getMessage()}"
-        )
-
-        return log
-
-
