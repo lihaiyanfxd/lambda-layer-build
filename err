@@ -16,3 +16,21 @@ def get_user_service(user_id: int):
         "user_id": user_id,
         "name":"test1"
     }
+
+import logging
+from datetime import datetime
+
+class CustomFormatter(logging.Formatter):
+
+    def format(self, record):
+        now = datetime.now().strftime("%Y/%m/%d %H:%M:%S.%f")[:-3]
+
+        log = (
+            f"日時：{now}\n"
+            f"エラ区分：<{record.levelname}>\n"
+            f"処理名：{record.funcName}\n"
+            f"出力内容：{getattr(record, 'output_content', '')}\n"
+            f"メッセージ：{record.getMessage()}"
+        )
+
+        return log
