@@ -1,5 +1,18 @@
-日時：2026/03/06 02:49:50.811
-エラ区分：<DEBUG>
-処理名：__init__
-出力内容：
-メッセージ：Using selector: EpollSelector
+from app.core.exceptions import BusinessException
+
+def get_user_service(user_id: int):
+    if user_id == 0:
+        output = f"エラーコード:ERRORID001,USER_ID:{user_id}"
+        logger.error(
+            "ご注意してください。",
+            extra={"output_content":output}
+        )
+        raise BusinessException(
+            code="USER_ERROR",
+            message="ユーザー0はerrorです",
+            status_code=400
+        )
+    return {
+        "user_id": user_id,
+        "name":"test1"
+    }
