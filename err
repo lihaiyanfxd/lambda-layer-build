@@ -1,2 +1,4 @@
-[ERROR] Runtime.ImportModuleError: Unable to import module 'handler': cannot import name 'Router' from 'aws_lambda_powertools.event_handler' (/var/task/aws_lambda_powertools/event_handler/__init__.py)
+[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': unterminated string literal (detected at line 5) (count_controller.py, line 5)
 Traceback (most recent call last):
+  File "/var/task/count_controller.py" Line 5
+    @router.get("/count)
