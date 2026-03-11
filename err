@@ -1,33 +1,22 @@
-/{proxy+} - ANY メソッドテストの結果
-リクエスト
-/users
-レイテンシー ms
-2332
-ステータス
-502
-レスポンス本文
-{"message": "Internal server error"}
-レスポンスヘッダー
-{
-  "x-amzn-ErrorType": "InternalServerErrorException"
+Execution log for request a2a5746f-8bfa-4898-b60b-fbf0a8d8c3f3
+Wed Mar 11 00:44:47 UTC 2026 : Starting execution for request: a2a5746f-8bfa-4898-b60b-fbf0a8d8c3f3
+Wed Mar 11 00:44:47 UTC 2026 : HTTP Method: POST, Resource Path: /user
+Wed Mar 11 00:44:47 UTC 2026 : Method request path: {proxy=user}
+Wed Mar 11 00:44:47 UTC 2026 : Method request query string: {}
+Wed Mar 11 00:44:47 UTC 2026 : Method request headers: {Content-type= application/json}
+Wed Mar 11 00:44:47 UTC 2026 : Method request body before transformations: {
+    "id":111,
+    "age":20
 }
-ログ
-Execution log for request 5a53477e-4177-400c-98e5-cbd421b9864a
-Tue Mar 10 08:46:35 UTC 2026 : Starting execution for request: 5a53477e-4177-400c-98e5-cbd421b9864a
-Tue Mar 10 08:46:35 UTC 2026 : HTTP Method: POST, Resource Path: /users
-Tue Mar 10 08:46:35 UTC 2026 : Method request path: {proxy=users}
-Tue Mar 10 08:46:35 UTC 2026 : Method request query string: {}
-Tue Mar 10 08:46:35 UTC 2026 : Method request headers: {Content-Type= application/json}
-Tue Mar 10 08:46:35 UTC 2026 : Method request body before transformations: {
-    "id": 111,
-    "age": 20
+Wed Mar 11 00:44:47 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test/invocations
+Wed Mar 11 00:44:47 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260311T004447Z, x-amzn-apigateway-api-id=5y9z6yd6q4, Accept=application/json, User-Agent=AmazonAPIGateway_5y9z6yd6q4, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=be15dfaf5602e89898b32bc87e27cd6013adf28c9b18288845ff8a1c346ec82a, X-Amzn-Trace-Id=Root=1-69b0baff-f5027a38848e61edf2aa863c, x-amzn-lambda-integration-tag=a2a5746f-8bfa-4898-b60b-fbf0a8d8c3f3, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************493cec, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:5y9z6yd6q4/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIf//////////wEaDmFwLW5vcnRoZWFzdC0zIkYwRAIgCqZ+oNx6S1cVwScxiCa/ugi7OxBMj3IrW/kiPyQkmTUCIBZnnkif1V/Jt0IS7 [TRUNCATED]
+Wed Mar 11 00:44:47 UTC 2026 : Endpoint request body after transformations: {
+    "id":111,
+    "age":20
 }
-Tue Mar 10 08:46:35 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_fastapi2/invocations
-Tue Mar 10 08:46:35 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260310T084635Z, x-amzn-apigateway-api-id=8z1j2f44of, Accept=application/json, User-Agent=AmazonAPIGateway_8z1j2f44of, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=f483062fb478bd6e5a2610f5580e087a8e84d0647be5123a37de95a979e341ab, X-Amzn-Trace-Id=Root=1-69afda6b-80c494b371ba906495531d99, x-amzn-lambda-integration-tag=5a53477e-4177-400c-98e5-cbd421b9864a, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************4e0fe0, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:8z1j2f44of/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEHcaDmFwLW5vcnRoZWFzdC0zIkgwRgIhAIAiPorL595izASWbApqx3JRhPgmrDVYfMx0SVgmUsalAiEA09tSj13ogY3cE0VF08JBBUdAY [TRUNCATED]
-Tue Mar 10 08:46:35 UTC 2026 : Endpoint request body after transformations: {"resource":"/{proxy+}","path":"/users","httpMethod":"POST","headers":{"Content-Type":" application/json"},"multiValueHeaders":{"Content-Type":[" application/json"]},"queryStringParameters":null,"multiValueQueryStringParameters":null,"pathParameters":{"proxy":"users"},"stageVariables":null,"requestContext":{"resourceId":"xa2yqg","resourcePath":"/{proxy+}","httpMethod":"POST","extendedRequestId":"Z_8Q2HYNqRcF8xQ=","requestTime":"10/Mar/2026:08:46:35 +0000","path":"/{proxy+}","accountId":"724677424020","protocol":"HTTP/1.1","stage":"test-invoke-stage","domainPrefix":"testPrefix","requestTimeEpoch":1773132395454,"requestId":"5a53477e-4177-400c-98e5-cbd421b9864a","identity":{"cognitoIdentityPoolId":null,"cognitoIdentityId":null,"apiKey":"test-invoke-api-key","principalOrgId":null,"cognitoAuthenticationType":null,"userArn":"arn:aws:iam::724677424020:user/Haiyan11.Li.bp@jp.nttdata.com","apiKeyId":"test-invoke-api-key-id","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64;  [TRUNCATED]
-Tue Mar 10 08:46:35 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_fastapi2/invocations
-Tue Mar 10 08:46:37 UTC 2026 : Received response. Status: 200, Integration latency: 2319 ms
-Tue Mar 10 08:46:37 UTC 2026 : Endpoint response headers: {Date=Tue, 10 Mar 2026 08:46:37 GMT, Content-Type=application/json, Content-Length=181, Connection=keep-alive, x-amzn-RequestId=3229f28d-cf24-4f7d-bcc9-a578cba6da91, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69afda6b-80c494b371ba906495531d99;Parent=4d642405aec7efc3;Sampled=0;Lineage=1:8f2f1379:0}
-Tue Mar 10 08:46:37 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "Unable to import module 'lambda_function': No module named 'app.models.RequestModel'", "errorType": "Runtime.ImportModuleError", "requestId": "", "stackTrace": []}
-Tue Mar 10 08:46:37 UTC 2026 : Lambda execution failed with status 200 due to customer function error: Unable to import module 'lambda_function': No module named 'app.models.RequestModel'. Lambda request id: 3229f28d-cf24-4f7d-bcc9-a578cba6da91
-Tue Mar 10 08:46:37 UTC 2026 : Method completed with status: 502
+Wed Mar 11 00:44:47 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test/invocations
+Wed Mar 11 00:44:48 UTC 2026 : Received response. Status: 200, Integration latency: 667 ms
+Wed Mar 11 00:44:48 UTC 2026 : Endpoint response headers: {Date=Wed, 11 Mar 2026 00:44:48 GMT, Content-Type=application/json, Content-Length=845, Connection=keep-alive, x-amzn-RequestId=0da562f0-2888-4c80-ad82-3b3033153944, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69b0baff-f5027a38848e61edf2aa863c;Parent=3af4ac5345523e99;Sampled=0;Lineage=1:f3f802e4:0}
+Wed Mar 11 00:44:48 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "'httpMethod'", "errorType": "KeyError", "requestId": "0da562f0-2888-4c80-ad82-3b3033153944", "stackTrace": ["  File \"/var/task/lambda_function.py\", line 17, in lambda_handler\n    return app.resolve(event, context)\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2521, in resolve\n    response = self._resolve().build(self.current_event, self._cors)\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2612, in _resolve\n    method = self.current_event.http_method.upper()\n", "  File \"/opt/python/aws_lambda_powertools/utilities/data_classes/common.py\", line 237, in http_method\n    return self[\"httpMethod\"]\n", "  File \"/opt/python/aws_lambda_powertools/utilities/data_classes/common.py\", line 98, in __getitem__\n    return self._data[key]\n"]}
+Wed Mar 11 00:44:48 UTC 2026 : Execution failed due to configuration error: Output mapping refers to an invalid method response: 200
+Wed Mar 11 00:44:48 UTC 2026 : Method completed with status: 500
