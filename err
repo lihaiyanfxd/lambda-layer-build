@@ -1,3 +1,30 @@
+レスポンス本文
+{"message": "Internal server error"}
+レスポンスヘッダー
+{
+  "x-amzn-ErrorType": "InternalServerErrorException"
+}
+ログ
+Execution log for request 5fad52cf-71bb-4321-a2bd-87ce68ed316a
+Wed Mar 11 05:57:26 UTC 2026 : Starting execution for request: 5fad52cf-71bb-4321-a2bd-87ce68ed316a
+Wed Mar 11 05:57:26 UTC 2026 : HTTP Method: POST, Resource Path: /ping3
+Wed Mar 11 05:57:26 UTC 2026 : Method request path: {proxy=ping3}
+Wed Mar 11 05:57:26 UTC 2026 : Method request query string: {}
+Wed Mar 11 05:57:26 UTC 2026 : Method request headers: {Content-type= application/json}
+Wed Mar 11 05:57:26 UTC 2026 : Method request body before transformations: {
+    "id":111,
+    "age":20
+}
+Wed Mar 11 05:57:26 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_powertool_li/invocations
+Wed Mar 11 05:57:26 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260311T055726Z, x-amzn-apigateway-api-id=8mi1cvk3le, Accept=application/json, User-Agent=AmazonAPIGateway_8mi1cvk3le, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=d20f671c98e2eaf4cd18b9fb5779e39b31079e57e2dfcabb55b6efcfa984e4a2, X-Amzn-Trace-Id=Root=1-69b10446-190b90d7852927396ef7abac, x-amzn-lambda-integration-tag=5fad52cf-71bb-4321-a2bd-87ce68ed316a, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************bbd902, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:8mi1cvk3le/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEI3//////////wEaDmFwLW5vcnRoZWFzdC0zIkgwRgIhAJVPCAufte7SakUK1SDp3fY7xaX2N/WxmuP5QfK8jXtJAiEAns8skYtBXxZ2b [TRUNCATED]
+Wed Mar 11 05:57:26 UTC 2026 : Endpoint request body after transformations: {"resource":"/{proxy+}","path":"/ping3","httpMethod":"POST","headers":{"Content-type":" application/json"},"multiValueHeaders":{"Content-type":[" application/json"]},"queryStringParameters":null,"multiValueQueryStringParameters":null,"pathParameters":{"proxy":"ping3"},"stageVariables":null,"requestContext":{"resourceId":"1luohc","resourcePath":"/{proxy+}","httpMethod":"POST","extendedRequestId":"aC2bBEpfKRcFcjA=","requestTime":"11/Mar/2026:05:57:26 +0000","path":"/{proxy+}","accountId":"724677424020","protocol":"HTTP/1.1","stage":"test-invoke-stage","domainPrefix":"testPrefix","requestTimeEpoch":1773208646183,"requestId":"5fad52cf-71bb-4321-a2bd-87ce68ed316a","identity":{"cognitoIdentityPoolId":null,"cognitoIdentityId":null,"apiKey":"test-invoke-api-key","principalOrgId":null,"cognitoAuthenticationType":null,"userArn":"arn:aws:iam::724677424020:user/Haiyan11.Li.bp@jp.nttdata.com","apiKeyId":"test-invoke-api-key-id","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64;  [TRUNCATED]
+Wed Mar 11 05:57:26 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_powertool_li/invocations
+Wed Mar 11 05:57:26 UTC 2026 : Received response. Status: 200, Integration latency: 704 ms
+Wed Mar 11 05:57:26 UTC 2026 : Endpoint response headers: {Date=Wed, 11 Mar 2026 05:57:26 GMT, Content-Type=application/json, Content-Length=1328, Connection=keep-alive, x-amzn-RequestId=4f7518a8-0010-41ad-9471-01fba524fd61, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69b10446-190b90d7852927396ef7abac;Parent=019736e0be5ed7e8;Sampled=0;Lineage=1:71910959:0}
+Wed Mar 11 05:57:26 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "ping3() missing 2 required positional arguments: 'event' and 'context'", "errorType": "TypeError", "requestId": "4f7518a8-0010-41ad-9471-01fba524fd61", "stackTrace": ["  File \"/var/task/lambda_function.py\", line 9, in lambda_handler\n    return app.resolve(event, context)\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2500, in resolve\n    response = self._resolve().build(self.current_event, self._cors)\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2606, in _resolve\n    return self._call_route(route, route_keys)  # pass fn args\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2713, in _call_route\n    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 488, in __call__\n    return self._middleware_stack(ap [TRUNCATED]
+Wed Mar 11 05:57:26 UTC 2026 : Lambda execution failed with status 200 due to customer function error: ping3() missing 2 required positional arguments: 'event' and 'context'. Lambda request id: 4f7518a8-0010-41ad-9471-01fba524fd61
+Wed Mar 11 05:57:26 UTC 2026 : Method completed with status: 502
+
 from aws_lambda_powertools.event_handler.api_gateway import Router
 from aws_lambda_powertools.utilities.validation import validator
 
@@ -25,3 +52,12 @@ def count():
         "id": "2",
         "age": "3"
     }
+from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver
+from routers.user_router import router as  user_router
+
+app = APIGatewayRestResolver()
+app.include_router(user_router)
+
+
+def lambda_handler(event, context):
+    return app.resolve(event, context)
