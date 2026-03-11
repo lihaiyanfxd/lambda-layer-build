@@ -1,8 +1,13 @@
+# lambda_function.py
 from aws_lambda_powertools.event_handler.api_gateway import Router, APIGatewayRestResolver
 from aws_lambda_powertools.utilities.validation import validator
 
+# -------------------------
+# 路由定义
+# -------------------------
 router = Router()
 
+# JSON Schema
 schema = {
     "type": "object",
     "properties": {
@@ -12,14 +17,26 @@ schema = {
     "required": ["id"]
 }
 
+# POST /ping3 路由，使用 Powertools validator
 @router.post("/ping3")
-@validator(inbound_schema=schema, envelope=None)
+@validator(inbound_schema=schema, envelope=None)  # envelope=None 表示直接验证 body
 def ping3(body: dict):
-    # body 已经被 validator 验证过
+    # body 已经经过验证，必定包含 id
     return {"id": body["id"], "age": body.get("age")}
 
+# GET /user 路由
+@router.get("/user")
+def user():
+    return {"message": "user!"}
+
+# -------------------------
+# Lambda App
+# -------------------------
 app = APIGatewayRestResolver()
 app.include_router(router)
 
+# -------------------------
+# Lambda Handler
+# -------------------------
 def lambda_handler(event, context):
     return app.resolve(event, context)
