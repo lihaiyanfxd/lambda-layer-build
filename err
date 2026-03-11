@@ -1,4 +1,24 @@
-curl -X POST \
-  https://5y9z6yd6q4.execute-api.ap-northeast-3.amazonaws.com/test-invoke-stage/ping3 \
-  -H "Content-Type: application/json" \
-  -d '{"id":111,"age":20}'
+from aws_lambda_powertools.event_handler.api_gateway import Router
+from aws_lambda_powertools.utilities.validation import validator
+
+from config.routes import ROUTES
+from schemas.user_schema import PING3_SCHEMA
+
+router = Router()
+
+@router.post(ROUTES["PING3"])
+@validator(inbound_schema=PING3_SCHEMA, envelope=None)
+def ping3(body: dict):
+
+    return {
+        "id": body["id"],
+        "age": body.get("age")
+    }
+
+
+@router.get(ROUTES["USER"])
+def user():
+
+    return {
+        "message": "user!"
+    }
