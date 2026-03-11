@@ -1,11 +1,31 @@
-Collecting aws-lambda-powertools>=2.20
-  Downloading aws_lambda_powertools-3.23.0-py3-none-any.whl (848 kB)
-     |████████████████████████████████| 848 kB 19.0 MB/s            
-Collecting typing-extensions<5.0.0,>=4.11.0
-  Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
-Collecting jmespath<2.0.0,>=1.0.1
-  Downloading jmespath-1.1.0-py3-none-any.whl (20 kB)
-Installing collected packages: typing-extensions, jmespath, aws-lambda-powertools
-ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.
-aws-sam-cli 1.151.0 requires jmespath~=1.0.1, but you have jmespath 1.1.0 which is incompatible.
-Successfully installed aws-lambda-powertools-3.23.0 jmespath-1.1.0 typing-extensions-4.15.0
+from aws_lambda_powertools.event_handler.api_gateway import Router
+from aws_lambda_powertools.utilities.validation import validator
+
+router = Router()
+
+# 定义请求体 Schema（JSON Schema）
+schema = {
+    "type": "object",
+    "properties": {
+        "id": {"type": "integer"},
+        "age": {"type": "integer"}
+    },
+    "required": ["id"]
+}
+
+@router.post("/ping3")
+@validator(inbound_schema=schema)  # 直接校验 body
+def ping3():
+    body = router.current_event.json_body  # Powertools 3.x 获取 JSON body 的方式
+    return {
+        "id": body["id"],
+        "age": body.get("age")
+    }
+
+from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver
+
+app = APIGatewayRestResolver()
+app.include_router(router)
+
+def lambda_handler(event, context):
+    return app.resolve(event, context)
