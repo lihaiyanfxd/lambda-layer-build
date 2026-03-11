@@ -1,29 +1,3 @@
-{"message": "Internal server error"}
-レスポンスヘッダー
-{
-  "x-amzn-ErrorType": "InternalServerErrorException"
-}
-ログ
-Execution log for request b9de55f9-30bd-498a-bf90-38c84ef670e4
-Wed Mar 11 01:30:25 UTC 2026 : Starting execution for request: b9de55f9-30bd-498a-bf90-38c84ef670e4
-Wed Mar 11 01:30:25 UTC 2026 : HTTP Method: POST, Resource Path: /ping3
-Wed Mar 11 01:30:25 UTC 2026 : Method request path: {proxy=ping3}
-Wed Mar 11 01:30:25 UTC 2026 : Method request query string: {}
-Wed Mar 11 01:30:25 UTC 2026 : Method request headers: {Content-type= application/json}
-Wed Mar 11 01:30:25 UTC 2026 : Method request body before transformations: {
-    "id":111,
-    "age":20
-}
-Wed Mar 11 01:30:25 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test-PowertoolsTestFunction-sUTvvWo0exGL/invocations
-Wed Mar 11 01:30:25 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260311T013025Z, x-amzn-apigateway-api-id=ftmzom6vy7, Accept=application/json, User-Agent=AmazonAPIGateway_ftmzom6vy7, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=618d5e31b7e5f86466350f65e71b222f812637c1be791b3abeccd5cc854a1135, X-Amzn-Trace-Id=Root=1-69b0c5b1-e86ff4125ab1a7a5558964bd, x-amzn-lambda-integration-tag=b9de55f9-30bd-498a-bf90-38c84ef670e4, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************7c0139, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:ftmzom6vy7/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIj//////////wEaDmFwLW5vcnRoZWFzdC0zIkcwRQIhANFu6tx3XYWLr1qRx7KdN5v9KxywphMcVFdiOmujSTfvAiBmPRMIqmrNCTGur [TRUNCATED]
-Wed Mar 11 01:30:25 UTC 2026 : Endpoint request body after transformations: {"resource":"/{proxy+}","path":"/ping3","httpMethod":"POST","headers":{"Content-type":" application/json"},"multiValueHeaders":{"Content-type":[" application/json"]},"queryStringParameters":null,"multiValueQueryStringParameters":null,"pathParameters":{"proxy":"ping3"},"stageVariables":null,"requestContext":{"resourceId":"zy8p6j","resourcePath":"/{proxy+}","httpMethod":"POST","extendedRequestId":"aCPTzF-bKRcF8xQ=","requestTime":"11/Mar/2026:01:30:25 +0000","path":"/{proxy+}","accountId":"724677424020","protocol":"HTTP/1.1","stage":"test-invoke-stage","domainPrefix":"testPrefix","requestTimeEpoch":1773192625609,"requestId":"b9de55f9-30bd-498a-bf90-38c84ef670e4","identity":{"cognitoIdentityPoolId":null,"cognitoIdentityId":null,"apiKey":"test-invoke-api-key","principalOrgId":null,"cognitoAuthenticationType":null,"userArn":"arn:aws:iam::724677424020:user/Haiyan11.Li.bp@jp.nttdata.com","apiKeyId":"test-invoke-api-key-id","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64;  [TRUNCATED]
-Wed Mar 11 01:30:25 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test-PowertoolsTestFunction-sUTvvWo0exGL/invocations
-Wed Mar 11 01:30:25 UTC 2026 : Received response. Status: 200, Integration latency: 32 ms
-Wed Mar 11 01:30:25 UTC 2026 : Endpoint response headers: {Date=Wed, 11 Mar 2026 01:30:25 GMT, Content-Type=application/json, Content-Length=1457, Connection=keep-alive, x-amzn-RequestId=bc18ad32-7aeb-4c6e-a101-f874601b4095, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69b0c5b1-e86ff4125ab1a7a5558964bd;Parent=677f47d90a0ed915;Sampled=0;Lineage=1:0a789411:0}
-Wed Mar 11 01:30:25 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "ping2() missing 2 required positional arguments: 'event' and 'context'", "errorType": "TypeError", "requestId": "bc18ad32-7aeb-4c6e-a101-f874601b4095", "stackTrace": ["  File \"/var/task/aws_lambda_powertools/logging/logger.py\", line 554, in decorate\n    return lambda_handler(event, context, *args, **kwargs)\n", "  File \"/var/task/handler.py\", line 29, in lambda_handler\n    return app.resolve(event,context)\n", "  File \"/var/task/aws_lambda_powertools/event_handler/api_gateway.py\", line 2726, in resolve\n    response = self._resolve().build(self.current_event, self._cors)\n", "  File \"/var/task/aws_lambda_powertools/event_handler/api_gateway.py\", line 2832, in _resolve\n    return self._call_route(route, route_keys)  # pass fn args\n", "  File \"/var/task/aws_lambda_powertools/event_handler/api_gateway.py\", line 2939, in _call_route\n    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),\n",  [TRUNCATED]
-Wed Mar 11 01:30:25 UTC 2026 : Lambda execution failed with status 200 due to customer function error: ping2() missing 2 required positional arguments: 'event' and 'context'. Lambda request id: bc18ad32-7aeb-4c6e-a101-f874601b4095
-Wed Mar 11 01:30:25 UTC 2026 : Method completed with status: 502
-
 from aws_lambda_powertools.event_handler.api_gateway import Router
 from app.log.logger import logger
 from aws_lambda_powertools.utilities.validation import validator
@@ -43,7 +17,7 @@ schema = {
 }
 @router.post("/ping3")
 @validator(inbound_schema=schema)
-def ping2():
+def ping3(event):
     return {"message": "user!"}
 
 @router.get("/ping")
@@ -55,3 +29,33 @@ def ping():
 def ping2():
     logger.info("ping2 called")
     return {"message": "pong222!"}
+
+from aws_lambda_powertools.event_handler.api_gateway import (
+    APIGatewayRestResolver,
+    Response,
+    content_types,
+)
+from app.services.ping_router import router as ping_router
+from app.services.user_router import router as user_router
+from app.log.logger import logger
+
+app = APIGatewayRestResolver()
+
+app.include_router(ping_router)
+app.include_router(user_router)
+
+@app.exception_handler(ValueError)
+def handle_invalid_limit_qs(ex: ValueError):
+    metadata = {"path": app.current_event.path, "query_strings": app.current_event.query_string_parameters}
+    logger.error(f"Malformed request: {ex}", extra=metadata)
+
+    return Response(
+        status_code=400,
+        content_type=content_types.TEXT_PLAIN,
+        body="Invalid request parameters.",
+    )
+
+@logger.inject_lambda_context
+def lambda_handler(event,context):
+    return app.resolve(event,context)
+
