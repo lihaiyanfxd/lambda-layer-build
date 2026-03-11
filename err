@@ -1,6 +1,20 @@
-from aws_lambda_powertools.event_handler.api_gateway import Router
+from aws_lambda_powertools.event_handler import APIGatewayRestResolver
+import psycopg
+from user_router import router as user_router
 
-from app.log.logger import logger
+
+app = APIGatewayRestResolver()
+
+
+app.include_router(user_router)
+
+
+def lambda_handler(event, context):
+    return app.resolve(event, context)
+
+from aws_lambda_powertools.event_handler.api_gateway import Router
+from aws_lambda_powertools.utilities.validation import validator
+
 
 router = Router()
 
@@ -9,7 +23,7 @@ schema = {
     "properties":{
         "id":{
             "type":"integer"
-        }
+        },
         "age":{
             "type":"integer"
         }
@@ -24,3 +38,38 @@ def user1():
 @router.get("/ping2")
 def ping():
     return {"message": "pong2!"}
+リクエスト
+/user
+レイテンシー ms
+35
+ステータス
+404
+レスポンス本文
+{"statusCode":404,"message":"Not found"}
+レスポンスヘッダー
+{
+  "Content-Type": "application/json",
+  "X-Amzn-Trace-Id": "Root=1-69b0be60-24b2e923579e94d25a6e49bf;Parent=6c42d7645eb02c96;Sampled=0;Lineage=1:f3f802e4:0"
+}
+ログ
+Execution log for request aa6cbb7c-45b7-42de-af66-fe1dba4a21d0
+Wed Mar 11 00:59:12 UTC 2026 : Starting execution for request: aa6cbb7c-45b7-42de-af66-fe1dba4a21d0
+Wed Mar 11 00:59:12 UTC 2026 : HTTP Method: POST, Resource Path: /user
+Wed Mar 11 00:59:12 UTC 2026 : Method request path: {proxy=user}
+Wed Mar 11 00:59:12 UTC 2026 : Method request query string: {}
+Wed Mar 11 00:59:12 UTC 2026 : Method request headers: {Content-type= application/json}
+Wed Mar 11 00:59:12 UTC 2026 : Method request body before transformations: {
+    "id":111,
+    "age":20
+}
+Wed Mar 11 00:59:12 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test/invocations
+Wed Mar 11 00:59:12 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260311T005912Z, x-amzn-apigateway-api-id=5y9z6yd6q4, Accept=application/json, User-Agent=AmazonAPIGateway_5y9z6yd6q4, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=a45ec597f1fdbe7992c546bfccdd211a1160b68e8eda1796334487aeab1fd99a, X-Amzn-Trace-Id=Root=1-69b0be60-24b2e923579e94d25a6e49bf, x-amzn-lambda-integration-tag=aa6cbb7c-45b7-42de-af66-fe1dba4a21d0, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************1b7a07, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:5y9z6yd6q4/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIj//////////wEaDmFwLW5vcnRoZWFzdC0zIkcwRQIgUEvh5XCzhKZR7J+82952nqX6BxAH+CfX/fqE9AQLWxoCIQCYF4in8hOBGQHCX [TRUNCATED]
+Wed Mar 11 00:59:12 UTC 2026 : Endpoint request body after transformations: {"resource":"/{proxy+}","path":"/user","httpMethod":"POST","headers":{"Content-type":" application/json"},"multiValueHeaders":{"Content-type":[" application/json"]},"queryStringParameters":null,"multiValueQueryStringParameters":null,"pathParameters":{"proxy":"user"},"stageVariables":null,"requestContext":{"resourceId":"1jfco8","resourcePath":"/{proxy+}","httpMethod":"POST","extendedRequestId":"aCKvFHdDKRcFnmA=","requestTime":"11/Mar/2026:00:59:12 +0000","path":"/{proxy+}","accountId":"724677424020","protocol":"HTTP/1.1","stage":"test-invoke-stage","domainPrefix":"testPrefix","requestTimeEpoch":1773190752110,"requestId":"aa6cbb7c-45b7-42de-af66-fe1dba4a21d0","identity":{"cognitoIdentityPoolId":null,"cognitoIdentityId":null,"apiKey":"test-invoke-api-key","principalOrgId":null,"cognitoAuthenticationType":null,"userArn":"arn:aws:iam::724677424020:user/Haiyan11.Li.bp@jp.nttdata.com","apiKeyId":"test-invoke-api-key-id","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x6 [TRUNCATED]
+Wed Mar 11 00:59:12 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test/invocations
+Wed Mar 11 00:59:12 UTC 2026 : Received response. Status: 200, Integration latency: 29 ms
+Wed Mar 11 00:59:12 UTC 2026 : Endpoint response headers: {Date=Wed, 11 Mar 2026 00:59:12 GMT, Content-Type=application/json, Content-Length=164, Connection=keep-alive, x-amzn-RequestId=82f6c0cc-5d2c-4e2d-8055-4c66c7a31c07, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69b0be60-24b2e923579e94d25a6e49bf;Parent=6c42d7645eb02c96;Sampled=0;Lineage=1:f3f802e4:0}
+Wed Mar 11 00:59:12 UTC 2026 : Endpoint response body before transformations: {"statusCode": 404, "body": "{\"statusCode\":404,\"message\":\"Not found\"}", "isBase64Encoded": false, "multiValueHeaders": {"Content-Type": ["application/json"]}}
+Wed Mar 11 00:59:12 UTC 2026 : Method response body after transformations: {"statusCode":404,"message":"Not found"}
+Wed Mar 11 00:59:12 UTC 2026 : Method response headers: {Content-Type=application/json, X-Amzn-Trace-Id=Root=1-69b0be60-24b2e923579e94d25a6e49bf;Parent=6c42d7645eb02c96;Sampled=0;Lineage=1:f3f802e4:0}
+Wed Mar 11 00:59:12 UTC 2026 : Successfully completed execution
+Wed Mar 11 00:59:12 UTC 2026 : Method completed with status: 404
