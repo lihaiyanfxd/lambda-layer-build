@@ -1,1 +1,2 @@
-pip install aws-lambda-powertools fastjsonschema -t .
+cd ..
+zip -r powertools_layer.zip python
