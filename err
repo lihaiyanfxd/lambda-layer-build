@@ -1,2 +1,19 @@
+from aws_lambda_powertools.event_handler.api_gateway import Router
 from aws_lambda_powertools.utilities.validation import validator
 from aws_lambda_powertools.utilities.validation.envelopes import ApiGatewayEnvelope
+
+router = Router()
+
+schema = {
+    "type": "object",
+    "properties": {
+        "id": {"type": "integer"},
+        "age": {"type": "integer"}
+    },
+    "required": ["id"]
+}
+
+@router.post("/ping3")
+@validator(inbound_schema=schema, envelope=ApiGatewayEnvelope)
+def ping3(event):
+    return {"message": "user!"}
