@@ -1,18 +1,27 @@
-[ERROR] NameError: name 'aws_lambda_powertools' is not defined
-Traceback (most recent call last):
-  File "/var/task/lambda_function.py", line 10, in lambda_handler
-    return app.resolve(event, context)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2500, in resolve
-    response = self._resolve().build(self.current_event, self._cors)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2606, in _resolve
-    return self._call_route(route, route_keys)  # pass fn args
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2713, in _call_route
-    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 488, in __call__
-    return self._middleware_stack(app)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1618, in __call__
-    return self.current_middleware(app, self.next_middleware)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1649, in _registered_api_adapter
-    return app._to_response(next_middleware(**route_args))
-  File "/var/task/user_router.py", line 26, in ping
-    print(aws_lambda_powertools.__version__)
+レスポンス本文
+{"message": "Internal server error"}
+レスポンスヘッダー
+{
+  "x-amzn-ErrorType": "InternalServerErrorException"
+}
+ログ
+Execution log for request 7a3025ee-1011-4b78-983b-82e237f7a8a9
+Wed Mar 11 02:43:24 UTC 2026 : Starting execution for request: 7a3025ee-1011-4b78-983b-82e237f7a8a9
+Wed Mar 11 02:43:24 UTC 2026 : HTTP Method: POST, Resource Path: /ping3
+Wed Mar 11 02:43:24 UTC 2026 : Method request path: {proxy=ping3}
+Wed Mar 11 02:43:24 UTC 2026 : Method request query string: {}
+Wed Mar 11 02:43:24 UTC 2026 : Method request headers: {Content-type= application/json}
+Wed Mar 11 02:43:24 UTC 2026 : Method request body before transformations: {
+    "id":111,
+    "age":20
+}
+
+Wed Mar 11 02:43:24 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_cmm_powertool/invocations
+Wed Mar 11 02:43:24 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260311T024324Z, x-amzn-apigateway-api-id=5y9z6yd6q4, Accept=application/json, User-Agent=AmazonAPIGateway_5y9z6yd6q4, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=067bd217389035eee40615f4babc4515a71423a43c8cbe736199bc2857bae8fc, X-Amzn-Trace-Id=Root=1-69b0d6cc-b440520a54566cae87150c71, x-amzn-lambda-integration-tag=7a3025ee-1011-4b78-983b-82e237f7a8a9, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************943a16, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:5y9z6yd6q4/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIn//////////wEaDmFwLW5vcnRoZWFzdC0zIkcwRQIhAM20uBZ3yunooqpVGSF4VJwJ0Y81u8hF5OGO6S7M1u/uAiAEJvBoCoCes88y3 [TRUNCATED]
+Wed Mar 11 02:43:24 UTC 2026 : Endpoint request body after transformations: {"resource":"/{proxy+}","path":"/ping3","httpMethod":"POST","headers":{"Content-type":" application/json"},"multiValueHeaders":{"Content-type":[" application/json"]},"queryStringParameters":null,"multiValueQueryStringParameters":null,"pathParameters":{"proxy":"ping3"},"stageVariables":null,"requestContext":{"resourceId":"eaq8km","resourcePath":"/{proxy+}","httpMethod":"POST","extendedRequestId":"aCZ_-GVdqRcFnmA=","requestTime":"11/Mar/2026:02:43:24 +0000","path":"/{proxy+}","accountId":"724677424020","protocol":"HTTP/1.1","stage":"test-invoke-stage","domainPrefix":"testPrefix","requestTimeEpoch":1773197004232,"requestId":"7a3025ee-1011-4b78-983b-82e237f7a8a9","identity":{"cognitoIdentityPoolId":null,"cognitoIdentityId":null,"apiKey":"test-invoke-api-key","principalOrgId":null,"cognitoAuthenticationType":null,"userArn":"arn:aws:iam::724677424020:user/Haiyan11.Li.bp@jp.nttdata.com","apiKeyId":"test-invoke-api-key-id","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64;  [TRUNCATED]
+Wed Mar 11 02:43:24 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_cmm_powertool/invocations
+Wed Mar 11 02:43:24 UTC 2026 : Received response. Status: 200, Integration latency: 61 ms
+Wed Mar 11 02:43:24 UTC 2026 : Endpoint response headers: {Date=Wed, 11 Mar 2026 02:43:24 GMT, Content-Type=application/json, Content-Length=1329, Connection=keep-alive, x-amzn-RequestId=f9fd23c7-897d-4aba-8eca-66e8b7a2e3c9, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69b0d6cc-b440520a54566cae87150c71;Parent=02091f725d12e957;Sampled=0;Lineage=1:3f84166c:0}
+Wed Mar 11 02:43:24 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "ping3() missing 2 required positional arguments: 'event' and 'context'", "errorType": "TypeError", "requestId": "f9fd23c7-897d-4aba-8eca-66e8b7a2e3c9", "stackTrace": ["  File \"/var/task/lambda_function.py\", line 10, in lambda_handler\n    return app.resolve(event, context)\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2500, in resolve\n    response = self._resolve().build(self.current_event, self._cors)\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2606, in _resolve\n    return self._call_route(route, route_keys)  # pass fn args\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 2713, in _call_route\n    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),\n", "  File \"/opt/python/aws_lambda_powertools/event_handler/api_gateway.py\", line 488, in __call__\n    return self._middleware_stack(a [TRUNCATED]
+Wed Mar 11 02:43:24 UTC 2026 : Lambda execution failed with status 200 due to customer function error: ping3() missing 2 required positional arguments: 'event' and 'context'. Lambda request id: f9fd23c7-897d-4aba-8eca-66e8b7a2e3c9
+Wed Mar 11 02:43:24 UTC 2026 : Method completed with status: 502
