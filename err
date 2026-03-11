@@ -1,31 +1,23 @@
-/ping3
-レイテンシー ms
-1279
-ステータス
-502
-レスポンス本文
-{"message": "Internal server error"}
-レスポンスヘッダー
-{
-  "x-amzn-ErrorType": "InternalServerErrorException"
+from aws_lambda_powertools.event_handler.api_gateway import Router
+from aws_lambda_powertools.utilities.validation import validator
+
+router = Router()
+
+schema = {
+    "type": "object",
+    "properties": {
+        "id": {"type": "integer"},
+        "age": {"type": "integer"}
+    },
+    "required": ["id"]
 }
-ログ
-Execution log for request 2de9ebf6-5d94-4181-b759-00fc405bc54b
-Wed Mar 11 01:39:20 UTC 2026 : Starting execution for request: 2de9ebf6-5d94-4181-b759-00fc405bc54b
-Wed Mar 11 01:39:20 UTC 2026 : HTTP Method: POST, Resource Path: /ping3
-Wed Mar 11 01:39:20 UTC 2026 : Method request path: {proxy=ping3}
-Wed Mar 11 01:39:20 UTC 2026 : Method request query string: {}
-Wed Mar 11 01:39:20 UTC 2026 : Method request headers: {Content-type= application/json}
-Wed Mar 11 01:39:20 UTC 2026 : Method request body before transformations: {
-    "id":111,
-    "age":20
-}
-Wed Mar 11 01:39:20 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test-PowertoolsTestFunction-sUTvvWo0exGL/invocations
-Wed Mar 11 01:39:20 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260311T013920Z, x-amzn-apigateway-api-id=ftmzom6vy7, Accept=application/json, User-Agent=AmazonAPIGateway_ftmzom6vy7, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=a4a21628a8644e7ed15a412b79e2be50294e85cc1d75641affaf6d978f2aaeb2, X-Amzn-Trace-Id=Root=1-69b0c7c8-e784d4eea9eab1787cb7e1b6, x-amzn-lambda-integration-tag=2de9ebf6-5d94-4181-b759-00fc405bc54b, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************316821, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:ftmzom6vy7/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEIj//////////wEaDmFwLW5vcnRoZWFzdC0zIkcwRQIhAOmm4g6LFMYqbd+IoHx2ozs5KrFKEaKtvYryWX0K5sqVAiAaKmM9LtbVz3Vri [TRUNCATED]
-Wed Mar 11 01:39:20 UTC 2026 : Endpoint request body after transformations: {"resource":"/{proxy+}","path":"/ping3","httpMethod":"POST","headers":{"Content-type":" application/json"},"multiValueHeaders":{"Content-type":[" application/json"]},"queryStringParameters":null,"multiValueQueryStringParameters":null,"pathParameters":{"proxy":"ping3"},"stageVariables":null,"requestContext":{"resourceId":"zy8p6j","resourcePath":"/{proxy+}","httpMethod":"POST","extendedRequestId":"aCQncFehqRcFgXA=","requestTime":"11/Mar/2026:01:39:20 +0000","path":"/{proxy+}","accountId":"724677424020","protocol":"HTTP/1.1","stage":"test-invoke-stage","domainPrefix":"testPrefix","requestTimeEpoch":1773193160891,"requestId":"2de9ebf6-5d94-4181-b759-00fc405bc54b","identity":{"cognitoIdentityPoolId":null,"cognitoIdentityId":null,"apiKey":"test-invoke-api-key","principalOrgId":null,"cognitoAuthenticationType":null,"userArn":"arn:aws:iam::724677424020:user/Haiyan11.Li.bp@jp.nttdata.com","apiKeyId":"test-invoke-api-key-id","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64;  [TRUNCATED]
-Wed Mar 11 01:39:20 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts-powertools-test-PowertoolsTestFunction-sUTvvWo0exGL/invocations
-Wed Mar 11 01:39:22 UTC 2026 : Received response. Status: 200, Integration latency: 1270 ms
-Wed Mar 11 01:39:22 UTC 2026 : Endpoint response headers: {Date=Wed, 11 Mar 2026 01:39:22 GMT, Content-Type=application/json, Content-Length=299, Connection=keep-alive, x-amzn-RequestId=e93070dd-2939-4974-aa52-3193494ffd32, X-Amz-Function-Error=Unhandled, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69b0c7c8-e784d4eea9eab1787cb7e1b6;Parent=548b1aa0dddece45;Sampled=0;Lineage=1:0a789411:0}
-Wed Mar 11 01:39:22 UTC 2026 : Endpoint response body before transformations: {"errorMessage": "Unable to import module 'handler': cannot import name 'ApiGatewayEnvelope' from 'aws_lambda_powertools.utilities.validation.envelopes' (/var/task/aws_lambda_powertools/utilities/validation/envelopes.py)", "errorType": "Runtime.ImportModuleError", "requestId": "", "stackTrace": []}
-Wed Mar 11 01:39:22 UTC 2026 : Lambda execution failed with status 200 due to customer function error: Unable to import module 'handler': cannot import name 'ApiGatewayEnvelope' from 'aws_lambda_powertools.utilities.validation.envelopes' (/var/task/aws_lambda_powertools/utilities/validation/envelopes.py). Lambda request id: e93070dd-2939-4974-aa52-3193494ffd32
-Wed Mar 11 01:39:22 UTC 2026 : Method completed with status: 502
+
+@router.post("/ping3")
+@validator(inbound_schema=schema)
+def ping3():
+    body = router.current_event.json_body
+
+    return {
+        "id": body["id"],
+        "age": body.get("age")
+    }
