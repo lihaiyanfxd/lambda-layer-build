@@ -1,43 +1,26 @@
-[ERROR] SchemaValidationError: Failed schema validation. Error: data.age must be bigger than 20, Path: ['data', 'age'], Data: 10
-Traceback (most recent call last):
-  File "/var/task/lambda_function.py", line 9, in lambda_handler
-    return app.resolve(event, context)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2500, in resolve
-    response = self._resolve().build(self.current_event, self._cors)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2606, in _resolve
-    return self._call_route(route, route_keys)  # pass fn args
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2713, in _call_route
-    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 488, in __call__
-    return self._middleware_stack(app)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1618, in __call__
-    return self.current_middleware(app, self.next_middleware)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1649, in _registered_api_adapter
-    return app._to_response(next_middleware(**route_args))
-  File "/var/task/routers/user_router.py", line 14, in ping3
-    validate(event=body, schema=PING3_SCHEMA)
-  File "/opt/python/aws_lambda_powertools/utilities/validation/validator.py", line 275, in validate
-    return validate_data_against_schema(
-  File "/opt/python/aws_lambda_powertools/utilities/validation/base.py", line 63, in validate_data_against_schema
-    raise SchemaValidationError([ERROR] SchemaValidationError: Failed schema validation. Error: data.age must be bigger than 20, Path: ['data', 'age'], Data: 10
-Traceback (most recent call last):
-  File "/var/task/lambda_function.py", line 9, in lambda_handler
-    return app.resolve(event, context)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2500, in resolve
-    response = self._resolve().build(self.current_event, self._cors)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2606, in _resolve
-    return self._call_route(route, route_keys)  # pass fn args
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2713, in _call_route
-    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 488, in __call__
-    return self._middleware_stack(app)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1618, in __call__
-    return self.current_middleware(app, self.next_middleware)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1649, in _registered_api_adapter
-    return app._to_response(next_middleware(**route_args))
-  File "/var/task/routers/user_router.py", line 14, in ping3
-    validate(event=body, schema=PING3_SCHEMA)
-  File "/opt/python/aws_lambda_powertools/utilities/validation/validator.py", line 275, in validate
-    return validate_data_against_schema(
-  File "/opt/python/aws_lambda_powertools/utilities/validation/base.py", line 63, in validate_data_against_schema
-    raise SchemaValidationError(
+class BusinessError(Exception):
+
+    def __init__(self, message: str):
+        self.message = message
+from aws_lambda_powertools.event_handler import Response
+from aws_lambda_powertools import Logger
+from exceptions.business_error import BusinessError
+
+logger = Logger()
+
+
+def register_exception_handlers(app):
+
+    @app.exception_handler(BusinessError)
+    def handle_business_error(ex: BusinessError):
+
+        logger.error(ex.message)
+
+        return Response(
+            status_code=400,
+            content_type="application/json",
+            body={
+                "errorCode": "BUSINESS_ERROR",
+                "message": ex.message
+            }
+        )
