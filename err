@@ -1,6 +1,7 @@
-from aws_lambda_powertools.event_handler.api_gateway import Router
+from aws_lambda_powertools.event_handler.api_gateway import Router, APIGatewayRestResolver
 from aws_lambda_powertools.utilities.validation import validator
 
+# 定义 router
 router = Router()
 
 schema = {
@@ -13,25 +14,18 @@ schema = {
 }
 
 @router.post("/ping3")
-@validator(inbound_schema=schema)
+@validator(inbound_schema=schema, envelope=None)  # 关键：envelope=None
 def ping3():
     body = router.current_event.json_body
-    return {
-        "id": body["id"],
-        "age": body.get("age")
-    }
+    return {"id": body["id"], "age": body.get("age")}
 
+# 其他路由
 @router.get("/user")
-def ping():
-    #print(aws_lambda_powertools.__version__)
+def user():
     return {"message": "user!"}
 
-from aws_lambda_powertools.event_handler.api_gateway import APIGatewayRestResolver
-from user_router import router
-#import aws_lambda_powertools
-
+# Lambda app
 app = APIGatewayRestResolver()
-
 app.include_router(router)
 
 def lambda_handler(event, context):
