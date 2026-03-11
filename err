@@ -1,4 +1,12 @@
-[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': invalid syntax (user_router.py, line 6)
-Traceback (most recent call last):
-  File "/var/task/routers/user_router.py" Line 6
-    @router.get(ROUTES["PING"]/<user_id>)
+from exceptions.business_error import BusinessError
+from models.user_model import User
+
+
+class UserService:
+
+    def get_user(self, user_id: int):
+
+        if user_id == 0:
+            raise BusinessError("user_id cannot be 0")
+
+        return User(user_id)
