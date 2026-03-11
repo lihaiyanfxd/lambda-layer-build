@@ -1,26 +1,4 @@
-class BusinessError(Exception):
-
-    def __init__(self, message: str):
-        self.message = message
-from aws_lambda_powertools.event_handler import Response
-from aws_lambda_powertools import Logger
-from exceptions.business_error import BusinessError
-
-logger = Logger()
-
-
-def register_exception_handlers(app):
-
-    @app.exception_handler(BusinessError)
-    def handle_business_error(ex: BusinessError):
-
-        logger.error(ex.message)
-
-        return Response(
-            status_code=400,
-            content_type="application/json",
-            body={
-                "errorCode": "BUSINESS_ERROR",
-                "message": ex.message
-            }
-        )
+[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': invalid syntax (user_router.py, line 6)
+Traceback (most recent call last):
+  File "/var/task/routers/user_router.py" Line 6
+    @router.get(ROUTES["PING"]/<user_id>)
