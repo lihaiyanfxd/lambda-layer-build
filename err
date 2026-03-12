@@ -1,12 +1,19 @@
-from exceptions.business_error import BusinessError
-from models.user_model import User
+import json
+import time
 
+# 模拟 1000 条 JSON
+data1 = [{"id": i, "value": f"A{i}"} for i in range(1000)]
+data2 = [{"id": i, "value": f"B{i}"} for i in range(1000)]
 
-class UserService:
+start = time.time()
 
-    def get_user(self, user_id: int):
+# 示例：简单 diff
+diff = []
+for a, b in zip(data1, data2):
+    if a != b:
+        diff.append({"id": a["id"], "before": a, "after": b})
 
-        if user_id == 0:
-            raise BusinessError("user_id cannot be 0")
+end = time.time()
 
-        return User(user_id)
+print("diff count:", len(diff))
+print("time:", end - start)
