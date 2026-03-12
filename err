@@ -1,34 +1,11 @@
-def merge_items(oya_items, ko_items):
+def merge_json(a, b):
 
-    # 用 pol 建立索引
-    oya_map = {item["pol"]: item for item in oya_items}
+    for key, value in b.items():
 
-    result = []
+        if key in a and isinstance(a[key], dict) and isinstance(value, dict):
+            merge_json(a[key], value)
 
-    for ko in ko_items:
+        else:
+            a[key] = value
 
-        pol = ko["pol"]
-
-        if pol in oya_map:
-
-            oya = oya_map[pol]
-
-            merged = {
-                "pol": pol,
-                "edaban": ko["edaban"],
-                "kihon": oya["kihon"]
-            }
-
-            # test1 ~ test1000
-            for i in range(1, 1001):
-
-                key = f"test{i}"
-
-                if i <= 500:
-                    merged[key] = ko[key]
-                else:
-                    merged[key] = oya[key]
-
-            result.append(merged)
-
-    return result
+    return a
