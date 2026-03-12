@@ -1,20 +1,27 @@
-[ERROR] FileNotFoundError: [Errno 2] No such file or directory: 'old.json'
-Traceback (most recent call last):
-  File "/var/task/lambda_function.py", line 8, in lambda_handler
-    return app.resolve(event, context)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2726, in resolve
-    response = self._resolve().build(self.current_event, self._cors)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2832, in _resolve
-    return self._call_route(route, route_keys)  # pass fn args
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2939, in _call_route
-    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 515, in __call__
-    return self._middleware_stack(app)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1680, in __call__
-    return self.current_middleware(app, self.next_middleware)
-  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1711, in _registered_api_adapter
-    return app._to_response(next_middleware(**route_args))
-  File "/var/task/routers/user_router.py", line 14, in count
-    return get_merge_service()
-  File "/var/task/services/merge_service.py", line 6, in get_merge_service
-    with open("old.json", "r", encoding="utf-8") as f:
+import json
+
+
+def merge_data(oya_items, ko_items):
+
+    # 用 pol 建立索引
+    oya_map = {item["pol"]: item for item in oya_items}
+
+    result = []
+
+    for ko in ko_items:
+
+        pol = ko["pol"]
+
+        if pol in oya_map:
+            oya = oya_map[pol]
+
+            merged = {
+                "pol": pol,
+                "edaban": ko["edaban"],
+                "kihon": oya["kihon"],   # 来自 oya
+                "address": ko["address"] # 来自 ko
+            }
+
+            result.append(merged)
+
+    return result
