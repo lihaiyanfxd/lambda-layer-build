@@ -1,19 +1,18 @@
-import json
-import time
-
-# 模拟 1000 条 JSON
-data1 = [{"id": i, "value": f"A{i}"} for i in range(1000)]
-data2 = [{"id": i, "value": f"B{i}"} for i in range(1000)]
-
-start = time.time()
-
-# 示例：简单 diff
-diff = []
-for a, b in zip(data1, data2):
-    if a != b:
-        diff.append({"id": a["id"], "before": a, "after": b})
-
-end = time.time()
-
-print("diff count:", len(diff))
-print("time:", end - start)
+[ERROR] TypeError: Object of type function is not JSON serializable
+Traceback (most recent call last):
+  File "/var/task/lambda_function.py", line 8, in lambda_handler
+    return app.resolve(event, context)
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2726, in resolve
+    response = self._resolve().build(self.current_event, self._cors)
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1115, in build
+    self.response.body = self.serializer(self.response.body)
+  File "/var/lang/lib/python3.14/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+  File "/var/lang/lib/python3.14/json/encoder.py", line 200, in encode
+    chunks = self.iterencode(o, _one_shot=True)
+  File "/var/lang/lib/python3.14/json/encoder.py", line 261, in iterencode
+    return _iterencode(o, 0)
+  File "/opt/python/aws_lambda_powertools/shared/json_encoder.py", line 24, in default
+    return super().default(obj)
+  File "/var/lang/lib/python3.14/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
