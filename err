@@ -1,10 +1,20 @@
-import json
-
-with open("old.json", "r", encoding="utf-8") as f:
-    old_data = json.load(f)
-
-with open("new.json", "r", encoding="utf-8") as f:
-    new_data = json.load(f)
-
-old_items = old_data["items"]
-new_items = new_data["items"]
+[ERROR] FileNotFoundError: [Errno 2] No such file or directory: 'old.json'
+Traceback (most recent call last):
+  File "/var/task/lambda_function.py", line 8, in lambda_handler
+    return app.resolve(event, context)
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2726, in resolve
+    response = self._resolve().build(self.current_event, self._cors)
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2832, in _resolve
+    return self._call_route(route, route_keys)  # pass fn args
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 2939, in _call_route
+    route(router_middlewares=self._router_middlewares, app=self, route_arguments=route_arguments),
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 515, in __call__
+    return self._middleware_stack(app)
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1680, in __call__
+    return self.current_middleware(app, self.next_middleware)
+  File "/opt/python/aws_lambda_powertools/event_handler/api_gateway.py", line 1711, in _registered_api_adapter
+    return app._to_response(next_middleware(**route_args))
+  File "/var/task/routers/user_router.py", line 14, in count
+    return get_merge_service()
+  File "/var/task/services/merge_service.py", line 6, in get_merge_service
+    with open("old.json", "r", encoding="utf-8") as f:
