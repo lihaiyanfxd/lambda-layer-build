@@ -1,7 +1,4 @@
-import json
-
-
-def merge_data(oya_items, ko_items):
+def merge_items(oya_items, ko_items):
 
     # 用 pol 建立索引
     oya_map = {item["pol"]: item for item in oya_items}
@@ -13,14 +10,24 @@ def merge_data(oya_items, ko_items):
         pol = ko["pol"]
 
         if pol in oya_map:
+
             oya = oya_map[pol]
 
             merged = {
                 "pol": pol,
                 "edaban": ko["edaban"],
-                "kihon": oya["kihon"],   # 来自 oya
-                "address": ko["address"] # 来自 ko
+                "kihon": oya["kihon"]
             }
+
+            # test1 ~ test1000
+            for i in range(1, 1001):
+
+                key = f"test{i}"
+
+                if i <= 500:
+                    merged[key] = ko[key]
+                else:
+                    merged[key] = oya[key]
 
             result.append(merged)
 
