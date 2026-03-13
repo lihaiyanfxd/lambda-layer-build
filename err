@@ -72,3 +72,45 @@
     }
   }
 }
+
+
+def merge_manual(oya, ko):
+
+    result = {
+        "contract": {
+            "pol": oya["contract"]["pol"],
+            "status": oya["contract"]["status"],
+            "basicInfo": {
+                "contractor": oya["contract"]["basicInfo"]["contractor"],
+                "address": {
+                    **oya["contract"]["basicInfo"]["address"],
+                    **ko["contract"]["basicInfo"]["address"]
+                }
+            },
+            "products": [],
+            "payment": ko["contract"]["payment"],
+            "updateInfo": ko["contract"]["updateInfo"]
+        }
+    }
+
+    ko_products = {p["productId"]: p for p in ko["contract"]["products"]}
+
+    for p in oya["contract"]["products"]:
+
+        if p["productId"] in ko_products:
+
+            merged = {
+                "productId": p["productId"],
+                "productName": p["productName"],
+                "coverage": {
+                    "amount": ko_products[p["productId"]]["coverage"]["amount"],
+                    "currency": p["coverage"]["currency"]
+                }
+            }
+
+        else:
+            merged = p
+
+        result["contract"]["products"].append(merged)
+
+    return result
