@@ -1,4 +1,4 @@
-def merge_rule(oya, ko):
+def merge_manual(oya, ko):
 
     if oya["pol"] != ko["pol"]:
         return None
@@ -6,19 +6,18 @@ def merge_rule(oya, ko):
     result = {
         "pol": oya["pol"],
         "kihon": oya["kihon"],
-        "info": {}
+        "info": {
+            "test1": oya["info"]["test1"],
+            "test2": ko["info"]["test2"]
+        }
     }
-
-    rules = {
-        "test1": "oya",
-        "test2": "ko"
-    }
-
-    for key, source in rules.items():
-
-        if source == "oya":
-            result["info"][key] = oya["info"][key]
-        else:
-            result["info"][key] = ko["info"][key]
 
     return result
+
+
+start = time.perf_counter()
+for _ in range(100000):
+    merge_manual(oya, ko)
+end = time.perf_counter()
+
+print("manual merge time:", end - start)
