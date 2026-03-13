@@ -1,26 +1,74 @@
-def merge_dict(oya_items, ko_items):
-
-    ko_map = {item["pol"]: item for item in ko_items}
-
-    result = []
-
-    for oya in oya_items:
-
-        pol = oya["pol"]
-
-        if pol in ko_map:
-
-            ko = ko_map[pol]
-
-            merged = {
-                "pol": pol,
-                "Kihondata": oya["Kihondata"],
-                "info": {
-                    "test1": oya["info"]["test1"],
-                    "test2": ko["info"]["test2"]
-                }
-            }
-
-            result.append(merged)
-
-    return result
+{
+  "contract": {                       // 契約情報
+    "pol": "POL10001",                // 契約番号
+    "status": "active",               // 契約ステータス
+    "basicInfo": {                    // 契約基本情報
+      "contractor": {                 // 契約者情報
+        "name": "山田太郎",            // 契約者氏名
+        "birthday": "1985-05-01",     // 生年月日
+        "gender": "M"                 // 性別
+      },
+      "address": {                    // 住所情報
+        "country": "Japan",           // 国
+        "prefecture": "Tokyo",        // 都道府県
+        "city": "Shinjuku",           // 市区町村
+        "zip": "1600000"              // 郵便番号
+      }
+    },
+    "products": [                     // 契約商品情報
+      {
+        "productId": "LIFE01",        // 商品ID
+        "productName": "生命保険",     // 商品名
+        "coverage": {                 // 補償内容
+          "amount": 10000000,         // 保険金額
+          "currency": "JPY"           // 通貨
+        }
+      },
+      {
+        "productId": "MED01",         // 商品ID
+        "productName": "医療保険",     // 商品名
+        "coverage": {                 // 補償内容
+          "amount": 5000000,          // 保険金額
+          "currency": "JPY"           // 通貨
+        }
+      }
+    ],
+    "payment": {                      // 支払情報
+      "method": "bank",               // 支払方法
+      "account": {                    // 口座情報
+        "bankName": "みずほ銀行",      // 銀行名
+        "branch": "新宿支店"           // 支店名
+      }
+    }
+  }
+}
+{
+  "contract": {                       // 契約情報
+    "pol": "POL10001",                // 契約番号
+    "basicInfo": {                    // 契約基本情報
+      "address": {                    // 住所情報
+        "city": "Osaka",              // 市区町村（変更）
+        "zip": "5300001"              // 郵便番号（変更）
+      }
+    },
+    "products": [                     // 契約商品情報
+      {
+        "productId": "LIFE01",        // 商品ID
+        "coverage": {                 // 補償内容
+          "amount": 12000000          // 保険金額（変更）
+        }
+      }
+    ],
+    "payment": {                      // 支払情報
+      "method": "credit_card",        // 支払方法（変更）
+      "cardInfo": {                   // クレジットカード情報
+        "brand": "VISA",              // カードブランド
+        "last4": "1234"               // カード番号下4桁
+      }
+    },
+    "updateInfo": {                   // 更新情報
+      "updateDate": "2026-03-10",     // 更新日
+      "operator": "system"            // 更新者
+    }
+  }
+}
