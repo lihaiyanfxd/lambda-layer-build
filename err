@@ -1,22 +1,5 @@
-def merge_simple(oya_items, ko_items):
+manual merge time: 7.04400000017813e-06
 
-    result = []
-
-    for oya in oya_items:
-
-        for ko in ko_items:
-
-            if oya["pol"] == ko["pol"]:
-
-                merged = {
-                    "pol": oya["pol"],
-                    "Kihondata": oya["Kihondata"],
-                    "info": {
-                        "test1": oya["info"]["test1"],
-                        "test2": ko["info"]["test2"]
-                    }
-                }
-
-                result.append(merged)
-
-    return result
+manual merge time: 2.4219966160000013
+    #for _ in range(100000):
+    result = merge_simple(oya_data["items"], ko_data["items"])
