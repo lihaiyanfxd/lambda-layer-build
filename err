@@ -1,11 +1,24 @@
-def merge_json(a, b):
+def merge_rule(oya, ko):
 
-    for key, value in b.items():
+    if oya["pol"] != ko["pol"]:
+        return None
 
-        if key in a and isinstance(a[key], dict) and isinstance(value, dict):
-            merge_json(a[key], value)
+    result = {
+        "pol": oya["pol"],
+        "kihon": oya["kihon"],
+        "info": {}
+    }
 
+    rules = {
+        "test1": "oya",
+        "test2": "ko"
+    }
+
+    for key, source in rules.items():
+
+        if source == "oya":
+            result["info"][key] = oya["info"][key]
         else:
-            a[key] = value
+            result["info"][key] = ko["info"][key]
 
-    return a
+    return result
