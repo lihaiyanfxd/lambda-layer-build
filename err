@@ -1,20 +1,22 @@
-{
-  "items": [
-    {
-      "pol": 3,
-      "Kihondata": "親",
-      "info": {
-        "test1": "親test1",
-        "test2": "親test2"
-      }
-    },
-    {
-      "pol": 5,
-      "Kihondata": "B親",
-      "info": {
-        "test1": "B親test1",
-        "test2": "B親test2"
-      }
-    }
-  ]
-}
+def merge_simple(oya_items, ko_items):
+
+    result = []
+
+    for oya in oya_items:
+
+        for ko in ko_items:
+
+            if oya["pol"] == ko["pol"]:
+
+                merged = {
+                    "pol": oya["pol"],
+                    "Kihondata": oya["Kihondata"],
+                    "info": {
+                        "test1": oya["info"]["test1"],
+                        "test2": ko["info"]["test2"]
+                    }
+                }
+
+                result.append(merged)
+
+    return result
