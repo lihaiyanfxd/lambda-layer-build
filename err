@@ -1,23 +1,20 @@
-def merge_manual(oya, ko):
-
-    if oya["pol"] != ko["pol"]:
-        return None
-
-    result = {
-        "pol": oya["pol"],
-        "kihon": oya["kihon"],
-        "info": {
-            "test1": oya["info"]["test1"],
-            "test2": ko["info"]["test2"]
-        }
+{
+  "items": [
+    {
+      "pol": 3,
+      "Kihondata": "親",
+      "info": {
+        "test1": "親test1",
+        "test2": "親test2"
+      }
+    },
+    {
+      "pol": 5,
+      "Kihondata": "B親",
+      "info": {
+        "test1": "B親test1",
+        "test2": "B親test2"
+      }
     }
-
-    return result
-
-
-start = time.perf_counter()
-for _ in range(100000):
-    merge_manual(oya, ko)
-end = time.perf_counter()
-
-print("manual merge time:", end - start)
+  ]
+}
