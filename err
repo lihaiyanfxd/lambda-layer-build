@@ -1,5 +1,26 @@
-manual merge time: 7.04400000017813e-06
+def merge_dict(oya_items, ko_items):
 
-manual merge time: 2.4219966160000013
-    #for _ in range(100000):
-    result = merge_simple(oya_data["items"], ko_data["items"])
+    ko_map = {item["pol"]: item for item in ko_items}
+
+    result = []
+
+    for oya in oya_items:
+
+        pol = oya["pol"]
+
+        if pol in ko_map:
+
+            ko = ko_map[pol]
+
+            merged = {
+                "pol": pol,
+                "Kihondata": oya["Kihondata"],
+                "info": {
+                    "test1": oya["info"]["test1"],
+                    "test2": ko["info"]["test2"]
+                }
+            }
+
+            result.append(merged)
+
+    return result
