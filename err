@@ -1,14 +1,22 @@
-def recursive_merge(parent, child):
+def merge_dict_index(oya, ko):
 
-    for key, value in child.items():
+    result = oya.copy()
 
-        if key in parent and isinstance(parent[key], dict) and isinstance(value, dict):
-            recursive_merge(parent[key], value)
+    ko_map = {
+        p["productId"]: p
+        for p in ko["contract"]["productList"]
+    }
 
-        elif key in parent and isinstance(parent[key], list) and isinstance(value, list):
-            parent[key].extend(value)
+    for p in result["contract"]["productList"]:
+        pid = p["productId"]
 
-        else:
-            parent[key] = value
+        if pid in ko_map:
+            p["coverage"].update(
+                ko_map[pid]["coverage"]
+            )
 
-    return parent
+    result["contract"]["history"].extend(
+        ko["contract"]["history"]
+    )
+
+    return result
