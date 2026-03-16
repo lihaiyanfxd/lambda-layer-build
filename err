@@ -1,20 +1,14 @@
-def merge_manual(oya, ko):
+def recursive_merge(parent, child):
 
-    result = oya.copy()
+    for key, value in child.items():
 
-    # address
-    if "contractBasic" in ko["contract"]:
-        if "contractor" in ko["contract"]["contractBasic"]:
-            addr_child = ko["contract"]["contractBasic"]["contractor"]["address"]
-            result["contract"]["contractBasic"]["contractor"]["address"].update(addr_child)
+        if key in parent and isinstance(parent[key], dict) and isinstance(value, dict):
+            recursive_merge(parent[key], value)
 
-    # product
-    for ko_product in ko["contract"]["productList"]:
-        for oya_product in result["contract"]["productList"]:
-            if ko_product["productId"] == oya_product["productId"]:
-                oya_product["coverage"].update(ko_product["coverage"])
+        elif key in parent and isinstance(parent[key], list) and isinstance(value, list):
+            parent[key].extend(value)
 
-    # history append
-    result["contract"]["history"].extend(ko["contract"]["history"])
+        else:
+            parent[key] = value
 
-    return result
+    return parent
