@@ -27,15 +27,6 @@
         }
       },
 
-      "insured": {
-        "insuredId": "I000567",
-        "name": "山田花子",
-        "birthday": "1990-03-03",
-        "gender": "F",
-        "relationship": "spouse"
-      }
-    },
-
     "productList": [
       {
         "productId": "LIFE01",
@@ -82,29 +73,7 @@
           "currency": "JPY"
         }
       }
-    ],
-
-    "payment": {
-      "method": "bank",
-
-      "bankAccount": {
-        "bankName": "みずほ銀行",
-        "branch": "新宿支店",
-        "accountType": "普通",
-        "accountNo": "1234567"
-      },
-
-      "billingCycle": "monthly"
-    },
-
-    "history": [
-      {
-        "changeType": "NEW",
-        "changeDate": "2023-01-01",
-        "operator": "system"
-      }
     ]
-  }
 }
 
 {
@@ -142,25 +111,27 @@
         "premium": {
           "monthly": 15000
         }
-      }
-    ],
-
-    "payment": {
-      "method": "credit_card",
-
-      "cardInfo": {
-        "brand": "VISA",
-        "last4": "1234",
-        "expire": "2028-10"
-      }
-    },
-
-    "history": [
+      },
       {
-        "changeType": "UPDATE",
-        "changeDate": "2026-03-10",
-        "operator": "system"
-      }
+        "productId": "MED01",
+
+        "coverage": {
+          "amount": 13000000
+        },
+
+        "benefitList": [
+          {
+            "benefitId": "HOSP",
+            "benefitName": "入院特約",
+            "benefitAmount": 3000000
+          }
+        ],
+
+        "premium": {
+          "monthly": 15000
+        }
+      },
     ]
+
   }
 }
