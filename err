@@ -1,149 +1,43 @@
-{
-  "contract": {
-    "contractBasic": {
-      "pol": "POL10001",
-      "status": "ACTIVE",
-      "contractDate": "2023-01-01",
-      "startDate": "2023-02-01",
-      "endDate": "2043-02-01",
+import copy
 
-      "contractor": {
-        "contractorId": "C001234",
-        "name": "山田太郎",
-        "birthday": "1985-05-01",
-        "gender": "M",
+def merge_nested_loop(oya_json, ko_json):
 
-        "contact": {
-          "phone": "09011112222",
-          "email": "taro@example.com"
-        },
+    oya = oya_json["contract"]
+    ko = ko_json["contract"]
 
-        "address": {
-          "country": "Japan",
-          "prefecture": "Tokyo",
-          "city": "Shinjuku",
-          "zip": "1600000",
-          "street": "1-1-1"
-        }
-      }
-    },
+    result = {}
 
-    "productList": [
-      {
-        "productId": "LIFE01",
-        "productName": "終身保険",
+    # 親契約基本情報コピー
+    result["contractBasic"] = copy.deepcopy(oya["contractBasic"])
 
-        "coverage": {
-          "amount": 10000000,
-          "currency": "JPY"
-        },
+    # 子優先
+    child_contractor = ko.get("contractBasic", {}).get("contractor", {})
 
-        "benefitList": [
-          {
-            "benefitId": "ACC",
-            "benefitName": "傷害特約",
-            "benefitAmount": 2000000
-          },
-          {
-            "benefitId": "DIS",
-            "benefitName": "障害特約",
-            "benefitAmount": 1000000
-          }
-        ],
+    if "contact" in child_contractor:
+        result["contractBasic"]["contractor"]["contact"] = child_contractor["contact"]
 
-        "premium": {
-          "monthly": 12000,
-          "currency": "JPY"
-        }
-      },
+    if "address" in child_contractor:
+        result["contractBasic"]["contractor"]["address"] = child_contractor["address"]
 
-      {
-        "productId": "MED01",
-        "productName": "医療保険",
+    # 商品コピー
+    result["productList"] = copy.deepcopy(oya["productList"])
 
-        "coverage": {
-          "amount": 5000000,
-          "currency": "JPY"
-        },
+    for p in result["productList"]:
 
-        "benefitList": [
-          {
-            "benefitId": "HOSP",
-            "benefitName": "入院特約",
-            "benefitAmount": 10000
-          }
-        ],
+        for c in ko.get("productList", []):
 
-        "premium": {
-          "monthly": 8000,
-          "currency": "JPY"
-        }
-      }
-    ]
-  }
-}
+            if p["productId"] == c["productId"]:
 
+                if "coverage" in c:
+                    p["coverage"] = c["coverage"]
 
-{
-  "contract": {
+                if "premium" in c:
+                    p["premium"] = c["premium"]
 
-    "contractBasic": {
-      "contractor": {
+                for pb in p.get("benefitList", []):
+                    for cb in c.get("benefitList", []):
 
-        "contact": {
-          "phone": "09099998888"
-        },
+                        if pb["benefitId"] == cb["benefitId"]:
+                            pb.update(cb)
 
-        "address": {
-          "city": "Osaka",
-          "zip": "5300001"
-        }
-
-      }
-    },
-
-    "productList": [
-
-      {
-        "productId": "LIFE01",
-
-        "coverage": {
-          "amount": 12000000
-        },
-
-        "benefitList": [
-          {
-            "benefitId": "DIS",
-            "benefitName": "障害特約",
-            "benefitAmount": 3000000
-          }
-        ],
-
-        "premium": {
-          "monthly": 15000
-        }
-      },
-
-      {
-        "productId": "MED01",
-
-        "coverage": {
-          "amount": 13000000
-        },
-
-        "benefitList": [
-          {
-            "benefitId": "HOSP",
-            "benefitName": "入院特約",
-            "benefitAmount": 3000000
-          }
-        ],
-
-        "premium": {
-          "monthly": 15000
-        }
-      }
-
-    ]
-  }
-}
+    return {"contract": result}
