@@ -1,20 +1,32 @@
-{
-  "contract.contractBasic": "parent",
-  "contract.contractor": "parent",
-  "contract.contractor.contact": "child",
-  "contract.contractor.address": "child"
-}
+[
+  {
+    "path": "contract.contractBasic",
+    "rule": "parent"
+  },
+  {
+    "path": "contract.contractor",
+    "rule": "parent"
+  },
+  {
+    "path": "contract.contractor.contact",
+    "rule": "child"
+  },
+  {
+    "path": "contract.contractor.address",
+    "rule": "child"
+  }
+]
 
 import json
 
-def get_path(data, path):
-    keys = path.split(".")
-    for k in keys:
-        data = data[k]
+
+def get(data, path):
+    for p in path.split("."):
+        data = data[p]
     return data
 
 
-def set_path(data, path, value):
+def set(data, path, value):
     keys = path.split(".")
     for k in keys[:-1]:
         data = data.setdefault(k, {})
@@ -27,19 +39,20 @@ with open("oya.json") as f:
 with open("ko.json") as f:
     ko = json.load(f)
 
-with open("path_rules.json") as f:
+with open("merge_rules.json") as f:
     rules = json.load(f)
 
 result = {}
 
-for path, rule in rules.items():
+for rule in rules:
 
-    if rule == "parent":
-        value = get_path(oya, path)
+    path = rule["path"]
 
+    if rule["rule"] == "parent":
+        value = get(oya, path)
     else:
-        value = get_path(ko, path)
+        value = get(ko, path)
 
-    set_path(result, path, value)
+    set(result, path, value)
 
 print(json.dumps(result, indent=2, ensure_ascii=False))
