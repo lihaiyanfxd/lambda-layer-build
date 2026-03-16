@@ -1,47 +1,105 @@
-import copy
+{
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
+    },
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "productName": "終身保険",
+        "coverage": {
+          "amount": 10000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitAmount": 2000000
+          }
+        ],
+        "premium": {
+          "monthly": 12000
+        }
+      }
+    ]
+  }
+}
+{
+  "contract": {
+    "contractor": {
+      "contact": {
+        "phone": "09099998888"
+      },
+      "address": {
+        "city": "Osaka"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "coverage": {
+          "amount": 12000000
+        },
+        "premium": {
+          "monthly": 15000
+        }
+      }
+    ]
+  }
+}
+import json
 
-def merge_nested_loop(oya_json, ko_json):
+with open("oya.json") as f:
+    oya = json.load(f)
 
-    oya = oya_json["contract"]
-    ko = ko_json["contract"]
+with open("ko.json") as f:
+    ko = json.load(f)
 
-    result = {}
+result = {"contract": {}}
 
-    # ② 親契約基本情報コピー
-    result["contractBasic"] = copy.deepcopy(oya["contractBasic"])
+# 契約基本情報 親優先
+result["contract"]["contractBasic"] = oya["contract"]["contractBasic"]
 
-    child_contractor = ko.get("contractBasic", {}).get("contractor", {})
+# 契約者情報 親優先
+result["contract"]["contractor"] = oya["contract"]["contractor"]
 
-    if "contact" in child_contractor:
-        result["contractBasic"]["contractor"]["contact"] = child_contractor["contact"]
+# 連絡先 子優先
+if "contractor" in ko["contract"]:
+    result["contract"]["contractor"]["contact"].update(
+        ko["contract"]["contractor"]["contact"]
+    )
 
-    if "address" in child_contractor:
-        parent_addr = result["contractBasic"]["contractor"]["address"]
-        child_addr = child_contractor["address"]
+# 住所 子優先
+result["contract"]["contractor"]["address"].update(
+    ko["contract"]["contractor"]["address"]
+)
 
-        for k, v in child_addr.items():
-            parent_addr[k] = v
+# 商品 merge
+parent_products = oya["contract"]["productList"]
+child_products = ko["contract"]["productList"]
 
-    # 商品
-    result["productList"] = copy.deepcopy(oya["productList"])
+merged_products = []
 
-    for p in result["productList"]:
+for p in parent_products:
+    for c in child_products:
+        if p["productId"] == c["productId"]:
 
-        for c in ko.get("productList", []):
+            p["coverage"].update(c["coverage"])
+            p["premium"].update(c["premium"])
 
-            if p["productId"] == c["productId"]:
+    merged_products.append(p)
 
-                if "coverage" in c:
-                    p["coverage"] = c["coverage"]
+result["contract"]["productList"] = merged_products
 
-                if "premium" in c:
-                    p["premium"] = c["premium"]
-
-                for pb in p.get("benefitList", []):
-
-                    for cb in c.get("benefitList", []):
-
-                        if pb["benefitId"] == cb["benefitId"]:
-                            pb.update(cb)
-
-    return {"contract": result}
+print(json.dumps(result, indent=2, ensure_ascii=False))
