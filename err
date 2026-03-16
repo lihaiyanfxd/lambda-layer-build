@@ -1,116 +1,166 @@
 {
-  "contract": {                       // 契約情報
-    "pol": "POL10001",                // 契約番号
-    "status": "active",               // 契約ステータス
-    "basicInfo": {                    // 契約基本情報
-      "contractor": {                 // 契約者情報
-        "name": "山田太郎",            // 契約者氏名
-        "birthday": "1985-05-01",     // 生年月日
-        "gender": "M"                 // 性別
-      },
-      "address": {                    // 住所情報
-        "country": "Japan",           // 国
-        "prefecture": "Tokyo",        // 都道府県
-        "city": "Shinjuku",           // 市区町村
-        "zip": "1600000"              // 郵便番号
-      }
-    },
-    "products": [                     // 契約商品情報
-      {
-        "productId": "LIFE01",        // 商品ID
-        "productName": "生命保険",     // 商品名
-        "coverage": {                 // 補償内容
-          "amount": 10000000,         // 保険金額
-          "currency": "JPY"           // 通貨
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE",
+      "contractDate": "2023-01-01",
+      "startDate": "2023-02-01",
+      "endDate": "2043-02-01",
+
+      "contractor": {
+        "contractorId": "C001234",
+        "name": "山田太郎",
+        "birthday": "1985-05-01",
+        "gender": "M",
+
+        "contact": {
+          "phone": "09011112222",
+          "email": "taro@example.com"
+        },
+
+        "address": {
+          "country": "Japan",
+          "prefecture": "Tokyo",
+          "city": "Shinjuku",
+          "zip": "1600000",
+          "street": "1-1-1"
         }
       },
+
+      "insured": {
+        "insuredId": "I000567",
+        "name": "山田花子",
+        "birthday": "1990-03-03",
+        "gender": "F",
+        "relationship": "spouse"
+      }
+    },
+
+    "productList": [
       {
-        "productId": "MED01",         // 商品ID
-        "productName": "医療保険",     // 商品名
-        "coverage": {                 // 補償内容
-          "amount": 5000000,          // 保険金額
-          "currency": "JPY"           // 通貨
+        "productId": "LIFE01",
+        "productName": "終身保険",
+
+        "coverage": {
+          "amount": 10000000,
+          "currency": "JPY"
+        },
+
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitName": "傷害特約",
+            "benefitAmount": 2000000
+          }
+        ],
+
+        "premium": {
+          "monthly": 12000,
+          "currency": "JPY"
+        }
+      },
+
+      {
+        "productId": "MED01",
+        "productName": "医療保険",
+
+        "coverage": {
+          "amount": 5000000,
+          "currency": "JPY"
+        },
+
+        "benefitList": [
+          {
+            "benefitId": "HOSP",
+            "benefitName": "入院特約",
+            "benefitAmount": 10000
+          }
+        ],
+
+        "premium": {
+          "monthly": 8000,
+          "currency": "JPY"
         }
       }
     ],
-    "payment": {                      // 支払情報
-      "method": "bank",               // 支払方法
-      "account": {                    // 口座情報
-        "bankName": "みずほ銀行",      // 銀行名
-        "branch": "新宿支店"           // 支店名
+
+    "payment": {
+      "method": "bank",
+
+      "bankAccount": {
+        "bankName": "みずほ銀行",
+        "branch": "新宿支店",
+        "accountType": "普通",
+        "accountNo": "1234567"
+      },
+
+      "billingCycle": "monthly"
+    },
+
+    "history": [
+      {
+        "changeType": "NEW",
+        "changeDate": "2023-01-01",
+        "operator": "system"
       }
-    }
+    ]
   }
 }
 {
-  "contract": {                       // 契約情報
-    "pol": "POL10001",                // 契約番号
-    "basicInfo": {                    // 契約基本情報
-      "address": {                    // 住所情報
-        "city": "Osaka",              // 市区町村（変更）
-        "zip": "5300001"              // 郵便番号（変更）
+  "contract": {
+
+    "contractBasic": {
+      "contractor": {
+        "contact": {
+          "phone": "09099998888"
+        },
+
+        "address": {
+          "city": "Osaka",
+          "zip": "5300001"
+        }
       }
     },
-    "products": [                     // 契約商品情報
+
+    "productList": [
       {
-        "productId": "LIFE01",        // 商品ID
-        "coverage": {                 // 補償内容
-          "amount": 12000000          // 保険金額（変更）
+        "productId": "LIFE01",
+
+        "coverage": {
+          "amount": 12000000
+        },
+
+        "benefitList": [
+          {
+            "benefitId": "DIS",
+            "benefitName": "障害特約",
+            "benefitAmount": 3000000
+          }
+        ],
+
+        "premium": {
+          "monthly": 15000
         }
       }
     ],
-    "payment": {                      // 支払情報
-      "method": "credit_card",        // 支払方法（変更）
-      "cardInfo": {                   // クレジットカード情報
-        "brand": "VISA",              // カードブランド
-        "last4": "1234"               // カード番号下4桁
+
+    "payment": {
+      "method": "credit_card",
+
+      "cardInfo": {
+        "brand": "VISA",
+        "last4": "1234",
+        "expire": "2028-10"
       }
     },
-    "updateInfo": {                   // 更新情報
-      "updateDate": "2026-03-10",     // 更新日
-      "operator": "system"            // 更新者
-    }
+
+    "history": [
+      {
+        "changeType": "UPDATE",
+        "changeDate": "2026-03-10",
+        "operator": "system"
+      }
+    ]
   }
 }
 
-
-def merge_manual(oya, ko):
-
-    result = {
-        "contract": {
-            "pol": oya["contract"]["pol"],
-            "status": oya["contract"]["status"],
-            "basicInfo": {
-                "contractor": oya["contract"]["basicInfo"]["contractor"],
-                "address": {
-                    **oya["contract"]["basicInfo"]["address"],
-                    **ko["contract"]["basicInfo"]["address"]
-                }
-            },
-            "products": [],
-            "payment": ko["contract"]["payment"],
-            "updateInfo": ko["contract"]["updateInfo"]
-        }
-    }
-
-    ko_products = {p["productId"]: p for p in ko["contract"]["products"]}
-
-    for p in oya["contract"]["products"]:
-
-        if p["productId"] in ko_products:
-
-            merged = {
-                "productId": p["productId"],
-                "productName": p["productName"],
-                "coverage": {
-                    "amount": ko_products[p["productId"]]["coverage"]["amount"],
-                    "currency": p["coverage"]["currency"]
-                }
-            }
-
-        else:
-            merged = p
-
-        result["contract"]["products"].append(merged)
-
-    return result
