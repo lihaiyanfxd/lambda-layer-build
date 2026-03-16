@@ -1,64 +1,25 @@
 {
-  "contract": {
-    "contractBasic": {
-      "pol": "POL10001",
-      "status": "ACTIVE"
-    },
-    "contractor": {
-      "name": "山田太郎",
-      "contact": {
-        "phone": "09011112222",
-        "email": "taro@example.com"
-      },
-      "address": {
-        "city": "Tokyo",
-        "zip": "1600000"
-      }
-    },
-    "productList": [
-      {
-        "productId": "LIFE01",
-        "productName": "終身保険",
-        "coverage": {
-          "amount": 10000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "ACC",
-            "benefitAmount": 2000000
-          }
-        ],
-        "premium": {
-          "monthly": 12000
-        }
-      }
-    ]
-  }
+  "contract.contractBasic": "parent",
+  "contract.contractor": "parent",
+  "contract.contractor.contact": "child",
+  "contract.contractor.address": "child"
 }
-{
-  "contract": {
-    "contractor": {
-      "contact": {
-        "phone": "09099998888"
-      },
-      "address": {
-        "city": "Osaka"
-      }
-    },
-    "productList": [
-      {
-        "productId": "LIFE01",
-        "coverage": {
-          "amount": 12000000
-        },
-        "premium": {
-          "monthly": 15000
-        }
-      }
-    ]
-  }
-}
+
 import json
+
+def get_path(data, path):
+    keys = path.split(".")
+    for k in keys:
+        data = data[k]
+    return data
+
+
+def set_path(data, path, value):
+    keys = path.split(".")
+    for k in keys[:-1]:
+        data = data.setdefault(k, {})
+    data[keys[-1]] = value
+
 
 with open("oya.json") as f:
     oya = json.load(f)
@@ -66,40 +27,19 @@ with open("oya.json") as f:
 with open("ko.json") as f:
     ko = json.load(f)
 
-result = {"contract": {}}
+with open("path_rules.json") as f:
+    rules = json.load(f)
 
-# 契約基本情報 親優先
-result["contract"]["contractBasic"] = oya["contract"]["contractBasic"]
+result = {}
 
-# 契約者情報 親優先
-result["contract"]["contractor"] = oya["contract"]["contractor"]
+for path, rule in rules.items():
 
-# 連絡先 子優先
-if "contractor" in ko["contract"]:
-    result["contract"]["contractor"]["contact"].update(
-        ko["contract"]["contractor"]["contact"]
-    )
+    if rule == "parent":
+        value = get_path(oya, path)
 
-# 住所 子優先
-result["contract"]["contractor"]["address"].update(
-    ko["contract"]["contractor"]["address"]
-)
+    else:
+        value = get_path(ko, path)
 
-# 商品 merge
-parent_products = oya["contract"]["productList"]
-child_products = ko["contract"]["productList"]
-
-merged_products = []
-
-for p in parent_products:
-    for c in child_products:
-        if p["productId"] == c["productId"]:
-
-            p["coverage"].update(c["coverage"])
-            p["premium"].update(c["premium"])
-
-    merged_products.append(p)
-
-result["contract"]["productList"] = merged_products
+    set_path(result, path, value)
 
 print(json.dumps(result, indent=2, ensure_ascii=False))
