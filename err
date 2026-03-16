@@ -43,6 +43,11 @@
             "benefitId": "ACC",
             "benefitName": "傷害特約",
             "benefitAmount": 2000000
+          },
+          {
+            "benefitId": "DIS",
+            "benefitName": "障害特約",
+            "benefitAmount": 1000000
           }
         ],
 
@@ -77,11 +82,14 @@
     ]
   }
 }
+
+
 {
   "contract": {
 
     "contractBasic": {
       "contractor": {
+
         "contact": {
           "phone": "09099998888"
         },
@@ -90,10 +98,12 @@
           "city": "Osaka",
           "zip": "5300001"
         }
+
       }
     },
 
     "productList": [
+
       {
         "productId": "LIFE01",
 
@@ -133,7 +143,7 @@
           "monthly": 15000
         }
       }
-    ]
 
+    ]
   }
 }
