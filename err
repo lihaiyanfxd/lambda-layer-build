@@ -7,19 +7,22 @@ def merge_nested_loop(oya_json, ko_json):
 
     result = {}
 
-    # 親契約基本情報コピー
+    # ② 親契約基本情報コピー
     result["contractBasic"] = copy.deepcopy(oya["contractBasic"])
 
-    # 子優先
     child_contractor = ko.get("contractBasic", {}).get("contractor", {})
 
     if "contact" in child_contractor:
         result["contractBasic"]["contractor"]["contact"] = child_contractor["contact"]
 
     if "address" in child_contractor:
-        result["contractBasic"]["contractor"]["address"] = child_contractor["address"]
+        parent_addr = result["contractBasic"]["contractor"]["address"]
+        child_addr = child_contractor["address"]
 
-    # 商品コピー
+        for k, v in child_addr.items():
+            parent_addr[k] = v
+
+    # 商品
     result["productList"] = copy.deepcopy(oya["productList"])
 
     for p in result["productList"]:
@@ -35,6 +38,7 @@ def merge_nested_loop(oya_json, ko_json):
                     p["premium"] = c["premium"]
 
                 for pb in p.get("benefitList", []):
+
                     for cb in c.get("benefitList", []):
 
                         if pb["benefitId"] == cb["benefitId"]:
