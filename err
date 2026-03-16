@@ -1,22 +1,29 @@
-def merge_dict_index(oya, ko):
+def get_by_path(data, path):
+
+    keys = path.split(".")
+    for k in keys:
+        data = data[k]
+    return data
+
+
+def merge_path_rule(oya, ko, rules):
 
     result = oya.copy()
 
-    ko_map = {
-        p["productId"]: p
-        for p in ko["contract"]["productList"]
-    }
+    for path, rule in rules.items():
 
-    for p in result["contract"]["productList"]:
-        pid = p["productId"]
+        if rule == "child":
 
-        if pid in ko_map:
-            p["coverage"].update(
-                ko_map[pid]["coverage"]
-            )
+            parent_node = get_by_path(result, path)
+            child_node = get_by_path(ko, path)
 
-    result["contract"]["history"].extend(
-        ko["contract"]["history"]
-    )
+            parent_node.update(child_node)
+
+        if rule == "append":
+
+            parent_node = get_by_path(result, path)
+            child_node = get_by_path(ko, path)
+
+            parent_node.extend(child_node)
 
     return result
