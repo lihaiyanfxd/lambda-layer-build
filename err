@@ -1,3 +1,28 @@
+{
+  "contract": {
+    "contractBasic": "parent",
+    "contractor": {
+      "name": "parent",
+      "contact": "child",
+      "address": "child"
+    },
+    "productList": {
+      "key": "productId",
+      "merge": {
+        "productName": "parent",
+        "coverage": "child",
+        "premium": "child",
+        "benefitList": {
+          "key": "benefitId",
+          "merge": {
+            "benefitName": "parent",
+            "benefitAmount": "child"
+          }
+        }
+      }
+    }
+  }
+}
 Oya.json
 {
   "contract": {
