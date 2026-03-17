@@ -1,112 +1,68 @@
 {
   "contract": {
-    "contractBasic": {
-      "pol": "POL10001",
-      "status": "ACTIVE"
-    },
+    "contractBasic": "parent",
     "contractor": {
-      "name": "山田太郎",
-      "contact": {
-        "phone": "09011112222",
-        "email": "taro@example.com"
-      },
-      "address": {
-        "city": "Tokyo",
-        "zip": "1600000"
-      }
+      "name": "parent",
+      "contact": "child",
+      "address": "child"
     },
-    "productList": [
-      {
-        "productId": "LIFE01",
-        "productName": "終身保険",
-        "coverage": {
-          "amount": 10000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "ACC",
-            "benefitName": "傷害特約",
-            "benefitAmount": 1200000
+    "productList": {
+      "key": "productId",
+      "merge": {
+        "productName": "parent",
+        "coverage": "child",
+        "premium": "child",
+        "benefitList": {
+          "key": "benefitId",
+          "merge": {
+            "benefitName": "parent",
+            "benefitAmount": "child"
           }
-        ],
-        "premium": {
-          "monthly": 13000
-        }
-      },
-      {
-        "productId": "MED01",
-        "productName": "医療保険",
-        "coverage": {
-          "amount": 14000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "HOSP",
-            "benefitName": "入院特約",
-            "benefitAmount": 1500000
-          }
-        ],
-        "premium": {
-          "monthly": 16000
         }
       }
-    ]
+    }
   }
 }
 
-{
-  "contract": {
-    "contractBasic": {
-      "pol": "POL10001",
-      "status": "ACTIVE"
-    },
-    "contractor": {
-      "name": "山田太郎",
-      "contact": {
-        "phone": "09011112222",
-        "email": "taro@example.com"
-      },
-      "address": {
-        "city": "Tokyo",
-        "zip": "1600000"
-      }
-    },
-    "productList": [
-      {
-        "productId": "LIFE01",
-        "productName": "終身保険",
-        "coverage": {
-          "amount": 10000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "ACC",
-            "benefitName": "傷害特約",
-            "benefitAmount": 1200000
-          }
-        ],
-        "premium": {
-          "monthly": 13000
-        }
-      },
-      {
-        "productId": "MED01",
-        "productName": "医療保険",
-        "coverage": {
-          "amount": 14000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "HOSP",
-            "benefitName": "入院特約",
-            "benefitAmount": 1500000
-          }
-        ],
-        "premium": {
-          "monthly": 16000
-        }
-      }
-    ]
-  }
-}
+def merge_v1(parent, child):
+    result = parent.copy()
 
+    for p in result["contract"]["productList"]:
+        for c in child["contract"]["productList"]:
+            if p["productId"] == c["productId"]:
+                p["coverage"] = c["coverage"]
+                p["premium"] = c["premium"]
+
+                for pb in p["benefitList"]:
+                    for cb in c["benefitList"]:
+                        if pb["benefitId"] == cb["benefitId"]:
+                            pb["benefitAmount"] = cb["benefitAmount"]
+
+    return result
+
+def merge_v3(parent, child):
+    result = parent.copy()
+
+    child_products = {
+        c["productId"]: c for c in child["contract"]["productList"]
+    }
+
+    for p in result["contract"]["productList"]:
+        pid = p["productId"]
+
+        if pid in child_products:
+            c = child_products[pid]
+
+            p["coverage"] = c["coverage"]
+            p["premium"] = c["premium"]
+
+            child_benefits = {
+                b["benefitId"]: b for b in c["benefitList"]
+            }
+
+            for pb in p["benefitList"]:
+                bid = pb["benefitId"]
+                if bid in child_benefits:
+                    pb["benefitAmount"] = child_benefits[bid]["benefitAmount"]
+
+    return result
