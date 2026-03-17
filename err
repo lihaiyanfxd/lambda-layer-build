@@ -1,108 +1,76 @@
 import json
+import time
 
 # =========================
-# 1. 基础信息（固定）
+# 1. 读取数据
 # =========================
-contract_basic = {
-    "pol": "POL10001",
-    "status": "ACTIVE"
-}
+with open("oya.json", "r", encoding="utf-8") as f:
+    oya_json = json.load(f)
 
-contractor = {
-    "name": "山田太郎",
-    "contact": {
-        "phone": "09011112222",
-        "email": "taro@example.com"
-    },
-    "address": {
-        "city": "Tokyo",
-        "zip": "1600000"
-    }
-}
+with open("ko.json", "r", encoding="utf-8") as f:
+    ko_json = json.load(f)
+
+oya_products = oya_json["contract"]["productList"]
+ko_products = ko_json["contract"]["productList"]
 
 # =========================
-# 2. 生成 oya productList
+# 2. 二重ループ merge
 # =========================
-oya_products = []
+start = time.perf_counter()
 
-for i in range(1, 1001):
-    product = {
-        "productId": f"LIFE{i:02d}",   # LIFE01～LIFE1000（两位起步）
-        "productName": f"終身保険{i}",
-        "coverage": {
-            "amount": 10000000 + i * 1000
-        },
-        "benefitList": [
-            {
-                "benefitId": f"ACC{i}",
-                "benefitName": f"傷害特約{i}",
-                "benefitAmount": 1000000 + i * 1000
-            }
-        ],
-        "premium": {
-            "monthly": 10000 + i
-        }
-    }
-    oya_products.append(product)
+result_double = []
 
-oya_json = {
+for oya_prod in oya_products:
+    merged = oya_prod.copy()
+
+    for ko_prod in ko_products:
+        if ko_prod["productId"] == oya_prod["productId"]:
+            # ⭐ 子覆盖父
+            merged = ko_prod
+            break
+
+    result_double.append(merged)
+
+end = time.perf_counter()
+print("二重ループ time:", end - start)
+
+# =========================
+# 3. dict merge（推荐）
+# =========================
+start = time.perf_counter()
+
+# 建索引
+ko_dict = {}
+for ko_prod in ko_products:
+    ko_dict[ko_prod["productId"]] = ko_prod
+
+result_dict = []
+
+for oya_prod in oya_products:
+    pid = oya_prod["productId"]
+
+    if pid in ko_dict:
+        result_dict.append(ko_dict[pid])  # 子覆盖
+    else:
+        result_dict.append(oya_prod)
+
+end = time.perf_counter()
+print("dict time:", end - start)
+
+# =========================
+# 4. 组装最终contract
+# =========================
+final_contract = {
     "contract": {
-        "contractBasic": contract_basic,
-        "contractor": contractor,
-        "productList": oya_products
+        "contractBasic": oya_json["contract"]["contractBasic"],
+        "contractor": oya_json["contract"]["contractor"],
+        "productList": result_dict   # 用dict结果
     }
 }
 
-# =========================
-# 3. 生成 ko（基于oya变更）
-# =========================
-ko_products = []
+# 输出
+with open("merged.json", "w", encoding="utf-8") as f:
+    json.dump(final_contract, f, indent=2, ensure_ascii=False)
 
-for prod in oya_products:
-    i = int(prod["productId"].replace("LIFE", ""))
-
-    new_product = {
-        "productId": prod["productId"],
-        "productName": prod["productName"],
-
-        # ⭐ 子：coverage变化
-        "coverage": {
-            "amount": prod["coverage"]["amount"] + 10000000
-        },
-
-        # ⭐ 子：benefit变化
-        "benefitList": [
-            {
-                "benefitId": prod["benefitList"][0]["benefitId"],
-                "benefitName": prod["benefitList"][0]["benefitName"],
-                "benefitAmount": prod["benefitList"][0]["benefitAmount"] + 1000000
-            }
-        ],
-
-        # ⭐ 子：premium变化
-        "premium": {
-            "monthly": prod["premium"]["monthly"] + 10000
-        }
-    }
-
-    ko_products.append(new_product)
-
-ko_json = {
-    "contract": {
-        "contractBasic": contract_basic,
-        "contractor": contractor,
-        "productList": ko_products
-    }
-}
-
-# =========================
-# 4. 写文件
-# =========================
-with open("oya.json", "w", encoding="utf-8") as f:
-    json.dump(oya_json, f, indent=2, ensure_ascii=False)
-
-with open("ko.json", "w", encoding="utf-8") as f:
-    json.dump(ko_json, f, indent=2, ensure_ascii=False)
-
-print("生成完成：")
-print("product数量:", len(oya_products))
+print("merge完成")
+print("product数量:", len(result_dict))
