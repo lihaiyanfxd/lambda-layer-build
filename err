@@ -1,3 +1,9 @@
+import copy
+import time
+
+# =========================
+# Merge 双循环方式
+# =========================
 def merge_double(oya_json, ko_json):
     print("merge_double()")
 
@@ -9,59 +15,120 @@ def merge_double(oya_json, ko_json):
 
     result_products = []
 
-    # =========================
-    # 1. product + benefit merge（原逻辑）
-    # =========================
+    # -------- product + benefit 二重循环 --------
     for oya_prod in oya_products:
-        merged = oya_prod.copy()
+        merged_prod = oya_prod.copy()
 
         for ko_prod in ko_products:
             if ko_prod["productId"] == oya_prod["productId"]:
+                merged_prod = ko_prod.copy()
 
-                merged = ko_prod.copy()
-
-                # ===== benefit 二重循环 =====
+                # benefit 二重循环
                 merged_benefits = []
-
                 for oya_b in oya_prod["benefitList"]:
                     found = False
-
                     for ko_b in ko_prod["benefitList"]:
                         if ko_b["benefitId"] == oya_b["benefitId"]:
                             merged_benefits.append(ko_b)
                             found = True
                             break
-
                     if not found:
                         merged_benefits.append(oya_b)
 
-                merged["benefitList"] = merged_benefits
+                merged_prod["benefitList"] = merged_benefits
                 break
 
-        result_products.append(merged)
+        result_products.append(merged_prod)
 
-    # =========================
-    # 2. contract 层 merge（重点🔥）
-    # =========================
+    # -------- contractor 深度 merge --------
+    def deep_merge_dict(oya, ko):
+        merged = oya.copy()
+        for k, v in ko.items():
+            if isinstance(v, dict) and k in merged:
+                merged[k] = deep_merge_dict(merged[k], v)
+            else:
+                merged[k] = v
+        return merged
 
-    # contractBasic（保留）
-    contract_basic = ko_contract.get("contractBasic", oya_contract.get("contractBasic"))
-
-    # contractor.address → ko优先
     oya_contractor = oya_contract.get("contractor", {})
     ko_contractor = ko_contract.get("contractor", {})
+    merged_contractor = deep_merge_dict(oya_contractor, ko_contractor)
 
-    merged_contractor = {}
+    # -------- contractBasic --------
+    contract_basic = ko_contract.get("contractBasic", oya_contract.get("contractBasic"))
 
-    if "address" in ko_contractor:
-        # ✔ 使用 ko 的 address（Osaka）
-        merged_contractor["address"] = ko_contractor["address"]
-    else:
-        merged_contractor["address"] = oya_contractor.get("address")
+    # -------- 最终结果 --------
+    result = {
+        "contract": {
+            "contractBasic": contract_basic,
+            "contractor": merged_contractor,
+            "productList": result_products
+        }
+    }
 
-    # =========================
-    # 3. 最终结果
-    # =========================
+    return result
+
+# =========================
+# Merge dict 索引方式
+# =========================
+def merge_dict(oya_json, ko_json):
+    print("merge_dict()")
+
+    oya_contract = oya_json["contract"]
+    ko_contract = ko_json["contract"]
+
+    oya_products = oya_contract["productList"]
+    ko_products = ko_contract["productList"]
+
+    # -------- product dict 索引 --------
+    ko_product_dict = {p["productId"]: p for p in ko_products}
+
+    result_products = []
+
+    for oya_prod in oya_products:
+        pid = oya_prod["productId"]
+
+        if pid in ko_product_dict:
+            ko_prod = ko_product_dict[pid]
+            merged_prod = ko_prod.copy()
+            # benefit dict merge
+            ko_b_dict = {b["benefitId"]: b for b in ko_prod["benefitList"]}
+            merged_benefits = []
+            for ob in oya_prod["benefitList"]:
+                bid = ob["benefitId"]
+                if bid in ko_b_dict:
+                    merged_benefits.append(ko_b_dict[bid])
+                else:
+                    merged_benefits.append(ob)
+            # 补新增
+            oya_ids = {b["benefitId"] for b in oya_prod["benefitList"]}
+            for kb in ko_prod["benefitList"]:
+                if kb["benefitId"] not in oya_ids:
+                    merged_benefits.append(kb)
+            merged_prod["benefitList"] = merged_benefits
+        else:
+            merged_prod = oya_prod.copy()
+
+        result_products.append(merged_prod)
+
+    # -------- contractor 深度 merge --------
+    def deep_merge_dict(oya, ko):
+        merged = oya.copy()
+        for k, v in ko.items():
+            if isinstance(v, dict) and k in merged:
+                merged[k] = deep_merge_dict(merged[k], v)
+            else:
+                merged[k] = v
+        return merged
+
+    oya_contractor = oya_contract.get("contractor", {})
+    ko_contractor = ko_contract.get("contractor", {})
+    merged_contractor = deep_merge_dict(oya_contractor, ko_contractor)
+
+    # -------- contractBasic --------
+    contract_basic = ko_contract.get("contractBasic", oya_contract.get("contractBasic"))
+
+    # -------- 最终结果 --------
     result = {
         "contract": {
             "contractBasic": contract_basic,
