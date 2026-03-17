@@ -53,3 +53,59 @@
     ]
   }
 }
+
+{
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
+    },
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "productName": "終身保険",
+        "coverage": {
+          "amount": 10000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitName": "傷害特約",
+            "benefitAmount": 1200000
+          }
+        ],
+        "premium": {
+          "monthly": 13000
+        }
+      },
+      {
+        "productId": "MED01",
+        "productName": "医療保険",
+        "coverage": {
+          "amount": 14000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "HOSP",
+            "benefitName": "入院特約",
+            "benefitAmount": 1500000
+          }
+        ],
+        "premium": {
+          "monthly": 16000
+        }
+      }
+    ]
+  }
+}
