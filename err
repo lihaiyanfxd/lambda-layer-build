@@ -1,152 +1,108 @@
 import json
-import random
-import copy
-
-NUM = 1000
-
-PRODUCTS = [
-    ("LIFE01", "終身保険"),
-    ("MED01", "医療保険"),
-    ("ACC01", "傷害保険")
-]
-
-BENEFITS = [
-    ("ACC", "傷害特約"),
-    ("HOSP", "入院特約"),
-    ("SURG", "手術特約"),
-    ("CANC", "がん特約")
-]
-
-NAMES = ["山田太郎", "佐藤花子", "鈴木一郎"]
-
-oya_list = []
-ko_list = []
-
-for i in range(NUM):
-    pol = f"POL{i:05d}"
-
-    # =========================
-    # 共通基础信息
-    # =========================
-    contract_basic = {
-        "pol": pol,
-        "status": random.choice(["ACTIVE", "CANCEL"])
-    }
-
-    contractor = {
-        "name": random.choice(NAMES),
-        "contact": {
-            "phone": f"090{random.randint(10000000,99999999)}",
-            "email": f"user{i}@example.com"
-        },
-        "address": {
-            "city": random.choice(["Tokyo", "Osaka"]),
-            "zip": str(random.randint(1000000,9999999))
-        }
-    }
-
-    # =========================
-    # 1️⃣ 生成 oya（基础 productList）
-    # =========================
-    base_products = []
-
-    for _ in range(random.randint(2, 3)):  # ⭐ 父：复数product
-        productId, productName = random.choice(PRODUCTS)
-
-        benefit = random.choice(BENEFITS)
-
-        base_products.append({
-            "productId": productId,
-            "productName": productName,
-            "coverage": {
-                "amount": random.randint(5000000, 15000000)
-            },
-            "benefitList": [
-                {
-                    "benefitId": benefit[0],
-                    "benefitName": benefit[1],
-                    "benefitAmount": random.randint(500000, 1500000)
-                }
-            ],
-            "premium": {
-                "monthly": random.randint(8000, 15000)
-            }
-        })
-
-    oya = {
-        "contract": {
-            "contractBasic": contract_basic,
-            "contractor": contractor,
-            "productList": base_products
-        }
-    }
-
-    oya_list.append(oya)
-
-    # =========================
-    # 2️⃣ 生成 ko（基于oya扩展）
-    # =========================
-    ko_products = []
-
-    for prod in base_products:
-        new_prod = copy.deepcopy(prod)
-
-        # ⭐ 在父基础上增加更多benefit（亲子差异点）
-        for _ in range(random.randint(1, 2)):
-            benefitId, benefitName = random.choice(BENEFITS)
-
-            new_prod["benefitList"].append({
-                "benefitId": benefitId,
-                "benefitName": benefitName,
-                "benefitAmount": random.randint(1000000, 3000000)
-            })
-
-        # ⭐ premium稍微变化（模拟变更）
-        new_prod["premium"]["monthly"] += random.randint(1000, 5000)
-
-        ko_products.append(new_prod)
-
-    # ⭐ 子可以额外增加新product（比父多）
-    if random.random() > 0.5:
-        productId, productName = random.choice(PRODUCTS)
-
-        ko_products.append({
-            "productId": productId,
-            "productName": productName,
-            "coverage": {
-                "amount": random.randint(10000000, 20000000)
-            },
-            "benefitList": [
-                {
-                    "benefitId": "NEW",
-                    "benefitName": "新規特約",
-                    "benefitAmount": random.randint(1000000, 3000000)
-                }
-            ],
-            "premium": {
-                "monthly": random.randint(10000, 20000)
-            }
-        })
-
-    ko = {
-        "contract": {
-            "contractBasic": contract_basic,
-            "contractor": contractor,
-            "productList": ko_products
-        }
-    }
-
-    ko_list.append(ko)
 
 # =========================
-# 输出JSON
+# 1. 基础信息（固定）
+# =========================
+contract_basic = {
+    "pol": "POL10001",
+    "status": "ACTIVE"
+}
+
+contractor = {
+    "name": "山田太郎",
+    "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+    },
+    "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+    }
+}
+
+# =========================
+# 2. 生成 oya productList
+# =========================
+oya_products = []
+
+for i in range(1, 1001):
+    product = {
+        "productId": f"LIFE{i:02d}",   # LIFE01～LIFE1000（两位起步）
+        "productName": f"終身保険{i}",
+        "coverage": {
+            "amount": 10000000 + i * 1000
+        },
+        "benefitList": [
+            {
+                "benefitId": f"ACC{i}",
+                "benefitName": f"傷害特約{i}",
+                "benefitAmount": 1000000 + i * 1000
+            }
+        ],
+        "premium": {
+            "monthly": 10000 + i
+        }
+    }
+    oya_products.append(product)
+
+oya_json = {
+    "contract": {
+        "contractBasic": contract_basic,
+        "contractor": contractor,
+        "productList": oya_products
+    }
+}
+
+# =========================
+# 3. 生成 ko（基于oya变更）
+# =========================
+ko_products = []
+
+for prod in oya_products:
+    i = int(prod["productId"].replace("LIFE", ""))
+
+    new_product = {
+        "productId": prod["productId"],
+        "productName": prod["productName"],
+
+        # ⭐ 子：coverage变化
+        "coverage": {
+            "amount": prod["coverage"]["amount"] + 10000000
+        },
+
+        # ⭐ 子：benefit变化
+        "benefitList": [
+            {
+                "benefitId": prod["benefitList"][0]["benefitId"],
+                "benefitName": prod["benefitList"][0]["benefitName"],
+                "benefitAmount": prod["benefitList"][0]["benefitAmount"] + 1000000
+            }
+        ],
+
+        # ⭐ 子：premium变化
+        "premium": {
+            "monthly": prod["premium"]["monthly"] + 10000
+        }
+    }
+
+    ko_products.append(new_product)
+
+ko_json = {
+    "contract": {
+        "contractBasic": contract_basic,
+        "contractor": contractor,
+        "productList": ko_products
+    }
+}
+
+# =========================
+# 4. 写文件
 # =========================
 with open("oya.json", "w", encoding="utf-8") as f:
-    json.dump(oya_list, f, indent=2, ensure_ascii=False)
+    json.dump(oya_json, f, indent=2, ensure_ascii=False)
 
 with open("ko.json", "w", encoding="utf-8") as f:
-    json.dump(ko_list, f, indent=2, ensure_ascii=False)
+    json.dump(ko_json, f, indent=2, ensure_ascii=False)
 
-print("生成完成:")
-print("oya:", len(oya_list))
-print("ko:", len(ko_list))
+print("生成完成：")
+print("product数量:", len(oya_products))
