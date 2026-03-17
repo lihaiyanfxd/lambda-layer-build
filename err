@@ -1,104 +1,138 @@
-setJson.py
-import json
-def setData():
-    # =========================
-    # 1. 基础信息（固定）
-    # =========================
-    contract_basic = {
-        "pol": "POL10001",
-        "status": "ACTIVE"
-    }
+def merge_double(oya_json, ko_json):
+    oya_products = oya_json["contract"]["productList"]
+    ko_products = ko_json["contract"]["productList"]
 
-    contractor = {
-        "name": "山田太郎",
-        "contact": {
-            "phone": "09011112222",
-            "email": "taro@example.com"
-        },
-        "address": {
-            "city": "Tokyo",
-            "zip": "1600000"
-        }
-    }
+    result = []
 
-    # =========================
-    # 2. 生成 oya productList
-    # =========================
-    oya_products = []
+    for oya_prod in oya_products:
+        merged = oya_prod.copy()
 
-    for i in range(1, 1001):
-        product = {
-            "productId": f"LIFE{i:02d}",   # LIFE01～LIFE1000（两位起步）
-            "productName": f"終身保険{i}",
-            "coverage": {
-                "amount": 10000000 + i * 1000
-            },
-            "benefitList": [
-                {
-                    "benefitId": f"ACC{i}",
-                    "benefitName": f"傷害特約{i}",
-                    "benefitAmount": 1000000 + i * 1000
-                }
-            ],
-            "premium": {
-                "monthly": 10000 + i
-            }
-        }
-        oya_products.append(product)
+        for ko_prod in ko_products:
+            if ko_prod["productId"] == oya_prod["productId"]:
 
-    oya_json = {
-        "contract": {
-            "contractBasic": contract_basic,
-            "contractor": contractor,
-            "productList": oya_products
-        }
-    }
+                merged = ko_prod.copy()
 
-    # =========================
-    # 3. 生成 ko（基于oya变更）
-    # =========================
-    ko_products = []
+                # ===== benefit 二重循环 =====
+                merged_benefits = []
 
-    for prod in oya_products:
-        i = int(prod["productId"].replace("LIFE", ""))
+                for oya_b in oya_prod["benefitList"]:
+                    found = False
 
-        new_product = {
-            "productId": prod["productId"],
-            "productName": prod["productName"],
+                    for ko_b in ko_prod["benefitList"]:
+                        if ko_b["benefitId"] == oya_b["benefitId"]:
+                            merged_benefits.append(ko_b)
+                            found = True
+                            break
 
-            # ⭐ 子：coverage变化
-            "coverage": {
-                "amount": prod["coverage"]["amount"] + 10000000
-            },
+                    if not found:
+                        merged_benefits.append(oya_b)
 
-            # ⭐ 子：benefit变化
-            "benefitList": [
-                {
-                    "benefitId": prod["benefitList"][0]["benefitId"],
-                    "benefitName": prod["benefitList"][0]["benefitName"],
-                    "benefitAmount": prod["benefitList"][0]["benefitAmount"] + 1000000
-                }
-            ],
+                merged["benefitList"] = merged_benefits
+                break
 
-            # ⭐ 子：premium变化
-            "premium": {
-                "monthly": prod["premium"]["monthly"] + 10000
-            }
-        }
+        result.append(merged)
 
-        ko_products.append(new_product)
+def merge_dict(oya_json, ko_json):
+    oya_products = oya_json["contract"]["productList"]
+    ko_products = ko_json["contract"]["productList"]
 
-    ko_json = {
-        "contract": {
-            "contractBasic": contract_basic,
-            "contractor": contractor,
-            "productList": ko_products
-        }
-    }
-    return oya_json,ko_json
-testService.py
-import json
-from setJson import setData
-def loadJsonV1():
-    oya,ko = setData()
-    return ko
+    # ===== product索引 =====
+    ko_product_dict = {p["productId"]: p for p in ko_products}
+
+    result = []
+
+    for oya_prod in oya_products:
+        pid = oya_prod["productId"]
+
+        if pid not in ko_product_dict:
+            result.append(oya_prod)
+            continue
+
+        ko_prod = ko_product_dict[pid]
+
+        # ===== product merge =====
+        merged_prod = ko_prod.copy()
+
+        # ===== benefit merge（dict）=====
+        oya_b = oya_prod["benefitList"]
+        ko_b = ko_prod["benefitList"]
+
+        ko_b_dict = {b["benefitId"]: b for b in ko_b}
+
+        merged_b = []
+
+        for ob in oya_b:
+            bid = ob["benefitId"]
+            if bid in ko_b_dict:
+                merged_b.append(ko_b_dict[bid])
+            else:
+                merged_b.append(ob)
+
+        # 补新增
+        oya_ids = {b["benefitId"] for b in oya_b}
+        for kb in ko_b:
+            if kb["benefitId"] not in oya_ids:
+                merged_b.append(kb)
+
+        merged_prod["benefitList"] = merged_b
+
+        result.append(merged_prod)
+
+    return result
+def merge_two_pointer(oya_json, ko_json):
+    oya_products = sorted(
+        oya_json["contract"]["productList"],
+        key=lambda x: x["productId"]
+    )
+    ko_products = sorted(
+        ko_json["contract"]["productList"],
+        key=lambda x: x["productId"]
+    )
+
+    i = j = 0
+    result = []
+
+    while i < len(oya_products) and j < len(ko_products):
+        oya = oya_products[i]
+        ko = ko_products[j]
+
+        if oya["productId"] == ko["productId"]:
+            merged = ko.copy()
+
+            # benefit双指针
+            oya_b = sorted(oya["benefitList"], key=lambda x: x["benefitId"])
+            ko_b = sorted(ko["benefitList"], key=lambda x: x["benefitId"])
+
+            x = y = 0
+            merged_b = []
+
+            while x < len(oya_b) and y < len(ko_b):
+                if oya_b[x]["benefitId"] == ko_b[y]["benefitId"]:
+                    merged_b.append(ko_b[y])
+                    x += 1
+                    y += 1
+                elif oya_b[x]["benefitId"] < ko_b[y]["benefitId"]:
+                    merged_b.append(oya_b[x])
+                    x += 1
+                else:
+                    y += 1
+
+            merged_b.extend(oya_b[x:])
+            merged_b.extend(ko_b[y:])
+
+            merged["benefitList"] = merged_b
+
+            result.append(merged)
+            i += 1
+            j += 1
+
+        elif oya["productId"] < ko["productId"]:
+            result.append(oya)
+            i += 1
+        else:
+            j += 1
+
+    result.extend(oya_products[i:])
+    return result
+
+    return result
