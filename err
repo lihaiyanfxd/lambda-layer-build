@@ -1,29 +1,115 @@
+Oya.json
 {
   "contract": {
-    "contractBasic": "parent",
-    "contractor": {
-      "name": "parent",
-      "contact": "child",
-      "address": "child"
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
     },
-    "productList": {
-      "key": "productId",
-      "merge": {
-        "productName": "parent",
-        "coverage": "child",
-        "premium": "child",
-        "benefitList": {
-          "key": "benefitId",
-          "merge": {
-            "benefitName": "parent",
-            "benefitAmount": "child"
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "productName": "終身保険",
+        "coverage": {
+          "amount": 10000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitName": "傷害特約",
+            "benefitAmount": 1200000
           }
+        ],
+        "premium": {
+          "monthly": 13000
+        }
+      },
+      {
+        "productId": "MED01",
+        "productName": "医療保険",
+        "coverage": {
+          "amount": 14000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "HOSP",
+            "benefitName": "入院特約",
+            "benefitAmount": 1500000
+          }
+        ],
+        "premium": {
+          "monthly": 16000
         }
       }
-    }
+    ]
   }
 }
-
+Ko.json
+{
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
+    },
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "productName": "終身保険",
+        "coverage": {
+          "amount": 10000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitName": "傷害特約",
+            "benefitAmount": 1200000
+          }
+        ],
+        "premium": {
+          "monthly": 13000
+        }
+      },
+      {
+        "productId": "MED01",
+        "productName": "医療保険",
+        "coverage": {
+          "amount": 14000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "HOSP",
+            "benefitName": "入院特約",
+            "benefitAmount": 1500000
+          }
+        ],
+        "premium": {
+          "monthly": 16000
+        }
+      }
+    ]
+  }
+}
 def merge_v1(parent, child):
     result = parent.copy()
 
