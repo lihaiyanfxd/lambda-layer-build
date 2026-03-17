@@ -1,69 +1,112 @@
 {
-  "contract.contractBasic": "parent_priority",
-  "contract.contractor": "parent_priority",
-  "contract.contractor.contact": "child_priority",
-  "contract.contractor.address": "child_priority"
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
+    },
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "productName": "終身保険",
+        "coverage": {
+          "amount": 10000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitName": "傷害特約",
+            "benefitAmount": 1200000
+          }
+        ],
+        "premium": {
+          "monthly": 13000
+        }
+      },
+      {
+        "productId": "MED01",
+        "productName": "医療保険",
+        "coverage": {
+          "amount": 14000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "HOSP",
+            "benefitName": "入院特約",
+            "benefitAmount": 1500000
+          }
+        ],
+        "premium": {
+          "monthly": 16000
+        }
+      }
+    ]
+  }
 }
 
-def apply_rule(parent, child, rule):
+{
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
+    },
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "productName": "終身保険",
+        "coverage": {
+          "amount": 10000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitName": "傷害特約",
+            "benefitAmount": 1200000
+          }
+        ],
+        "premium": {
+          "monthly": 13000
+        }
+      },
+      {
+        "productId": "MED01",
+        "productName": "医療保険",
+        "coverage": {
+          "amount": 14000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "HOSP",
+            "benefitName": "入院特約",
+            "benefitAmount": 1500000
+          }
+        ],
+        "premium": {
+          "monthly": 16000
+        }
+      }
+    ]
+  }
+}
 
-    if rule == "parent_priority":
-        return parent if parent else child
-
-    if rule == "child_priority":
-        return child if child else parent
-
-    return parent
-from rule_engine import apply_rule
-
-
-class MergeEngine:
-
-    def __init__(self, rules):
-        self.rules = rules
-
-    def merge(self, parent, child, path=""):
-
-        result = {}
-
-        keys = set(parent.keys()) | set(child.keys())
-
-        for key in keys:
-
-            new_path = f"{path}.{key}" if path else key
-
-            rule = self.rules.get(new_path)
-
-            p = parent.get(key)
-            c = child.get(key)
-
-            if isinstance(p, dict) and isinstance(c, dict):
-
-                result[key] = self.merge(p, c, new_path)
-
-            elif rule:
-
-                result[key] = apply_rule(p, c, rule)
-
-            else:
-
-                result[key] = p if p else c
-
-        return result
-import json
-from engine.merge_engine import MergeEngine
-
-with open("oya.json") as f:
-    oya = json.load(f)
-
-with open("ko.json") as f:
-    ko = json.load(f)
-
-with open("rules/merge_rules.json") as f:
-    rules = json.load(f)
-
-engine = MergeEngine(rules)
-
-result = engine.merge(oya, ko)
-
-print(json.dumps(result, indent=2, ensure_ascii=False))
