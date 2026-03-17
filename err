@@ -1,76 +1,91 @@
 import json
 import time
 
-# =========================
-# 1. 读取数据
-# =========================
-with open("oya.json", "r", encoding="utf-8") as f:
-    oya_json = json.load(f)
 
-with open("ko.json", "r", encoding="utf-8") as f:
-    ko_json = json.load(f)
+def merge_contract(oya_path="oya.json", ko_path="ko.json"):
+    # =========================
+    # 1. 读取数据
+    # =========================
+    with open(oya_path, "r", encoding="utf-8") as f:
+        oya_json = json.load(f)
 
-oya_products = oya_json["contract"]["productList"]
-ko_products = ko_json["contract"]["productList"]
+    with open(ko_path, "r", encoding="utf-8") as f:
+        ko_json = json.load(f)
 
-# =========================
-# 2. 二重ループ merge
-# =========================
-start = time.perf_counter()
+    oya_products = oya_json["contract"]["productList"]
+    ko_products = ko_json["contract"]["productList"]
 
-result_double = []
+    # =========================
+    # 2. 二重ループ
+    # =========================
+    start = time.perf_counter()
 
-for oya_prod in oya_products:
-    merged = oya_prod.copy()
+    result_double = []
 
-    for ko_prod in ko_products:
-        if ko_prod["productId"] == oya_prod["productId"]:
-            # ⭐ 子覆盖父
-            merged = ko_prod
-            break
+    for oya_prod in oya_products:
+        merged = oya_prod.copy()
 
-    result_double.append(merged)
+        for ko_prod in ko_products:
+            if ko_prod["productId"] == oya_prod["productId"]:
+                merged = ko_prod
+                break
 
-end = time.perf_counter()
-print("二重ループ time:", end - start)
+        result_double.append(merged)
 
-# =========================
-# 3. dict merge（推荐）
-# =========================
-start = time.perf_counter()
+    time_double = time.perf_counter() - start
 
-# 建索引
-ko_dict = {}
-for ko_prod in ko_products:
-    ko_dict[ko_prod["productId"]] = ko_prod
+    # =========================
+    # 3. dict方式
+    # =========================
+    start = time.perf_counter()
 
-result_dict = []
+    ko_dict = {k["productId"]: k for k in ko_products}
 
-for oya_prod in oya_products:
-    pid = oya_prod["productId"]
+    result_dict = []
 
-    if pid in ko_dict:
-        result_dict.append(ko_dict[pid])  # 子覆盖
-    else:
-        result_dict.append(oya_prod)
+    for oya_prod in oya_products:
+        pid = oya_prod["productId"]
 
-end = time.perf_counter()
-print("dict time:", end - start)
+        if pid in ko_dict:
+            result_dict.append(ko_dict[pid])
+        else:
+            result_dict.append(oya_prod)
 
-# =========================
-# 4. 组装最终contract
-# =========================
-final_contract = {
-    "contract": {
-        "contractBasic": oya_json["contract"]["contractBasic"],
-        "contractor": oya_json["contract"]["contractor"],
-        "productList": result_dict   # 用dict结果
+    time_dict = time.perf_counter() - start
+
+    # =========================
+    # 4. 组装最终contract
+    # =========================
+    final_contract = {
+        "contract": {
+            "contractBasic": oya_json["contract"]["contractBasic"],
+            "contractor": oya_json["contract"]["contractor"],
+            "productList": result_dict
+        }
     }
-}
 
-# 输出
-with open("merged.json", "w", encoding="utf-8") as f:
-    json.dump(final_contract, f, indent=2, ensure_ascii=False)
+    # =========================
+    # 5. return结果（重点）
+    # =========================
+    return {
+        "merged_result": final_contract,
+        "performance": {
+            "double_loop_time": time_double,
+            "dict_time": time_dict,
+            "product_count": len(result_dict)
+        }
+    }
 
-print("merge完成")
-print("product数量:", len(result_dict))
+
+# =========================
+# 调用示例
+# =========================
+if __name__ == "__main__":
+    result = merge_contract()
+
+    print("性能对比:")
+    print(result["performance"])
+
+    # 如果想看结果的一部分（避免太大）
+    print("示例前2条product:")
+    print(result["merged_result"]["contract"]["productList"][:2])
