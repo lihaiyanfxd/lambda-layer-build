@@ -1,66 +1,45 @@
-import copy
-
-def merge_double(oya_json, ko_json):
-    print("merge_double()")
-    oya_contract = oya_json["contract"]
-    ko_contract = ko_json["contract"]
-
-    # ===== contractor merge =====
-    merged_contractor = copy.deepcopy(oya_contract.get("contractor", {}))
-    ko_contractor = ko_contract.get("contractor", {})
-
-    for key, value in ko_contractor.items():
-        if isinstance(value, dict) and key in merged_contractor:
-            merged_contractor[key].update(value)
-        else:
-            merged_contractor[key] = value
-
-    # ===== product + benefit 二重ループ =====
-    oya_products = oya_contract.get("productList", [])
-    ko_products = ko_contract.get("productList", [])
-
-    result_products = []
-
-    for oya_prod in oya_products:
-        merged_prod = copy.deepcopy(oya_prod)
-        for ko_prod in ko_products:
-            if ko_prod["productId"] == oya_prod["productId"]:
-                merged_prod = copy.deepcopy(ko_prod)
-
-                # benefit merge 二重ループ
-                merged_benefits = []
-                for oya_b in oya_prod["benefitList"]:
-                    found = False
-                    for ko_b in ko_prod["benefitList"]:
-                        if ko_b["benefitId"] == oya_b["benefitId"]:
-                            merged_benefits.append(copy.deepcopy(ko_b))
-                            found = True
-                            break
-                    if not found:
-                        merged_benefits.append(copy.deepcopy(oya_b))
-
-                merged_prod["benefitList"] = merged_benefits
-                break
-
-        result_products.append(merged_prod)
-
-    # ===== contractBasic =====
-    contract_basic = ko_contract.get("contractBasic", oya_contract.get("contractBasic"))
-
-    return {
-        "contract": {
-            "contractBasic": contract_basic,
-            "contractor": merged_contractor,
-            "productList": result_products
-        }
+{
+  "contractor": {
+    "fields": {
+      "address": "ko",
+      "name": "oya",
+      "contact": "oya"
     }
+  },
+  "productList": {
+    "matchKey": "productId",
+    "fields": {
+      "coverage": "ko",
+      "premium": "ko",
+      "productName": "oya"
+    },
+    "benefitList": {
+      "matchKey": "benefitId",
+      "fields": {
+        "benefitAmount": "ko",
+        "benefitName": "oya"
+      }
+    }
+  },
+  "contractBasic": {
+    "priority": "ko"
+  }
+}
 
+import copy
+import json
 
 # =========================
-# Merge dict 
+# 读取规则
 # =========================
+with open("merge_rules.json", "r", encoding="utf-8") as f:
+    MERGE_RULES = json.load(f)
+
+
 def merge_dict(oya_json, ko_json):
-    print("merge_dict()")
+    """
+    dict 索引方式 merge，使用外部规则控制字段优先级
+    """
     oya_contract = oya_json["contract"]
     ko_contract = ko_json["contract"]
 
@@ -69,58 +48,88 @@ def merge_dict(oya_json, ko_json):
     # ------------------------
     merged_contractor = copy.deepcopy(oya_contract.get("contractor", {}))
     ko_contractor = ko_contract.get("contractor", {})
+    contractor_rule = MERGE_RULES.get("contractor", {}).get("fields", {})
 
-    for key, value in ko_contractor.items():
-        if isinstance(value, dict) and key in merged_contractor:
-            merged_contractor[key].update(value)
-        else:
-            merged_contractor[key] = value
+    for key in merged_contractor.keys() | ko_contractor.keys():
+        rule = contractor_rule.get(key, "oya")
+        if rule == "ko" and key in ko_contractor:
+            if isinstance(ko_contractor[key], dict) and key in merged_contractor:
+                merged_contractor[key].update(ko_contractor[key])
+            else:
+                merged_contractor[key] = copy.deepcopy(ko_contractor[key])
+        elif key in merged_contractor:
+            # 保留 oya
+            merged_contractor[key] = merged_contractor[key]
 
     # ------------------------
-    # 2. productList dict インデックス
+    # 2. productList dict 索引
     # ------------------------
     oya_products = oya_contract.get("productList", [])
     ko_products = ko_contract.get("productList", [])
 
-    # ko product dict
-    ko_product_dict = {p["productId"]: p for p in ko_products}
+    product_match_key = MERGE_RULES.get("productList", {}).get("matchKey", "productId")
+    product_fields_rule = MERGE_RULES.get("productList", {}).get("fields", {})
+    benefit_fields_rule = MERGE_RULES.get("productList", {}).get("benefitList", {}).get("fields", {})
+    benefit_match_key = MERGE_RULES.get("productList", {}).get("benefitList", {}).get("matchKey", "benefitId")
 
+    ko_product_dict = {p[product_match_key]: p for p in ko_products}
     result_products = []
 
     for oya_prod in oya_products:
-        pid = oya_prod["productId"]
+        pid = oya_prod[product_match_key]
 
         if pid in ko_product_dict:
             ko_prod = ko_product_dict[pid]
-            merged_prod = copy.deepcopy(ko_prod)
+            merged_prod = {}
 
-            # benefitList dict インデックス
-            ko_b_dict = {b["benefitId"]: b for b in ko_prod["benefitList"]}
+            # 逐字段 merge
+            for key in oya_prod.keys() | ko_prod.keys():
+                rule = product_fields_rule.get(key, "oya")
+                if rule == "ko" and key in ko_prod:
+                    merged_prod[key] = copy.deepcopy(ko_prod[key])
+                elif key in oya_prod:
+                    merged_prod[key] = copy.deepcopy(oya_prod[key])
+
+            # benefitList merge
             merged_benefits = []
+            ko_b_dict = {b[benefit_match_key]: b for b in ko_prod.get("benefitList", [])}
 
-            for ob in oya_prod["benefitList"]:
-                bid = ob["benefitId"]
+            for ob in oya_prod.get("benefitList", []):
+                bid = ob[benefit_match_key]
                 if bid in ko_b_dict:
-                    merged_benefits.append(copy.deepcopy(ko_b_dict[bid]))
+                    kb = ko_b_dict[bid]
+                    merged_b = {}
+                    for k in ob.keys() | kb.keys():
+                        b_rule = benefit_fields_rule.get(k, "oya")
+                        if b_rule == "ko" and k in kb:
+                            merged_b[k] = copy.deepcopy(kb[k])
+                        elif k in ob:
+                            merged_b[k] = copy.deepcopy(ob[k])
+                    merged_benefits.append(merged_b)
                 else:
                     merged_benefits.append(copy.deepcopy(ob))
 
-            # benefit　dict インデックス
-            oya_b_ids = {b["benefitId"] for b in oya_prod["benefitList"]}
-            for kb in ko_prod["benefitList"]:
-                if kb["benefitId"] not in oya_b_ids:
+            # ko 新增的 benefit
+            oya_b_ids = {b[benefit_match_key] for b in oya_prod.get("benefitList", [])}
+            for kb in ko_prod.get("benefitList", []):
+                if kb[benefit_match_key] not in oya_b_ids:
                     merged_benefits.append(copy.deepcopy(kb))
 
             merged_prod["benefitList"] = merged_benefits
+
         else:
             merged_prod = copy.deepcopy(oya_prod)
 
         result_products.append(merged_prod)
 
     # ------------------------
-    # 3. contractBasic
+    # 3. contractBasic merge
     # ------------------------
-    contract_basic = ko_contract.get("contractBasic", oya_contract.get("contractBasic"))
+    contract_basic_rule = MERGE_RULES.get("contractBasic", {}).get("priority", "ko")
+    if contract_basic_rule == "ko" and "contractBasic" in ko_contract:
+        contract_basic = copy.deepcopy(ko_contract["contractBasic"])
+    else:
+        contract_basic = copy.deepcopy(oya_contract.get("contractBasic"))
 
     return {
         "contract": {
