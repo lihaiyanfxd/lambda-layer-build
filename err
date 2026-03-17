@@ -1,111 +1,152 @@
-{
-  "contract": {
-    "contractBasic": {
-      "pol": "POL10001",
-      "status": "ACTIVE"
-    },
-    "contractor": {
-      "name": "山田太郎",
-      "contact": {
-        "phone": "09011112222",
-        "email": "taro@example.com"
-      },
-      "address": {
-        "city": "Tokyo",
-        "zip": "1600000"
-      }
-    },
-    "productList": [
-      {
-        "productId": "LIFE01",
-        "productName": "終身保険",
-        "coverage": {
-          "amount": 10000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "ACC",
-            "benefitName": "傷害特約",
-            "benefitAmount": 1200000
-          }
-        ],
-        "premium": {
-          "monthly": 13000
-        }
-      },
-      {
-        "productId": "MED01",
-        "productName": "医療保険",
-        "coverage": {
-          "amount": 14000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "HOSP",
-            "benefitName": "入院特約",
-            "benefitAmount": 1500000
-          }
-        ],
-        "premium": {
-          "monthly": 16000
-        }
-      }
-    ]
-  }
-}
+import json
+import random
+import copy
 
-{
-  "contract": {
-    "contractBasic": {
-      "pol": "POL10001",
-      "status": "ACTIVE"
-    },
-    "contractor": {
-      "name": "山田太郎",
-      "contact": {
-        "phone": "09011112222",
-        "email": "taro@example.com"
-      },
-      "address": {
-        "city": "Tokyo",
-        "zip": "1600000"
-      }
-    },
-    "productList": [
-      {
-        "productId": "LIFE01",
-        "productName": "終身保険",
-        "coverage": {
-          "amount": 10000000
+NUM = 1000
+
+PRODUCTS = [
+    ("LIFE01", "終身保険"),
+    ("MED01", "医療保険"),
+    ("ACC01", "傷害保険")
+]
+
+BENEFITS = [
+    ("ACC", "傷害特約"),
+    ("HOSP", "入院特約"),
+    ("SURG", "手術特約"),
+    ("CANC", "がん特約")
+]
+
+NAMES = ["山田太郎", "佐藤花子", "鈴木一郎"]
+
+oya_list = []
+ko_list = []
+
+for i in range(NUM):
+    pol = f"POL{i:05d}"
+
+    # =========================
+    # 共通基础信息
+    # =========================
+    contract_basic = {
+        "pol": pol,
+        "status": random.choice(["ACTIVE", "CANCEL"])
+    }
+
+    contractor = {
+        "name": random.choice(NAMES),
+        "contact": {
+            "phone": f"090{random.randint(10000000,99999999)}",
+            "email": f"user{i}@example.com"
         },
-        "benefitList": [
-          {
-            "benefitId": "ACC",
-            "benefitName": "傷害特約",
-            "benefitAmount": 1200000
-          }
-        ],
-        "premium": {
-          "monthly": 13000
+        "address": {
+            "city": random.choice(["Tokyo", "Osaka"]),
+            "zip": str(random.randint(1000000,9999999))
         }
-      },
-      {
-        "productId": "MED01",
-        "productName": "医療保険",
-        "coverage": {
-          "amount": 14000000
-        },
-        "benefitList": [
-          {
-            "benefitId": "HOSP",
-            "benefitName": "入院特約",
-            "benefitAmount": 1500000
-          }
-        ],
-        "premium": {
-          "monthly": 16000
+    }
+
+    # =========================
+    # 1️⃣ 生成 oya（基础 productList）
+    # =========================
+    base_products = []
+
+    for _ in range(random.randint(2, 3)):  # ⭐ 父：复数product
+        productId, productName = random.choice(PRODUCTS)
+
+        benefit = random.choice(BENEFITS)
+
+        base_products.append({
+            "productId": productId,
+            "productName": productName,
+            "coverage": {
+                "amount": random.randint(5000000, 15000000)
+            },
+            "benefitList": [
+                {
+                    "benefitId": benefit[0],
+                    "benefitName": benefit[1],
+                    "benefitAmount": random.randint(500000, 1500000)
+                }
+            ],
+            "premium": {
+                "monthly": random.randint(8000, 15000)
+            }
+        })
+
+    oya = {
+        "contract": {
+            "contractBasic": contract_basic,
+            "contractor": contractor,
+            "productList": base_products
         }
-      }
-    ]
-  }
-}
+    }
+
+    oya_list.append(oya)
+
+    # =========================
+    # 2️⃣ 生成 ko（基于oya扩展）
+    # =========================
+    ko_products = []
+
+    for prod in base_products:
+        new_prod = copy.deepcopy(prod)
+
+        # ⭐ 在父基础上增加更多benefit（亲子差异点）
+        for _ in range(random.randint(1, 2)):
+            benefitId, benefitName = random.choice(BENEFITS)
+
+            new_prod["benefitList"].append({
+                "benefitId": benefitId,
+                "benefitName": benefitName,
+                "benefitAmount": random.randint(1000000, 3000000)
+            })
+
+        # ⭐ premium稍微变化（模拟变更）
+        new_prod["premium"]["monthly"] += random.randint(1000, 5000)
+
+        ko_products.append(new_prod)
+
+    # ⭐ 子可以额外增加新product（比父多）
+    if random.random() > 0.5:
+        productId, productName = random.choice(PRODUCTS)
+
+        ko_products.append({
+            "productId": productId,
+            "productName": productName,
+            "coverage": {
+                "amount": random.randint(10000000, 20000000)
+            },
+            "benefitList": [
+                {
+                    "benefitId": "NEW",
+                    "benefitName": "新規特約",
+                    "benefitAmount": random.randint(1000000, 3000000)
+                }
+            ],
+            "premium": {
+                "monthly": random.randint(10000, 20000)
+            }
+        })
+
+    ko = {
+        "contract": {
+            "contractBasic": contract_basic,
+            "contractor": contractor,
+            "productList": ko_products
+        }
+    }
+
+    ko_list.append(ko)
+
+# =========================
+# 输出JSON
+# =========================
+with open("oya.json", "w", encoding="utf-8") as f:
+    json.dump(oya_list, f, indent=2, ensure_ascii=False)
+
+with open("ko.json", "w", encoding="utf-8") as f:
+    json.dump(ko_list, f, indent=2, ensure_ascii=False)
+
+print("生成完成:")
+print("oya:", len(oya_list))
+print("ko:", len(ko_list))
