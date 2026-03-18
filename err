@@ -1,10 +1,34 @@
-def merge_core(oya,ko):
+def merge_core(oya, ko):
+
     key = "productId"
 
-    oya_list = oya["contract"]["productList"]
-    ko_list = ko["contract"]["productList"]
+    oya_contract = oya["contract"]
+    ko_contract = ko["contract"]
 
-    # dict
+    # =========================
+    # 1. contractBasic（全部 oya优先）
+    # =========================
+    # 👉 不处理（保持 oya）
+
+    # =========================
+    # 2. contractor
+    # =========================
+    oya_contractor = oya_contract["contractor"]
+    ko_contractor = ko_contract.get("contractor", {})
+
+    # address.city → ko优先
+    if "address" in ko_contractor:
+        if "city" in ko_contractor["address"]:
+            oya_contractor["address"]["city"] = ko_contractor["address"]["city"]
+
+    # contact / name / zip → 全部 oya优先（不动）
+
+    # =========================
+    # 3. productList（O(n)）
+    # =========================
+    oya_list = oya_contract["productList"]
+    ko_list = ko_contract.get("productList", [])
+
     ko_map = {k[key]: k for k in ko_list}
 
     for o in oya_list:
@@ -13,28 +37,24 @@ def merge_core(oya,ko):
         if pid in ko_map:
             k = ko_map[pid]
 
-            for field in k:
-                if field != key:
-                    if isinstance(k[field], dict):
-                        o[field].update(k[field])
-                    else:
-                        o[field] = k[field]
+            # coverage.amount → ko优先
+            if "coverage" in k:
+                if "amount" in k["coverage"]:
+                    o["coverage"]["amount"] = k["coverage"]["amount"]
+
+            # premium.monthly → ko优先
+            if "premium" in k:
+                if "monthly" in k["premium"]:
+                    o["premium"]["monthly"] = k["premium"]["monthly"]
+
+            # benefitList → benefitAmount ko优先
+            if "benefitList" in o and "benefitList" in k:
+                for i in range(len(o["benefitList"])):
+                    if i < len(k["benefitList"]):
+                        kb = k["benefitList"][i]
+                        ob = o["benefitList"][i]
+
+                        if "benefitAmount" in kb:
+                            ob["benefitAmount"] = kb["benefitAmount"]
 
     return oya
-
-  "contract": {
-    "contractBasic": {
-      "pol": "POL10001",
-      "status": "ACTIVE"
-    },
-    "contractor": {
-      "name": "山田太郎",
-      "contact": {
-        "phone": "09011112222",
-        "email": "taro@example.com"
-      },
-      "address": {
-        "city": "Tokyo",
-        "zip": "1600000"
-      }
-    }
