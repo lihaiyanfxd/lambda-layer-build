@@ -4,6 +4,16 @@ import ujson
 import time
 import copy
 
+from setJson import setData
+from mergeService import merge_double,merge_dict,merge_dict2
+
+def loadJsonV1():
+    oya,ko = setData()
+    start = time.perf_counter()
+    resutlt = merge_copy(oya,ko)
+    time_use = time.perf_counter() - start
+    print(time_use)
+    return resutlt
 
 # =========================
 # 模拟 merge（简单版）
@@ -39,43 +49,3 @@ def merge_ujson(oya, ko):
     o = ujson.loads(ujson.dumps(oya))
     o["contract"].update(ko["contract"])
     return o
-
-
-# =========================
-# 性能测试函数
-# =========================
-def benchmark(name, func, oya, ko, loop=1000):
-
-    start = time.perf_counter()
-
-    for _ in range(loop):
-        func(oya, ko)
-
-    end = time.perf_counter()
-
-    total = end - start
-    avg = total / loop * 1000  # ms
-
-    print(f"{name}")
-    print(f"  total: {total:.6f}s")
-    print(f"  avg:   {avg:.6f} ms")
-    print()
-
-
-# =========================
-# 主测试
-# =========================
-def run_test():
-
-    oya, ko = setData()
-
-    loop = 1000  # 可以改 100 / 10000
-
-    benchmark("copy.deepcopy", merge_copy, oya, ko, loop)
-    benchmark("json", merge_json, oya, ko, loop)
-    benchmark("orjson", merge_orjson, oya, ko, loop)
-    benchmark("ujson", merge_ujson, oya, ko, loop)
-
-
-if __name__ == "__main__":
-    run_test()
