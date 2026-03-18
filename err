@@ -1,112 +1,70 @@
-import json
-import time
-import copy
+def merge_dict(oya_json, ko_json):
+    print("merge_dict()")
+    oya_contract = oya_json["contract"]
+    ko_contract = ko_json["contract"]
 
-# =========================
-# データ読み込み
-# =========================
-def loadJsonRules():
+    # ------------------------
+    # 1. contractor merge
+    # ------------------------
+    merged_contractor = copy.deepcopy(oya_contract.get("contractor", {}))
+    ko_contractor = ko_contract.get("contractor", {})
 
-    with open("jsonData/oya2.json", "r", encoding="utf-8") as f:
-        oya_data = json.load(f)
+    for key, value in ko_contractor.items():
+        if isinstance(value, dict) and key in merged_contractor:
+            merged_contractor[key].update(value)
+        else:
+            merged_contractor[key] = value
 
-    with open("jsonData/ko2.json", "r", encoding="utf-8") as f:
-        ko_data = json.load(f)
+    # ------------------------
+    # 2. productList dict インデックス
+    # ------------------------
+    oya_products = oya_contract.get("productList", [])
+    ko_products = ko_contract.get("productList", [])
 
-    with open("config/merge_rules2.json", "r", encoding="utf-8") as f:
-        rules = json.load(f)
+    # ko product dict
+    ko_product_dict = {p["productId"]: p for p in ko_products}
 
-    start = time.perf_counter()
+    result_products = []
 
-    for _ in range(100000):
-        result = merge_v3(oya_data, ko_data, rules)
+    for oya_prod in oya_products:
+        pid = oya_prod["productId"]
 
-    end = time.perf_counter()
-    print("merge time:", end - start)
+        if pid in ko_product_dict:
+            ko_prod = ko_product_dict[pid]
+            merged_prod = copy.deepcopy(ko_prod)
 
-    return result
+            # benefitList dict インデックス
+            ko_b_dict = {b["benefitId"]: b for b in ko_prod["benefitList"]}
+            merged_benefits = []
 
+            for ob in oya_prod["benefitList"]:
+                bid = ob["benefitId"]
+                if bid in ko_b_dict:
+                    merged_benefits.append(copy.deepcopy(ko_b_dict[bid]))
+                else:
+                    merged_benefits.append(copy.deepcopy(ob))
 
-# =========================
-# ユーティリティ関数（値取得）
-# =========================
-def get(data, path):
-    for p in path.split("."):
-        data = data[p]
-    return data
+            # benefit　dict インデックス
+            oya_b_ids = {b["benefitId"] for b in oya_prod["benefitList"]}
+            for kb in ko_prod["benefitList"]:
+                if kb["benefitId"] not in oya_b_ids:
+                    merged_benefits.append(copy.deepcopy(kb))
 
+            merged_prod["benefitList"] = merged_benefits
+        else:
+            merged_prod = copy.deepcopy(oya_prod)
 
-# =========================
-# ユーティリティ関数（値設定）
-# =========================
-def set(data, path, value):
-    keys = path.split(".")
-    for k in keys[:-1]:
-        data = data.setdefault(k, {})
-    data[keys[-1]] = value
+        result_products.append(merged_prod)
 
+    # ------------------------
+    # 3. contractBasic
+    # ------------------------
+    contract_basic = ko_contract.get("contractBasic", oya_contract.get("contractBasic"))
 
-# =========================
-# productList のマージ（二重ループ）
-# =========================
-def merge_product_list(oya, ko):
-
-    oya_products = oya["contract"]["productList"]
-    ko_products = ko["contract"].get("productList", [])
-
-    merged_products = []
-
-    for op in oya_products:
-        merged = copy.deepcopy(op)
-
-        for kp in ko_products:
-            if op["productId"] == kp["productId"]:
-
-                # 金額項目は子データ（ko）優先
-                if "coverage" in kp:
-                    merged["coverage"]["amount"] = kp["coverage"]["amount"]
-
-                if "premium" in kp:
-                    merged["premium"]["monthly"] = kp["premium"]["monthly"]
-
-                break
-
-        merged_products.append(merged)
-
-    return merged_products
-
-
-# =========================
-# メインマージ処理
-# =========================
-def merge_v3(oya, ko, rules):
-
-    result = {}
-
-    for rule in rules:
-
-        path = rule["path"]
-        rule_type = rule["rule"]
-
-        # ------------------------
-        # 通常項目のマージ
-        # ------------------------
-        if rule_type == "parent":
-            value = get(oya, path)
-            set(result, path, value)
-
-        elif rule_type == "child":
-            try:
-                value = get(ko, path)
-            except:
-                value = get(oya, path)
-            set(result, path, value)
-
-        # ------------------------
-        # カスタム処理（productList）
-        # ------------------------
-        elif rule_type == "custom":
-            value = merge_product_list(oya, ko)
-            set(result, path, value)
-
-    return result
+    return {
+        "contract": {
+            "contractBasic": contract_basic,
+            "contractor": merged_contractor,
+            "productList": result_products
+        }
+    }
