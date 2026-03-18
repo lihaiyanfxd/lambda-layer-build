@@ -2,44 +2,48 @@ import json
 import orjson
 import ujson
 import time
-import copy
 
 from setJson import setData
-from mergeService import merge_double,merge_dict,merge_dict2
 
-def loadJsonV1():
-    oya,ko = setData()
-    start = time.perf_counter()
-    resutlt = merge_copy(oya,ko)
-    time_use = time.perf_counter() - start
-    print(time_use)
-    return resutlt
 
 # =========================
-# 模拟 merge（简单版）
+# deep merge（按指定key）
 # =========================
-def merge_copy(oya, ko):
-    result = copy.deepcopy(oya)
-    result["contract"].update(ko["contract"])
+def deep_merge_by_key(oya, ko, key="productId"):
+
+    result = oya
+
+    oya_list = result["contract"]["productList"]
+    ko_list = ko["contract"]["productList"]
+
+    for o in oya_list:
+        for k in ko_list:
+            if o[key] == k[key]:
+                # 覆盖字段（子优先）
+                for field in k:
+                    if field != key:
+                        if isinstance(k[field], dict):
+                            o[field].update(k[field])
+                        else:
+                            o[field] = k[field]
+
     return result
 
 
 # =========================
-# JSON 标准库
+# json
 # =========================
 def merge_json(oya, ko):
     o = json.loads(json.dumps(oya))
-    o["contract"].update(ko["contract"])
-    return o
+    return deep_merge_by_key(o, ko)
 
 
 # =========================
-# orjson（最快🔥）
+# orjson
 # =========================
 def merge_orjson(oya, ko):
     o = orjson.loads(orjson.dumps(oya))
-    o["contract"].update(ko["contract"])
-    return o
+    return deep_merge_by_key(o, ko)
 
 
 # =========================
@@ -47,5 +51,32 @@ def merge_orjson(oya, ko):
 # =========================
 def merge_ujson(oya, ko):
     o = ujson.loads(ujson.dumps(oya))
-    o["contract"].update(ko["contract"])
-    return o
+    return deep_merge_by_key(o, ko)
+
+
+# =========================
+# benchmark
+# =========================
+def benchmark(func, oya, ko, loop=100):
+    start = time.perf_counter()
+
+    for _ in range(loop):
+        func(oya, ko)
+
+    end = time.perf_counter()
+    return end - start
+
+
+# =========================
+# run
+# =========================
+def run_test():
+    oya, ko = setData()
+
+    print("json   :", benchmark(merge_json, oya, ko))
+    print("orjson :", benchmark(merge_orjson, oya, ko))
+    print("ujson  :", benchmark(merge_ujson, oya, ko))
+
+
+if __name__ == "__main__":
+    run_test()
