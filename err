@@ -1,24 +1,18 @@
-import json
-import orjson
-import ujson
-import time
+def merge_core(oya, ko):
 
-from setJson import setData
-
-
-# =========================
-# O(n) merge（最优版）
-# =========================
-def merge_core(oya, ko, key="productId"):
+    key = "productId"   # ✅ 函数内部定义
 
     oya_list = oya["contract"]["productList"]
     ko_list = ko["contract"]["productList"]
 
+    # 建索引
     ko_map = {k[key]: k for k in ko_list}
 
     for o in oya_list:
-        if o[key] in ko_map:
-            k = ko_map[o[key]]
+        pid = o[key]
+
+        if pid in ko_map:
+            k = ko_map[pid]
 
             for field in k:
                 if field != key:
@@ -28,48 +22,3 @@ def merge_core(oya, ko, key="productId"):
                         o[field] = k[field]
 
     return oya
-
-
-# =========================
-# 三种 copy + 同一个 merge
-# =========================
-def test_json(oya, ko):
-    o = json.loads(json.dumps(oya))
-    return merge_core(o, ko)
-
-
-def test_orjson(oya, ko):
-    o = orjson.loads(orjson.dumps(oya))
-    return merge_core(o, ko)
-
-
-def test_ujson(oya, ko):
-    o = ujson.loads(ujson.dumps(oya))
-    return merge_core(o, ko)
-
-
-# =========================
-# benchmark
-# =========================
-def benchmark(func, oya, ko, loop=50):
-    start = time.perf_counter()
-
-    for _ in range(loop):
-        func(oya, ko)
-
-    return time.perf_counter() - start
-
-
-# =========================
-# run
-# =========================
-def run():
-    oya, ko = setData()
-
-    print("json   :", benchmark(test_json, oya, ko))
-    print("orjson :", benchmark(test_orjson, oya, ko))
-    print("ujson  :", benchmark(test_ujson, oya, ko))
-
-
-if __name__ == "__main__":
-    run()
