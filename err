@@ -1,20 +1,9 @@
-[
-  { "path": "contract.contractBasic", "rule": "parent" },
-
-  { "path": "contract.contractor.name", "rule": "parent" },
-  { "path": "contract.contractor.contact.phone", "rule": "child" },
-  { "path": "contract.contractor.contact.email", "rule": "parent" },
-  { "path": "contract.contractor.address.city", "rule": "child" },
-  { "path": "contract.contractor.address.zip", "rule": "parent" },
-
-  { "path": "contract.productList", "rule": "custom" }
-]
 import json
 import time
 import copy
 
 # =========================
-# load
+# データ読み込み
 # =========================
 def loadJsonRules():
 
@@ -39,7 +28,7 @@ def loadJsonRules():
 
 
 # =========================
-# 工具函数
+# ユーティリティ関数（値取得）
 # =========================
 def get(data, path):
     for p in path.split("."):
@@ -47,6 +36,9 @@ def get(data, path):
     return data
 
 
+# =========================
+# ユーティリティ関数（値設定）
+# =========================
 def set(data, path, value):
     keys = path.split(".")
     for k in keys[:-1]:
@@ -55,7 +47,7 @@ def set(data, path, value):
 
 
 # =========================
-# productList（二重循环）
+# productList のマージ（二重ループ）
 # =========================
 def merge_product_list(oya, ko):
 
@@ -70,7 +62,7 @@ def merge_product_list(oya, ko):
         for kp in ko_products:
             if op["productId"] == kp["productId"]:
 
-                # 金额字段 ko 优先
+                # 金額項目は子データ（ko）優先
                 if "coverage" in kp:
                     merged["coverage"]["amount"] = kp["coverage"]["amount"]
 
@@ -85,7 +77,7 @@ def merge_product_list(oya, ko):
 
 
 # =========================
-# 主 merge
+# メインマージ処理
 # =========================
 def merge_v3(oya, ko, rules):
 
@@ -97,7 +89,7 @@ def merge_v3(oya, ko, rules):
         rule_type = rule["rule"]
 
         # ------------------------
-        # 普通字段
+        # 通常項目のマージ
         # ------------------------
         if rule_type == "parent":
             value = get(oya, path)
@@ -111,7 +103,7 @@ def merge_v3(oya, ko, rules):
             set(result, path, value)
 
         # ------------------------
-        # 自定义（productList）
+        # カスタム処理（productList）
         # ------------------------
         elif rule_type == "custom":
             value = merge_product_list(oya, ko)
