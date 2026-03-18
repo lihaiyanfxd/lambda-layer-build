@@ -1,11 +1,10 @@
-def merge_core(oya, ko):
-
-    key = "productId"   # ✅ 函数内部定义
+def merge_core(oya,ko):
+    key = "productId"
 
     oya_list = oya["contract"]["productList"]
     ko_list = ko["contract"]["productList"]
 
-    # 建索引
+    # dict
     ko_map = {k[key]: k for k in ko_list}
 
     for o in oya_list:
@@ -22,3 +21,20 @@ def merge_core(oya, ko):
                         o[field] = k[field]
 
     return oya
+
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
+    },
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    }
