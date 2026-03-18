@@ -1,108 +1,11 @@
+[ERROR] Runtime.ImportModuleError: Unable to import module 'lambda_function': No module named 'orjson.orjson'
+Traceback (most recent call last):
 
-
-def setData():
-    # =========================
-    # 1. 基础信息（固定）
-    # =========================
-    contract_basic = {
-        "pol": "POL10001",
-        "status": "ACTIVE"
-    }
-
-    contractor = {
-        "name": "山田太郎",
-        "contact": {
-            "phone": "09011112222",
-            "email": "taro@example.com"
-        },
-        "address": {
-            "city": "Tokyo",
-            "zip": "1600000"
-        }
-    }
-
-    # =========================
-    # 2. 生成 oya productList
-    # =========================
-    oya_products = []
-
-    for i in range(1, 1001):
-        product = {
-            "productId": f"LIFE{i:02d}",
-            "productName": f"終身保険{i}",
-            "coverage": {
-                "amount": 10000000 + i * 1000
-            },
-            "benefitList": [
-                {
-                    "benefitId": f"ACC{i}",
-                    "benefitName": f"傷害特約{i}",
-                    "benefitAmount": 1000000 + i * 1000
-                }
-            ],
-            "premium": {
-                "monthly": 10000 + i
-            }
-        }
-        oya_products.append(product)
-
-    oya_json = {
-        "contract": {
-            "contractBasic": contract_basic,
-            "contractor": contractor,
-            "productList": oya_products
-        }
-    }
-
-    # =========================
-    # 3. 生成 ko（差分数据🔥）
-    # =========================
-    ko_products = []
-
-    for prod in oya_products:
-        new_product = {
-            "productId": prod["productId"],
-            "productName": prod["productName"],
-
-            # 差分字段
-            "coverage": {
-                "amount": prod["coverage"]["amount"] + 10000000
-            },
-            "benefitList": [
-                {
-                    "benefitId": prod["benefitList"][0]["benefitId"],
-                    "benefitName": prod["benefitList"][0]["benefitName"],
-                    "benefitAmount": prod["benefitList"][0]["benefitAmount"] + 1000000
-                }
-            ],
-            "premium": {
-                "monthly": prod["premium"]["monthly"] + 10000
-            }
-        }
-
-        ko_products.append(new_product)
-
-    # =========================
-    # ⭐ 关键：ko.contract 裁剪
-    # =========================
-    ko_json = {
-        "contract": {
-            # ✔ 保留
-            "contractBasic": contract_basic,
-
-            # ✔ 只保留 address.city，并改为 Osaka
-            "contractor": {
-                "address": {
-                    "city": "Osaka"
-                }
-            },
-
-            # ✔ 保留 productList
-            "productList": ko_products
-        }
-    }
-
-    return oya_json, ko_json
-
-
-json、orjson、ujson
+import orjson
+import ujson
+@router.get(ROUTES["TEST"])
+def test():
+    print("orjson:",orjson.__version__)
+    print("ujson:",ujson.__version__)
+    result = loadJsonV1()
+    return result
