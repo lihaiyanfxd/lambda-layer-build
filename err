@@ -1,11 +1,81 @@
-[ERROR] Runtime.ImportModuleError: Unable to import module 'lambda_function': No module named 'orjson.orjson'
-Traceback (most recent call last):
-
+import json
 import orjson
 import ujson
-@router.get(ROUTES["TEST"])
-def test():
-    print("orjson:",orjson.__version__)
-    print("ujson:",ujson.__version__)
-    result = loadJsonV1()
+import time
+import copy
+
+
+# =========================
+# 模拟 merge（简单版）
+# =========================
+def merge_copy(oya, ko):
+    result = copy.deepcopy(oya)
+    result["contract"].update(ko["contract"])
     return result
+
+
+# =========================
+# JSON 标准库
+# =========================
+def merge_json(oya, ko):
+    o = json.loads(json.dumps(oya))
+    o["contract"].update(ko["contract"])
+    return o
+
+
+# =========================
+# orjson（最快🔥）
+# =========================
+def merge_orjson(oya, ko):
+    o = orjson.loads(orjson.dumps(oya))
+    o["contract"].update(ko["contract"])
+    return o
+
+
+# =========================
+# ujson
+# =========================
+def merge_ujson(oya, ko):
+    o = ujson.loads(ujson.dumps(oya))
+    o["contract"].update(ko["contract"])
+    return o
+
+
+# =========================
+# 性能测试函数
+# =========================
+def benchmark(name, func, oya, ko, loop=1000):
+
+    start = time.perf_counter()
+
+    for _ in range(loop):
+        func(oya, ko)
+
+    end = time.perf_counter()
+
+    total = end - start
+    avg = total / loop * 1000  # ms
+
+    print(f"{name}")
+    print(f"  total: {total:.6f}s")
+    print(f"  avg:   {avg:.6f} ms")
+    print()
+
+
+# =========================
+# 主测试
+# =========================
+def run_test():
+
+    oya, ko = setData()
+
+    loop = 1000  # 可以改 100 / 10000
+
+    benchmark("copy.deepcopy", merge_copy, oya, ko, loop)
+    benchmark("json", merge_json, oya, ko, loop)
+    benchmark("orjson", merge_orjson, oya, ko, loop)
+    benchmark("ujson", merge_ujson, oya, ko, loop)
+
+
+if __name__ == "__main__":
+    run_test()
