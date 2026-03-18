@@ -1,4 +1,59 @@
-[ERROR] Runtime.UserCodeSyntaxError: Syntax error in module 'lambda_function': expected an indented block after 'with' statement on line 135 (mergeService.py, line 136)
-Traceback (most recent call last):
-  File "/var/task/mergeService.py" Line 136
-        MERGE_RULES = json.load(f)
+import json
+import time
+import copy
+
+def loadJsonManual():
+    with open("jsonData/oya3.json", "r", encoding="utf-8") as f:
+        oya_data = json.load(f)
+
+    with open("jsonData/ko3.json", "r", encoding="utf-8") as f:
+        ko_data = json.load(f)
+    start = time.perf_counter()
+
+    #for _ in range(100000):
+    result = merge_manual_loop(oya_data, ko_data)
+
+    end = time.perf_counter()
+    print("manual merge time:", end - start)
+
+    return result
+
+def merge_manual_loop(oya, ko):
+
+    result = {"contract":{}}
+
+    # 契約基本情報 親優先
+    result["contract"]["contractBasic"] = oya["contract"]["contractBasic"]
+
+    # 契約者情報 親優先
+    result["contract"]["contractor"] = oya["contract"]["contractor"]
+
+    # 連絡先 子優先
+    if "contractor" in ko["contract"]:
+        result["contract"]["contractor"]["contact"].update(
+            ko["contract"]["contractor"]["contact"]
+        )
+
+    # 住所 子優先
+    result["contract"]["contractor"]["address"].update(
+        ko["contract"]["contractor"]["address"]
+    )
+
+    # 商品 merge
+    parent_products = oya["contract"]["productList"]
+    child_products = ko["contract"]["productList"]
+
+    merged_products = []
+
+    for p in parent_products:
+        for c in child_products:
+            if p["productId"] == c["productId"]:
+
+                p["coverage"].update(c["coverage"])
+                p["premium"].update(c["premium"])
+
+        merged_products.append(p)
+
+    result["contract"]["productList"] = merged_products
+
+    return {"contract": result}
