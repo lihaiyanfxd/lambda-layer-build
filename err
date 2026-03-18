@@ -1,51 +1,120 @@
+[
+  { "path": "contract.contractBasic", "rule": "parent" },
+
+  { "path": "contract.contractor.name", "rule": "parent" },
+  { "path": "contract.contractor.contact.phone", "rule": "child" },
+  { "path": "contract.contractor.contact.email", "rule": "parent" },
+  { "path": "contract.contractor.address.city", "rule": "child" },
+  { "path": "contract.contractor.address.zip", "rule": "parent" },
+
+  { "path": "contract.productList", "rule": "custom" }
+]
 import json
 import time
-import random
 import copy
+
+# =========================
+# load
+# =========================
 def loadJsonRules():
 
     with open("jsonData/oya2.json", "r", encoding="utf-8") as f:
         oya_data = json.load(f)
- 
+
     with open("jsonData/ko2.json", "r", encoding="utf-8") as f:
         ko_data = json.load(f)
- 
+
     with open("config/merge_rules2.json", "r", encoding="utf-8") as f:
         rules = json.load(f)
+
     start = time.perf_counter()
- 
+
     for _ in range(100000):
-     result = merge_v3(oya_data, ko_data)
- 
+        result = merge_v3(oya_data, ko_data, rules)
+
     end = time.perf_counter()
-    print("manual merge time:", end - start)
- 
+    print("merge time:", end - start)
+
     return result
-    
+
+
+# =========================
+# 工具函数
+# =========================
 def get(data, path):
     for p in path.split("."):
         data = data[p]
     return data
- 
- 
+
+
 def set(data, path, value):
     keys = path.split(".")
     for k in keys[:-1]:
         data = data.setdefault(k, {})
     data[keys[-1]] = value
- 
-def merge_rule(oya, ko, rules):
- 
+
+
+# =========================
+# productList（二重循环）
+# =========================
+def merge_product_list(oya, ko):
+
+    oya_products = oya["contract"]["productList"]
+    ko_products = ko["contract"].get("productList", [])
+
+    merged_products = []
+
+    for op in oya_products:
+        merged = copy.deepcopy(op)
+
+        for kp in ko_products:
+            if op["productId"] == kp["productId"]:
+
+                # 金额字段 ko 优先
+                if "coverage" in kp:
+                    merged["coverage"]["amount"] = kp["coverage"]["amount"]
+
+                if "premium" in kp:
+                    merged["premium"]["monthly"] = kp["premium"]["monthly"]
+
+                break
+
+        merged_products.append(merged)
+
+    return merged_products
+
+
+# =========================
+# 主 merge
+# =========================
+def merge_v3(oya, ko, rules):
+
     result = {}
+
     for rule in rules:
- 
+
         path = rule["path"]
- 
-        if rule["rule"] == "parent":
+        rule_type = rule["rule"]
+
+        # ------------------------
+        # 普通字段
+        # ------------------------
+        if rule_type == "parent":
             value = get(oya, path)
-        else:
-            value = get(ko, path)
- 
-        set(result, path, value)
- 
+            set(result, path, value)
+
+        elif rule_type == "child":
+            try:
+                value = get(ko, path)
+            except:
+                value = get(oya, path)
+            set(result, path, value)
+
+        # ------------------------
+        # 自定义（productList）
+        # ------------------------
+        elif rule_type == "custom":
+            value = merge_product_list(oya, ko)
+            set(result, path, value)
+
     return result
