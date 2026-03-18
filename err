@@ -1,3 +1,66 @@
+{
+  "contract": {
+    "contractBasic": {
+      "pol": "POL10001",
+      "status": "ACTIVE"
+    },
+    "contractor": {
+      "name": "山田太郎",
+      "contact": {
+        "phone": "09011112222",
+        "email": "taro@example.com"
+      },
+      "address": {
+        "city": "Tokyo",
+        "zip": "1600000"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "productName": "終身保険",
+        "coverage": {
+          "amount": 10000000
+        },
+        "benefitList": [
+          {
+            "benefitId": "ACC",
+            "benefitAmount": 1100000
+          }
+        ],
+        "premium": {
+          "monthly": 12000
+        }
+      }
+    ]
+  }
+}
+
+{
+  "contract": {
+    "contractor": {
+      "contact": {
+        "phone": "09099998888"
+      },
+      "address": {
+        "city": "Osaka"
+      }
+    },
+    "productList": [
+      {
+        "productId": "LIFE01",
+        "coverage": {
+          "amount": 22000000
+        },
+        "premium": {
+          "monthly": 25000
+        }
+      }
+    ]
+  }
+}
+
+
 import json
 import time
 import copy
