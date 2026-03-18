@@ -6,29 +6,30 @@ def merge_core(oya, ko):
     ko_contract = ko["contract"]
 
     # =========================
-    # 1. contractBasic（全部 oya优先）
+    # 1. contractBasic（親優先のため何もしない）
     # =========================
-    # 👉 不处理（保持 oya）
+    # pol, status はすべて親（oya）を使用
 
     # =========================
-    # 2. contractor
+    # 2. contractor マージ
     # =========================
     oya_contractor = oya_contract["contractor"]
     ko_contractor = ko_contract.get("contractor", {})
 
-    # address.city → ko优先
+    # address.city は子（ko）優先
     if "address" in ko_contractor:
         if "city" in ko_contractor["address"]:
             oya_contractor["address"]["city"] = ko_contractor["address"]["city"]
 
-    # contact / name / zip → 全部 oya优先（不动）
+    # name / contact / zip はすべて親優先 → 何もしない
 
     # =========================
-    # 3. productList（O(n)）
+    # 3. productList マージ（O(n)）
     # =========================
     oya_list = oya_contract["productList"]
     ko_list = ko_contract.get("productList", [])
 
+    # 子データを productId で辞書化（高速化）
     ko_map = {k[key]: k for k in ko_list}
 
     for o in oya_list:
@@ -37,24 +38,31 @@ def merge_core(oya, ko):
         if pid in ko_map:
             k = ko_map[pid]
 
-            # coverage.amount → ko优先
-            if "coverage" in k:
-                if "amount" in k["coverage"]:
-                    o["coverage"]["amount"] = k["coverage"]["amount"]
+            # ------------------------
+            # coverage.amount は子優先
+            # ------------------------
+            if "coverage" in k and "amount" in k["coverage"]:
+                o["coverage"]["amount"] = k["coverage"]["amount"]
 
-            # premium.monthly → ko优先
-            if "premium" in k:
-                if "monthly" in k["premium"]:
-                    o["premium"]["monthly"] = k["premium"]["monthly"]
-
-            # benefitList → benefitAmount ko优先
+            # ------------------------
+            # benefitAmount は子優先
+            # ------------------------
             if "benefitList" in o and "benefitList" in k:
-                for i in range(len(o["benefitList"])):
-                    if i < len(k["benefitList"]):
-                        kb = k["benefitList"][i]
-                        ob = o["benefitList"][i]
+
+                # benefitId でマッピング（順序依存を回避）
+                ko_b_map = {b["benefitId"]: b for b in k["benefitList"]}
+
+                for ob in o["benefitList"]:
+                    bid = ob["benefitId"]
+
+                    if bid in ko_b_map:
+                        kb = ko_b_map[bid]
 
                         if "benefitAmount" in kb:
                             ob["benefitAmount"] = kb["benefitAmount"]
+
+            # ------------------------
+            # それ以外の項目は親優先 → 何もしない
+            # ------------------------
 
     return oya
