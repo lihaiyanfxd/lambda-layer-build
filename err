@@ -1,31 +1,7 @@
-def example(a, b):
-    data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-    result = {"a": 1, "b": 2, "c": 3}
-
-    if a == True:
-        print("hello")
-
-    long_call = some_function(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-
-    return data, result
-[tool.ruff]
-line-length = 88
-
-[tool.ruff.lint]
-select = ["E", "F", "I"]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-
 {
   "editor.formatOnSave": true,
 
-  // 使用 Ruff formatter
   "[python]": {
-    "editor.defaultFormatter": "charliermarsh.ruff"
-  },
-
-  "ruff.enable": true,
-  "ruff.format.enable": true
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }
