@@ -1,4 +1,4 @@
-from typing import Dict
-
-def get_user() -> Dict[str, str]:
-    return {"name": "Alice", "age": 20}  # ❌ age 是 int
+{
+  "python.linting.mypyEnabled": true,
+  "python.linting.enabled": true
+}
