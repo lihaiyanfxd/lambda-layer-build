@@ -1,1 +1,4 @@
-def example(a, b, c, d, e, f, g, h): print(a, b, c, d, e, f, g, h)
+from typing import Dict
+
+def get_user() -> Dict[str, str]:
+    return {"name": "Alice", "age": 20}  # ❌ age 是 int
