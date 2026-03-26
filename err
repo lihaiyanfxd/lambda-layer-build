@@ -1,30 +1,23 @@
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = []
+line-length = 88
+{
+  // 开启 Ruff
+  "ruff.enable": true,
 
-import os, sys  # Ruff: I001/E401（import順序・分割）/ Pylint: 通常は指摘しない
+  // ❗关闭保存时自动格式化
+  "editor.formatOnSave": false,
 
-def sample_function(a, b, c, d, e, f, g):  # Pylint: too-many-arguments
-    x = 1
-    y = 2
-    unused_var = 100  # Ruff: F841 / Pylint: unused-variable
+  // ❗禁止保存时自动修复（最关键）
+  "editor.codeActionsOnSave": {
+    "source.fixAll": false,
+    "source.fixAll.ruff": false
+  },
 
-    if a == True:  # Ruff: E712（Trueとの比較は禁止）
-        print("bad")
+  // 不使用 Ruff 作为 formatter
+  "editor.defaultFormatter": null,
 
-    if b == None:  # Ruff: E711（None比較は is を使うべき）
-        print("bad")
-
-    if x == 1:
-        pass
-    elif x == 1:  # Pylint: duplicate-condition（同じ条件）
-        pass
-    print(sys.version)
-    print(os.getcwd)
-    return x + y
-
-
-class test_class:  # Pylint: invalid-name（クラス名はPascalCase推奨）
-    def __init__(self):
-        self.Value = 1  # Pylint: invalid-name（変数名ルール違反）
-
-def another_function():
-    """docstringなしでもOKだが、Pylintは警告する場合あり"""
-    pass
+  // 关闭 Ruff format（如果插件支持）
+  "ruff.format.enable": false
+}
