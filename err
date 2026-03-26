@@ -1,11 +1,30 @@
-[tool.pylint.MASTER]
-ignore = ["venv", ".venv"]
 
-[tool.pylint."MESSAGES CONTROL"]
-disable = ["C0114", "C0115", "C0116"]
+import os, sys  # Ruff: I001/E401（import順序・分割）/ Pylint: 通常は指摘しない
 
-[tool.pylint.FORMAT]
-max-line-length = 88
+def sample_function(a, b, c, d, e, f, g):  # Pylint: too-many-arguments
+    x = 1
+    y = 2
+    unused_var = 100  # Ruff: F841 / Pylint: unused-variable
 
-[tool.pylint.DESIGN]
-max-args = 5
+    if a == True:  # Ruff: E712（Trueとの比較は禁止）
+        print("bad")
+
+    if b == None:  # Ruff: E711（None比較は is を使うべき）
+        print("bad")
+
+    if x == 1:
+        pass
+    elif x == 1:  # Pylint: duplicate-condition（同じ条件）
+        pass
+    print(sys.version)
+    print(os.getcwd)
+    return x + y
+
+
+class test_class:  # Pylint: invalid-name（クラス名はPascalCase推奨）
+    def __init__(self):
+        self.Value = 1  # Pylint: invalid-name（変数名ルール違反）
+
+def another_function():
+    """docstringなしでもOKだが、Pylintは警告する場合あり"""
+    pass
