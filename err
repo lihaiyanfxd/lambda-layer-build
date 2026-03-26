@@ -1,16 +1,32 @@
-(.venv) PS C:\Users\U757712\Documents\codeTest2> python -m ruff check . --select E201,E202
-warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
-  - 'ignore' -> 'lint.ignore'
-  - 'select' -> 'lint.select'
-warning: Selection `E201` has no effect because preview is not enabled.
-warning: Selection `E202` has no effect because preview is not enabled.
-All checks passed!
+import os, sys  # Ruff: I001（import順序・分割）/ Pylint: 通常は指摘しない
 
-(.venv) PS C:\Users\U757712\Documents\codeTest2> ./venv/Scripts/activate
-./venv/Scripts/activate : 用語 './venv/Scripts/activate' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません。名前が正しく記述されてい
-ることを確認し、パスが含まれている場合はそのパスが正しいことを確認してから、再試行してください。
-発生場所 行:1 文字:1
-+ ./venv/Scripts/activate
-+ ~~~~~~~~~~~~~~~~~~~~~~~
-    + CategoryInfo          : ObjectNotFound: (./venv/Scripts/activate:String) [], CommandNotFoundException
-    + FullyQualifiedErrorId : CommandNotFoundExceptio
+def sample_function(a, b, c, d, e, f, g):  # Pylint: too-many-arguments
+    x = 1
+    y = 2
+    unused_var = 100  # Ruff: F841 / Pylint: unused-variable
+
+    if a == True:  # Ruff: E712（Trueとの比較は禁止）
+        print("bad")
+
+    if b == None:  # Ruff: E711（None比較は is を使うべき）
+        print("bad")
+
+    if x == 1:
+        pass
+    elif x == 1:  # Pylint: duplicate-condition（同じ条件）
+        pass
+
+    return x + y
+
+
+class test_class:  # Pylint: invalid-name（クラス名はPascalCase推奨）
+    def __init__(self):
+        self.Value = 1  # Pylint: invalid-name（変数名ルール違反）
+
+    def method(self):
+        print( "hello" )  # Ruff: E201 / E202（括弧内の余分なスペース）
+
+
+def another_function():
+    """docstringなしでもOKだが、Pylintは警告する場合あり"""
+    pass
