@@ -1,32 +1,28 @@
-import os, sys  # Ruff: I001（import順序・分割）/ Pylint: 通常は指摘しない
+[tool.ruff]
+select = ["E", "F", "I"]
 
-def sample_function(a, b, c, d, e, f, g):  # Pylint: too-many-arguments
-    x = 1
-    y = 2
-    unused_var = 100  # Ruff: F841 / Pylint: unused-variable
+# 可选：避免太严格（先不加 preview）
+ignore = []
 
-    if a == True:  # Ruff: E712（Trueとの比較は禁止）
-        print("bad")
+# 行宽（可选）
+line-length = 88
 
-    if b == None:  # Ruff: E711（None比較は is を使うべき）
-        print("bad")
+{
+  "ruff.enable": true,
 
-    if x == 1:
-        pass
-    elif x == 1:  # Pylint: duplicate-condition（同じ条件）
-        pass
+  // 使用 Ruff 做 lint
+  "python.linting.enabled": false,
 
-    return x + y
+  // ❗关闭自动格式化（否则E201/E202会被自动修掉）
+  "editor.formatOnSave": false,
 
+  // 可选：让 Ruff 用 preview（如果你开了）
+  "ruff.lint.args": ["--preview"],
 
-class test_class:  # Pylint: invalid-name（クラス名はPascalCase推奨）
-    def __init__(self):
-        self.Value = 1  # Pylint: invalid-name（変数名ルール違反）
-
-    def method(self):
-        print( "hello" )  # Ruff: E201 / E202（括弧内の余分なスペース）
-
-
-def another_function():
-    """docstringなしでもOKだが、Pylintは警告する場合あり"""
-    pass
+  // 可选：降低红色污染（推荐）
+  "ruff.severity": {
+    "E": "warning",
+    "F": "error",
+    "I": "information"
+  }
+}
