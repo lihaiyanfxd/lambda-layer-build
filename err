@@ -1,1 +1,33 @@
-REPORT RequestId: ac92b52f-304f-4219-bf16-5d8eca450f58	Duration: 3000.00 ms	Billed Duration: 3948 ms	Memory Size: 512 MB	Max Memory Used: 202 MB	Init Duration: 947.18 ms	Status: timeout
+import os, sys  # ruff会提示拆分import（I001），pylint一般不会默认报
+
+def func(a, b, c, d, e, f, g):  # pylint: too-many-arguments
+    x = 1
+    y = 2
+    z = 3
+    unused_var = 100  # pylint会报 unused-variable，ruff也会报F841
+
+    if a == True:  # ruff: E712（不推荐与True比较）
+        print("bad style")
+
+    if b == None:  # ruff: E711（应该用 is None）
+        print("bad style")
+
+    if x == 1:
+        pass
+    elif x == 1:  # pylint: duplicate condition（逻辑问题）
+        pass
+
+    return x + y + z
+
+
+class testClass:  # pylint: invalid-name（类名应该用PascalCase）
+    def __init__(self):
+        self.Value = 1  # pylint: invalid-name（成员变量命名）
+
+    def method(self):
+        print("hello")
+
+
+def very_bad_function_name():
+    print(   "extra space"   )  # ruff: E201/E202（多余空格）
+
