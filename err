@@ -1,28 +1,38 @@
-[tool.ruff]
-select = ["E", "F", "I"]
+[MASTER]
+# 忽略虚拟环境
+ignore=venv,.venv
 
-# 可选：避免太严格（先不加 preview）
-ignore = []
+[MESSAGES CONTROL]
+# 先关闭一些“烦人但不影响测试差异”的规则
+disable=
+    C0114,  ; missing-module-docstring
+    C0115,  ; missing-class-docstring
+    C0116   ; missing-function-docstring
 
-# 行宽（可选）
-line-length = 88
+[FORMAT]
+max-line-length=88
+
+[BASIC]
+# 命名规则（保留，让你看到 pylint 的严格点）
+argument-naming-style=snake_case
+variable-naming-style=snake_case
+class-naming-style=PascalCase
+
+[DESIGN]
+# 故意设低一点，方便触发差异
+max-args=5
+
+[TYPECHECK]
+# 允许 None / True 比较（默认其实就允许，这里只是明确）
+ignore-mixin-members=yes
 
 {
-  "ruff.enable": true,
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
 
-  // 使用 Ruff 做 lint
-  "python.linting.enabled": false,
+  // ❗关闭 Ruff（避免干扰）
+  "ruff.enable": false,
 
-  // ❗关闭自动格式化（否则E201/E202会被自动修掉）
-  "editor.formatOnSave": false,
-
-  // 可选：让 Ruff 用 preview（如果你开了）
-  "ruff.lint.args": ["--preview"],
-
-  // 可选：降低红色污染（推荐）
-  "ruff.severity": {
-    "E": "warning",
-    "F": "error",
-    "I": "information"
-  }
+  // 关闭格式化干扰
+  "editor.formatOnSave": false
 }
