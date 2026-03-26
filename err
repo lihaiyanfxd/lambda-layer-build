@@ -1,15 +1,16 @@
-ruff check . --select E201,E202
-ruff : 用語 'ruff' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません。名前が正しく記述されていることを確認し、パスが含まれている場合
-はそのパスが正しいことを確認してから、再試行してください。
+(.venv) PS C:\Users\U757712\Documents\codeTest2> python -m ruff check . --select E201,E202
+warning: The top-level linter settings are deprecated in favour of their counterparts in the `lint` section. Please update the following options in `pyproject.toml`:
+  - 'ignore' -> 'lint.ignore'
+  - 'select' -> 'lint.select'
+warning: Selection `E201` has no effect because preview is not enabled.
+warning: Selection `E202` has no effect because preview is not enabled.
+All checks passed!
+
+(.venv) PS C:\Users\U757712\Documents\codeTest2> ./venv/Scripts/activate
+./venv/Scripts/activate : 用語 './venv/Scripts/activate' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません。名前が正しく記述されてい
+ることを確認し、パスが含まれている場合はそのパスが正しいことを確認してから、再試行してください。
 発生場所 行:1 文字:1
-+ ruff check . --select E201,E202
-+ ~~~~
-    + CategoryInfo          : ObjectNotFound: (ruff:String) [], CommandNotFoundException
-    + FullyQualifiedErrorId : CommandNotFoundException
- 
-(.venv) PS C:\Users\U757712\Documents\codeTest2> 
-026-03-26 09:57:40.705599600 ERROR Failed to parse c:\Users\U757712\Documents\codeTest2\pyproject.toml: TOML parse error at line 17, column 1
-   |
-17 | enabled = false
-   | ^^^^^^^
-unknown field `enabled`, expected one of `exclude`, `preview`, `indent-style`, `quote-style`, `skip-magic-trailing-comma`, `line-ending`, `docstring-code-format`, `docstring-code-line-length`
++ ./venv/Scripts/activate
++ ~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (./venv/Scripts/activate:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundExceptio
