@@ -1,33 +1,10 @@
-import os, sys  # ruff会提示拆分import（I001），pylint一般不会默认报
-
-def func(a, b, c, d, e, f, g):  # pylint: too-many-arguments
-    x = 1
-    y = 2
-    z = 3
-    unused_var = 100  # pylint会报 unused-variable，ruff也会报F841
-
-    if a == True:  # ruff: E712（不推荐与True比较）
-        print("bad style")
-
-    if b == None:  # ruff: E711（应该用 is None）
-        print("bad style")
-
-    if x == 1:
-        pass
-    elif x == 1:  # pylint: duplicate condition（逻辑问题）
-        pass
-
-    return x + y + z
-
-
-class testClass:  # pylint: invalid-name（类名应该用PascalCase）
-    def __init__(self):
-        self.Value = 1  # pylint: invalid-name（成员变量命名）
-
-    def method(self):
-        print("hello")
-
-
-def very_bad_function_name():
-    print(   "extra space"   )  # ruff: E201/E202（多余空格）
-
+ruff check . --select E201,E202
+ruff : 用語 'ruff' は、コマンドレット、関数、スクリプト ファイル、または操作可能なプログラムの名前として認識されません。名前が正しく記述されていることを確認し、パスが含まれている場合
+はそのパスが正しいことを確認してから、再試行してください。
+発生場所 行:1 文字:1
++ ruff check . --select E201,E202
++ ~~~~
+    + CategoryInfo          : ObjectNotFound: (ruff:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+(.venv) PS C:\Users\U757712\Documents\codeTest2> 
