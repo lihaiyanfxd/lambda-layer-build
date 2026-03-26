@@ -1,16 +1,11 @@
-2026-03-26 10:31:13.613992400 ERROR Failed to parse c:\Users\U757712\Documents\codeTest2\pyproject.toml: TOML parse error at line 3, column 12
-  |
-3 | ignore=venv,.venv
-  |            ^
-unexpected key or value, expected newline, `#`
+[tool.pylint.MASTER]
+ignore = ["venv", ".venv"]
 
-2026-03-26 10:31:23.966989600  INFO Server shut down
-[Error - 10:31:24] Server process exited with code 0.
-2026-03-26 10:31:25.302074100 ERROR Failed to parse c:\Users\U757712\Documents\codeTest2\pyproject.toml: TOML parse error at line 3, column 12
-  |
-3 | ignore=venv,.venv
-  |            ^
-unexpected key or value, expected newline, `#`
+[tool.pylint."MESSAGES CONTROL"]
+disable = ["C0114", "C0115", "C0116"]
 
-2026-03-26 10:31:25.310589300  INFO Registering workspace: c:\Users\U757712\Documents\codeTest2
-2026-03-26 10:31:25.320041700  INFO Configuration file watcher successfully registered
+[tool.pylint.FORMAT]
+max-line-length = 88
+
+[tool.pylint.DESIGN]
+max-args = 5
