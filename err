@@ -2,3 +2,57 @@ from typing import Dict
 
 def get_user() -> Dict[str, str]:
     return {"name": "Alice", "age": 20}  # ❌ age 是 int
+
+
+# safe_get_name.py
+
+from typing import TypedDict, Optional
+
+
+# ✅ 定义数据结构
+class User(TypedDict, total=False):
+    name: str
+    age: int
+
+
+def get_name(user: User) -> str:
+    name: Optional[str] = user.get("name")
+
+    if name is None:
+        # 明确处理 None（可以换成 raise / 默认值）
+        raise ValueError("name is missing")
+
+    return name
+
+
+# 测试代码
+if __name__ == "__main__":
+    user_ok: User = {"name": "Alice", "age": 20}
+    user_bad: User = {"age": 20}
+
+    print(get_name(user_ok))   # ✅ 正常
+    print(get_name(user_bad))  # ❌ 会抛异常（可控）
+
+
+# create_user_safe.py
+
+from typing import TypedDict
+
+
+# ✅ 明确定义返回结构（契约）
+class User(TypedDict):
+    name: str
+    age: int
+
+
+def create_user(name: str, age: int) -> User:
+    return {
+        "name": name,
+        "age": age,
+    }
+
+
+# 测试代码
+if __name__ == "__main__":
+    user = create_user("Alice", 20)
+    print(user)
