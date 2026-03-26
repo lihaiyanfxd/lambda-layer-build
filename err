@@ -1,32 +1,31 @@
+def example(a, b):
+    data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    result = {"a": 1, "b": 2, "c": 3}
+
+    if a == True:
+        print("hello")
+
+    long_call = some_function(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+
+    return data, result
+[tool.ruff]
+line-length = 88
+
 [tool.ruff.lint]
 select = ["E", "F", "I"]
-ignore = []
 
-[MESSAGES CONTROL]
-disable=
-    C0114,
-    C0115,
-    C0116,
-    C0410,   # import（交给 Ruff）
-    C0411,   # import 排序（交给 Ruff）
-    C0413,   # import 位置（交给 Ruff）
-    C0330,   # 格式（交给 Ruff）
-
-[FORMAT]
-max-line-length=88
-
-[DESIGN]
-max-args=5
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
 
 {
+  "editor.formatOnSave": true,
+
+  // 使用 Ruff formatter
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff"
+  },
+
   "ruff.enable": true,
-  "python.linting.pylintEnabled": true,
-
-  // 不自动修复（避免冲突）
-  "editor.formatOnSave": false,
-
-  // 不让 Ruff 自动 fix
-  "editor.codeActionsOnSave": {
-    "source.fixAll.ruff": false
-  }
+  "ruff.format.enable": true
 }
