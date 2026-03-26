@@ -1,23 +1,32 @@
 [tool.ruff.lint]
 select = ["E", "F", "I"]
 ignore = []
-line-length = 88
-{
-  // 开启 Ruff
-  "ruff.enable": true,
 
-  // ❗关闭保存时自动格式化
+[MESSAGES CONTROL]
+disable=
+    C0114,
+    C0115,
+    C0116,
+    C0410,   # import（交给 Ruff）
+    C0411,   # import 排序（交给 Ruff）
+    C0413,   # import 位置（交给 Ruff）
+    C0330,   # 格式（交给 Ruff）
+
+[FORMAT]
+max-line-length=88
+
+[DESIGN]
+max-args=5
+
+{
+  "ruff.enable": true,
+  "python.linting.pylintEnabled": true,
+
+  // 不自动修复（避免冲突）
   "editor.formatOnSave": false,
 
-  // ❗禁止保存时自动修复（最关键）
+  // 不让 Ruff 自动 fix
   "editor.codeActionsOnSave": {
-    "source.fixAll": false,
     "source.fixAll.ruff": false
-  },
-
-  // 不使用 Ruff 作为 formatter
-  "editor.defaultFormatter": null,
-
-  // 关闭 Ruff format（如果插件支持）
-  "ruff.format.enable": false
+  }
 }
