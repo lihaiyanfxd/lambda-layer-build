@@ -1,38 +1,16 @@
-[MASTER]
-# 忽略虚拟环境
-ignore=venv,.venv
+2026-03-26 10:31:13.613992400 ERROR Failed to parse c:\Users\U757712\Documents\codeTest2\pyproject.toml: TOML parse error at line 3, column 12
+  |
+3 | ignore=venv,.venv
+  |            ^
+unexpected key or value, expected newline, `#`
 
-[MESSAGES CONTROL]
-# 先关闭一些“烦人但不影响测试差异”的规则
-disable=
-    C0114,  ; missing-module-docstring
-    C0115,  ; missing-class-docstring
-    C0116   ; missing-function-docstring
+2026-03-26 10:31:23.966989600  INFO Server shut down
+[Error - 10:31:24] Server process exited with code 0.
+2026-03-26 10:31:25.302074100 ERROR Failed to parse c:\Users\U757712\Documents\codeTest2\pyproject.toml: TOML parse error at line 3, column 12
+  |
+3 | ignore=venv,.venv
+  |            ^
+unexpected key or value, expected newline, `#`
 
-[FORMAT]
-max-line-length=88
-
-[BASIC]
-# 命名规则（保留，让你看到 pylint 的严格点）
-argument-naming-style=snake_case
-variable-naming-style=snake_case
-class-naming-style=PascalCase
-
-[DESIGN]
-# 故意设低一点，方便触发差异
-max-args=5
-
-[TYPECHECK]
-# 允许 None / True 比较（默认其实就允许，这里只是明确）
-ignore-mixin-members=yes
-
-{
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
-
-  // ❗关闭 Ruff（避免干扰）
-  "ruff.enable": false,
-
-  // 关闭格式化干扰
-  "editor.formatOnSave": false
-}
+2026-03-26 10:31:25.310589300  INFO Registering workspace: c:\Users\U757712\Documents\codeTest2
+2026-03-26 10:31:25.320041700  INFO Configuration file watcher successfully registered
