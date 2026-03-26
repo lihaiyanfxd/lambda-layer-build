@@ -8,3 +8,8 @@ ruff : 用語 'ruff' は、コマンドレット、関数、スクリプト フ�
     + FullyQualifiedErrorId : CommandNotFoundException
  
 (.venv) PS C:\Users\U757712\Documents\codeTest2> 
+026-03-26 09:57:40.705599600 ERROR Failed to parse c:\Users\U757712\Documents\codeTest2\pyproject.toml: TOML parse error at line 17, column 1
+   |
+17 | enabled = false
+   | ^^^^^^^
+unknown field `enabled`, expected one of `exclude`, `preview`, `indent-style`, `quote-style`, `skip-magic-trailing-comma`, `line-ending`, `docstring-code-format`, `docstring-code-line-length`
