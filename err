@@ -1,32 +1,62 @@
-from typing import Dict
+{
+  // =========================
+  // 编辑器基础
+  // =========================
+  "editor.formatOnSave": true,
 
-def get_user() -> Dict[str, str]:
-    return {"name": "Alice", "age": 20}  # ❌ age 是 int
+  // 保存时执行 Ruff 自动修复
+  "editor.codeActionsOnSave": {
+    "source.fixAll.ruff": true
+  },
 
+  // 指定唯一 formatter（避免冲突）
+  "editor.defaultFormatter": "ms-python.black-formatter",
 
-from typing import TypedDict
+  // =========================
+  // Python 解释器
+  // =========================
+  "python.defaultInterpreterPath": "./.venv/bin/python",
 
+  // =========================
+  // Black（唯一格式化工具）
+  // =========================
+  "black-formatter.args": [
+    "--line-length=88"
+  ],
 
-# ✅ 定义数据结构
-class User(TypedDict, total=False):
-    name: str
-    age: int
+  // 禁用旧格式化方式（避免冲突）
+  "python.formatting.provider": "none",
 
+  // =========================
+  // Ruff（lint + fix）
+  // =========================
+  "ruff.enable": true,
 
-def get_name(user: User) -> str:
-    return user.get("name")
-    
-from typing import TypedDict
+  // 保存时自动修复
+  "ruff.fixAll": true,
 
+  // import 自动排序（替代 isort）
+  "ruff.organizeImports": true,
 
-# ✅ 明确定义返回结构（契约）
-class User(TypedDict):
-    name: str
-    age: int
+  // =========================
+  // Mypy（类型检查）
+  // =========================
+  "python.linting.enabled": true,
+  "python.linting.mypyEnabled": true,
 
+  // 可选：严格模式（建议配合 pyproject.toml）
+  "mypy-type-checker.args": [
+    "--strict"
+  ],
 
-def create_user(name: str, age: int) -> User:
-    return {
-        "name": name,
-        "age": "20",
-    }
+  // =========================
+  // Pylint（建议关闭避免重复）
+  // =========================
+  "python.linting.pylintEnabled": false,
+
+  // =========================
+  // 其他优化
+  // =========================
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true
+}
