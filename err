@@ -1,62 +1,66 @@
-{
-  // =========================
-  // 编辑器基础
-  // =========================
-  "editor.formatOnSave": true,
+from pydantic import BaseModel, Field
 
-  // 保存时执行 Ruff 自动修复
-  "editor.codeActionsOnSave": {
-    "source.fixAll.ruff": true
-  },
 
-  // 指定唯一 formatter（避免冲突）
-  "editor.defaultFormatter": "ms-python.black-formatter",
+class UserRequest(BaseModel):
+    name: str = Field(..., example="Alice")
+    age: int = Field(..., ge=0, example=20)
 
-  // =========================
-  // Python 解释器
-  // =========================
-  "python.defaultInterpreterPath": "./.venv/bin/python",
 
-  // =========================
-  // Black（唯一格式化工具）
-  // =========================
-  "black-formatter.args": [
-    "--line-length=88"
-  ],
+class UserResponse(BaseModel):
+    id: int
+    name: str
+    age: int
 
-  // 禁用旧格式化方式（避免冲突）
-  "python.formatting.provider": "none",
 
-  // =========================
-  // Ruff（lint + fix）
-  // =========================
-  "ruff.enable": true,
 
-  // 保存时自动修复
-  "ruff.fixAll": true,
+from app.models import UserResponse
 
-  // import 自动排序（替代 isort）
-  "ruff.organizeImports": true,
+fake_db = []
 
-  // =========================
-  // Mypy（类型检查）
-  // =========================
-  "python.linting.enabled": true,
-  "python.linting.mypyEnabled": true,
 
-  // 可选：严格模式（建议配合 pyproject.toml）
-  "mypy-type-checker.args": [
-    "--strict"
-  ],
+def create_user(name: str, age: int) -> UserResponse:
+    user = UserResponse(id=len(fake_db) + 1, name=name, age=age)
+    fake_db.append(user)
+    return user
 
-  // =========================
-  // Pylint（建议关闭避免重复）
-  // =========================
-  "python.linting.pylintEnabled": false,
 
-  // =========================
-  // 其他优化
-  // =========================
-  "files.trimTrailingWhitespace": true,
-  "files.insertFinalNewline": true
-}
+def list_users():
+    return fake_db
+
+from fastapi import APIRouter
+from app.models import UserRequest, UserResponse
+from app.services.user_service import create_user, list_users
+
+router = APIRouter(prefix="/users", tags=["Users"])
+
+
+@router.post("/", response_model=UserResponse)
+def create_user_api(req: UserRequest):
+    return create_user(req.name, req.age)
+
+
+@router.get("/", response_model=list[UserResponse])
+def list_users_api():
+    return list_users()
+
+
+from fastapi import FastAPI
+from app.routers import user
+
+app = FastAPI(
+    title="Lambda FastAPI Demo",
+    version="1.0.0",
+    description="Sample API with OpenAPI on Lambda"
+)
+
+app.include_router(user.router)
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+from mangum import Mangum
+from app.main import app
+
+handler = Mangum(app)
