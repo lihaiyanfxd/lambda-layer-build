@@ -1,57 +1,83 @@
-openapi: 3.0.3
-info:
-  title: User API
-  version: 1.0.0
+from pydantic import BaseModel
 
-paths:
-  /users:
-    get:
-      summary: 获取用户列表
-      responses:
-        '200':
-          description: 成功
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/User'
 
-    post:
-      summary: 创建用户
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserRequest'
-      responses:
-        '200':
-          description: 创建成功
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
+class UserRequest(BaseModel):
+    name: str
+    age: int
 
-components:
-  schemas:
-    UserRequest:
-      type: object
-      required:
-        - name
-        - age
-      properties:
-        name:
-          type: string
-        age:
-          type: integer
 
-    User:
-      type: object
-      properties:
-        id:
-          type: integer
-        name:
-          type: string
-        age:
-          type: integer
+class User(BaseModel):
+    id: int
+    name: str
+    age: int
+
+# app/services/user_service.py
+
+from app.models import User
+
+fake_db = []
+
+
+def list_users():
+    return fake_db
+
+
+def create_user(name: str, age: int):
+    user = User(id=len(fake_db) + 1, name=name, age=age)
+    fake_db.append(user)
+    return user
+
+# app/routers/user.py
+
+from fastapi import APIRouter
+from app.models import UserRequest, User
+from app.services.user_service import list_users, create_user
+
+router = APIRouter()
+
+
+@router.get("/users", response_model=list[User])
+def get_users():
+    return list_users()
+
+
+@router.post("/users", response_model=User)
+def create_user_api(req: UserRequest):
+    return create_user(req.name, req.age)
+
+# app/main.py
+
+from fastapi import FastAPI
+import yaml
+
+from app.routers import user
+
+# 读取 openapi.yaml
+with open("openapi.yaml") as f:
+    openapi_schema = yaml.safe_load(f)
+
+app = FastAPI()
+
+
+# 覆盖 OpenAPI
+def custom_openapi():
+    return openapi_schema
+
+
+app.openapi = custom_openapi
+
+# 注册路由
+app.include_router(user.router)
+
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+# lambda_handler.py
+
+from mangum import Mangum
+from app.main import app
+
+handler = Mangum(app)
+
