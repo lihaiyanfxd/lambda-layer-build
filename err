@@ -2,10 +2,6 @@ openapi: 3.0.3
 info:
   title: User API
   version: 1.0.0
-  description: API for managing users
-
-servers:
-  - url: https://api.example.com/prod
 
 paths:
   /users:
@@ -29,7 +25,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/UserRequest'
-
       responses:
         '200':
           description: 创建成功
@@ -48,10 +43,8 @@ components:
       properties:
         name:
           type: string
-          example: Alice
         age:
           type: integer
-          example: 20
 
     User:
       type: object
