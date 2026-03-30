@@ -1,66 +1,64 @@
-from pydantic import BaseModel, Field
+openapi: 3.0.3
+info:
+  title: User API
+  version: 1.0.0
+  description: API for managing users
 
+servers:
+  - url: https://api.example.com/prod
 
-class UserRequest(BaseModel):
-    name: str = Field(..., example="Alice")
-    age: int = Field(..., ge=0, example=20)
+paths:
+  /users:
+    get:
+      summary: 获取用户列表
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
 
+    post:
+      summary: 创建用户
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
 
-class UserResponse(BaseModel):
-    id: int
-    name: str
-    age: int
+      responses:
+        '200':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
 
+components:
+  schemas:
+    UserRequest:
+      type: object
+      required:
+        - name
+        - age
+      properties:
+        name:
+          type: string
+          example: Alice
+        age:
+          type: integer
+          example: 20
 
-
-from app.models import UserResponse
-
-fake_db = []
-
-
-def create_user(name: str, age: int) -> UserResponse:
-    user = UserResponse(id=len(fake_db) + 1, name=name, age=age)
-    fake_db.append(user)
-    return user
-
-
-def list_users():
-    return fake_db
-
-from fastapi import APIRouter
-from app.models import UserRequest, UserResponse
-from app.services.user_service import create_user, list_users
-
-router = APIRouter(prefix="/users", tags=["Users"])
-
-
-@router.post("/", response_model=UserResponse)
-def create_user_api(req: UserRequest):
-    return create_user(req.name, req.age)
-
-
-@router.get("/", response_model=list[UserResponse])
-def list_users_api():
-    return list_users()
-
-
-from fastapi import FastAPI
-from app.routers import user
-
-app = FastAPI(
-    title="Lambda FastAPI Demo",
-    version="1.0.0",
-    description="Sample API with OpenAPI on Lambda"
-)
-
-app.include_router(user.router)
-
-
-@app.get("/health")
-def health_check():
-    return {"status": "ok"}
-
-from mangum import Mangum
-from app.main import app
-
-handler = Mangum(app)
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        age:
+          type: integer
