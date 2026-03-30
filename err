@@ -1,17 +1,87 @@
-# app/routers/user.py
+レスポンス本文
+{"detail":[{"type":"int_parsing","loc":["body","age"],"msg":"Input should be a valid integer, unable to parse string as an integer","input":"aaa"}]}
+レスポンスヘッダー
+{
+  "X-Amzn-Trace-Id": "Root=1-69ca17d9-b6dfb0fb769b2c086d8a58d8;Parent=0124b1d0a173e7e3;Sampled=0;Lineage=1:ba2ff172:0",
+  "content-length": "148",
+  "content-type": "application/json"
+}
+ログ
+Execution log for request 08d5bdab-edb7-4bed-9364-989ec260308f
+Mon Mar 30 06:27:37 UTC 2026 : Starting execution for request: 08d5bdab-edb7-4bed-9364-989ec260308f
+Mon Mar 30 06:27:37 UTC 2026 : HTTP Method: POST, Resource Path: /users
+Mon Mar 30 06:27:37 UTC 2026 : Method request path: {proxy=users}
+Mon Mar 30 06:27:37 UTC 2026 : Method request query string: {}
+Mon Mar 30 06:27:37 UTC 2026 : Method request headers: {}
+Mon Mar 30 06:27:37 UTC 2026 : Method request body before transformations: {
+    "name":"AA",
+    "age":"aaa"
+}
+Mon Mar 30 06:27:37 UTC 2026 : Endpoint request URI: https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_yaml_fast_li/invocations
+Mon Mar 30 06:27:37 UTC 2026 : Endpoint request headers: {X-Amz-Date=20260330T062737Z, x-amzn-apigateway-api-id=qgcmvrkjjj, Accept=application/json, User-Agent=AmazonAPIGateway_qgcmvrkjjj, Host=lambda.ap-northeast-3.amazonaws.com, X-Amz-Content-Sha256=85dd702391db171af9765e16cbdbe48600ce64d357d75423fbba049505068ffa, X-Amzn-Trace-Id=Root=1-69ca17d9-b6dfb0fb769b2c086d8a58d8, x-amzn-lambda-integration-tag=08d5bdab-edb7-4bed-9364-989ec260308f, Authorization=**************************************************************************************************************************************************************************************************************************************************************************************************************************************************89ca98, X-Amz-Source-Arn=arn:aws:execute-api:ap-northeast-3:724677424020:qgcmvrkjjj/test-invoke-stage/POST/{proxy+}, X-Amz-Security-Token=IQoJb3JpZ2luX2VjEFUaDmFwLW5vcnRoZWFzdC0zIkYwRAIgAlDCnBRgJn6sq7BTO1sBEEfcZTZxPZmUX4/z9eXXuJQCICZ33XSly76zB57Mo5zBECGxO+MxA [TRUNCATED]
+Mon Mar 30 06:27:37 UTC 2026 : Endpoint request body after transformations: {"resource":"/{proxy+}","path":"/users","httpMethod":"POST","headers":null,"multiValueHeaders":null,"queryStringParameters":null,"multiValueQueryStringParameters":null,"pathParameters":{"proxy":"users"},"stageVariables":null,"requestContext":{"resourceId":"1vxiv8","resourcePath":"/{proxy+}","httpMethod":"POST","extendedRequestId":"bBiqDHMLKRcFr8A=","requestTime":"30/Mar/2026:06:27:37 +0000","path":"/{proxy+}","accountId":"724677424020","protocol":"HTTP/1.1","stage":"test-invoke-stage","domainPrefix":"testPrefix","requestTimeEpoch":1774852057520,"requestId":"08d5bdab-edb7-4bed-9364-989ec260308f","identity":{"cognitoIdentityPoolId":null,"cognitoIdentityId":null,"apiKey":"test-invoke-api-key","principalOrgId":null,"cognitoAuthenticationType":null,"userArn":"arn:aws:iam::724677424020:user/Haiyan11.Li.bp@jp.nttdata.com","apiKeyId":"test-invoke-api-key-id","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safar [TRUNCATED]
+Mon Mar 30 06:27:37 UTC 2026 : Sending request to https://lambda.ap-northeast-3.amazonaws.com/2015-03-31/functions/arn:aws:lambda:ap-northeast-3:724677424020:function:dts_test_yaml_fast_li/invocations
+Mon Mar 30 06:27:37 UTC 2026 : Received response. Status: 200, Integration latency: 26 ms
+Mon Mar 30 06:27:37 UTC 2026 : Endpoint response headers: {Date=Mon, 30 Mar 2026 06:27:37 GMT, Content-Type=application/json, Content-Length=324, Connection=keep-alive, x-amzn-RequestId=cbaf3db6-b99d-4a83-8f9f-fd99607655e6, x-amzn-Remapped-Content-Length=0, X-Amz-Executed-Version=$LATEST, X-Amzn-Trace-Id=Root=1-69ca17d9-b6dfb0fb769b2c086d8a58d8;Parent=0124b1d0a173e7e3;Sampled=0;Lineage=1:ba2ff172:0}
+Mon Mar 30 06:27:37 UTC 2026 : Endpoint response body before transformations: {"statusCode": 422, "headers": {"content-length": "148", "content-type": "application/json"}, "multiValueHeaders": {}, "body": "{\"detail\":[{\"type\":\"int_parsing\",\"loc\":[\"body\",\"age\"],\"msg\":\"Input should be a valid integer, unable to parse string as an integer\",\"input\":\"aaa\"}]}", "isBase64Encoded": false}
+Mon Mar 30 06:27:37 UTC 2026 : Method response body after transformations: {"detail":[{"type":"int_parsing","loc":["body","age"],"msg":"Input should be a valid integer, unable to parse string as an integer","input":"aaa"}]}
+Mon Mar 30 06:27:37 UTC 2026 : Method response headers: {content-length=148, content-type=application/json, X-Amzn-Trace-Id=Root=1-69ca17d9-b6dfb0fb769b2c086d8a58d8;Parent=0124b1d0a173e7e3;Sampled=0;Lineage=1:ba2ff172:0}
+Mon Mar 30 06:27:37 UTC 2026 : Successfully completed execution
+Mon Mar 30 06:27:37 UTC 2026 : Method completed with status: 422
+openapi: 3.0.3
+info:
+  title: User API
+  version: 1.0.0
 
-from fastapi import APIRouter
-from app.models import UserRequest, User
-from app.services.user_service import list_users, create_user
+paths:
+  /users:
+    get:
+      summary: 获取用户列表
+      responses:
+        '200':
+          description: 成功
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
 
-router = APIRouter()
+    post:
+      summary: 创建用户
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRequest'
+      responses:
+        '200':
+          description: 创建成功
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
 
+components:
+  schemas:
+    UserRequest:
+      type: object
+      required:
+        - name
+        - age
+      properties:
+        name:
+          type: string
+        age:
+          type: string
 
-@router.get("/users", response_model=list[User])
-def get_users():
-    return list_users()
-
-
-@router.post("/users", response_model=User)
-def create_user_api(req: UserRequest):
-    return create_user(req.name, req.age)
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        age:
+          type: integer
